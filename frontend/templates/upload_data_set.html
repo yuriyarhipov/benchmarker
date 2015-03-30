@@ -1,0 +1,27 @@
+<div class="row">
+    <form ng-upload="excel_complete(content)" class="form-horizontal col-sm-10" role="form" action="/data/upload_data_set/">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="upload">Upload data set</label>
+            <div class="col-sm-4">
+                <input type="file" name="excel" id="upload">
+            </div>
+            <div class="col-sm-5">
+                <button class="btn btn-success" type="submit">Upload</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <table class="table table-striped">
+        <thead>
+            <th>
+                <td>module</td>
+                <td ng-repeat="col in columns">{{ col }}</td>
+            </th>
+        </thead>
+        <tr ng-repeat="project in projects">
+            <td>{{ project }}</td>
+            <td><a href="#">Delete</a></td>
+        </tr>
+    </table>
+</div>

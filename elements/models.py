@@ -1,8 +1,9 @@
 from django.db import models
 
-# Create your models here.
+
 class Project(models.Model):
     project_name = models.TextField()
+
 
 class Competitor(models.Model):
     project = models.ForeignKey(Project)
@@ -17,3 +18,12 @@ class Competitor(models.Model):
     wcdma_carriers = models.TextField()
     lte_carriers = models.TextField()
     future_carriers = models.TextField()
+
+
+class DataSet(models.Model):
+    project = models.ForeignKey(Project)
+    equipment = models.TextField()
+    module = models.TextField()
+    measurement_device = models.TextField()
+    value = models.TextField()
+

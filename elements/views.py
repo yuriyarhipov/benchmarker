@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
 
-from elements.models import Project, Competitor
+from elements.models import Project, Competitor, DataSet
 from lib.excel import Excel
 
 
@@ -77,5 +77,37 @@ def competitors(request):
             competitor.future_carriers
         ]
         data.append(row)
+    return Response(data)
+
+
+@api_view(['POST', ])
+def upload_data_set(request):
+    project = Project.objects.filter().first()
+    filename = handle_uploaded_file(request.FILES.getlist('excel'))[0]
+    data = Excel(filename).get_data_set()
+    equipment = data[0][1]
+    modules = [col for col in data[1]][1:]
+    for data_row in data[2:]:
+        module = data_row[0]
+        data_row = data_row[1:]
+        for ms in data_row:
+            if ms:
+                idx = data_row.index(ms)
+                DataSet.objects.create(
+                    project=project,
+                    module=module,
+                    equipment=equipment,
+                    measurement_device=modules[idx],
+                    value=ms
+                )
+
+    return Response([])
+
+
+@api_view(['GET', ])
+def datasets(request):
+    data = dict()
+    data['equipment'] = DataSet.objects.filter().first().equipment
+    data['measurement_devices'] =[m.measurement_device for m in DataSet.objects.filter().distinct('measurement_device')]
     return Response(data)
 

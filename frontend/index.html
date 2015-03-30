@@ -24,6 +24,7 @@
     <script type='text/javascript' src='/app/js/app.js'></script>
     <script type='text/javascript' src='/app/js/controllers/project.js'></script>
     <script type='text/javascript' src='/app/js/controllers/competitor.js'></script>
+    <script type='text/javascript' src='/app/js/controllers/dataset.js'></script>
 </head>
 <body>
 <div class="row">
@@ -44,6 +45,17 @@
                             <li><a href="#/projects">Open</a></li>
                             <li><a href="#/new_project">Create New Project</a></li>
                             <li><a href="#/competitors">Define Competitors</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Define Data Set<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Select Data Collection Tool</a></li>
+                            <li><a href="#">Select Data Set</a></li>
+                            <li><a href="#/upload_data_set">Upload Data Set</a></li>
+                            <li><a href="#">View Available Data Sets</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -78,5 +90,6 @@
 <div class="container-fluid">
     <div ng-view class="well">
     </div>
+</div>
 </body>
 </html>

@@ -6,7 +6,7 @@ class Excel(object):
     def __init__(self, filename):
         self.filename = filename
 
-    def get_competitors_template(self):
+    def get_data(self):
         data =[]
 
         wb = load_workbook(filename=self.filename, use_iterators=True)
@@ -20,7 +20,16 @@ class Excel(object):
                 else:
                     row.append('')
             data.append(row)
-        return data[1:]
+        return data
+
+    def get_competitors_template(self):
+        return self.get_data()[1:]
+
+    def get_data_set(self):
+        return self.get_data()
+
+
+
 
 
 

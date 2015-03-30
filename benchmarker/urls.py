@@ -11,4 +11,6 @@ urlpatterns = patterns('',
     url(r'^data/projects/', elements_views.projects),
     url(r'^data/competitors_upload_template/', elements_views.competitors_upload_template),
     url(r'^data/competitors/', elements_views.competitors),
+    url(r'^data/upload_data_set/', elements_views.upload_data_set),
+    url(r'^data/datasets/', elements_views.datasets),
 )
