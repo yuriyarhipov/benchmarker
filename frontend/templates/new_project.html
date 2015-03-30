@@ -1,0 +1,13 @@
+<div class="col-md-6">
+    <form ng-submit="processForm()">
+        <label>Project name</label>
+        <input type="text" ng-model="project_data.project_name">
+        <button class="btn btn-success" type="submit">Save</button>
+    </form>
+    <table class="table table-striped">
+        <tr ng-repeat="project in projects">
+            <td>{{ project }}</td>
+            <td><a href="#">Delete</a></td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,47 @@
+<div class="row">
+    <form ng-upload="excel_complete(content)" class="form-horizontal col-sm-10" role="form" action="/data/competitors_upload_template/">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="upload">Upload template</label>
+            <div class="col-sm-4">
+                <input type="file" name="excel" id="upload">
+            </div>
+            <div class="col-sm-5">
+                <button class="btn btn-success" type="submit">Upload</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>_Freq</td>
+                <td>GSM</td>
+                <td>WCDMA</td>
+                <td>LTE</td>
+                <td>FUTURE</td>
+                <td>MCC</td>
+                <td>MNC</td>
+                <td>GSM_Freq</td>
+                <td>WCDMA_Carriers(DL)</td>
+                <td>LTE_Carriers(DL)</td>
+                <td>FUTURE_Carriers</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="competitor in competitors">
+                <td>{{ competitor.0 }}</td>
+                <td>{{ competitor.1 }}</td>
+                <td>{{ competitor.2 }}</td>
+                <td>{{ competitor.3 }}</td>
+                <td>{{ competitor.4 }}</td>
+                <td>{{ competitor.5 }}</td>
+                <td>{{ competitor.6 }}</td>
+                <td>{{ competitor.7 }}</td>
+                <td>{{ competitor.8 }}</td>
+                <td>{{ competitor.9 }}</td>
+                <td>{{ competitor.10 }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

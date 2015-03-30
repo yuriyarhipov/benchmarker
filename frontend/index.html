@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="benchApp">
+<head>
+    <title>XML</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/tree-control.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/tree-control-attribute.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/select.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/main.css" rel="stylesheet" type="text/css"/>
+    <script type='text/javascript' src='/js/angular.js'></script>
+    <script type='text/javascript' src='/js/jquery.js'></script>
+    <script type='text/javascript' src='/js/angular-route.min.js'></script>
+    <script type='text/javascript' src='/js/angular-cookies.min.js'></script>
+    <script type='text/javascript' src='/js/ng-upload.min.js'></script>
+    <script type='text/javascript' src='/js/angular-tree-control.js'></script>
+    <script type='text/javascript' src='/js/select.min.js'></script>
+    <script type='text/javascript' src='/js/highcharts-ng.min.js'></script>
+    <script type='text/javascript' src='/js/ui-bootstrap-tpls-0.11.2.min.js'></script>
+    <script type='text/javascript' src='/js/ng-context-menu.js'></script>
+    <script type='text/javascript' src='/app/js/app.js'></script>
+    <script type='text/javascript' src='/app/js/controllers/project.js'></script>
+    <script type='text/javascript' src='/app/js/controllers/competitor.js'></script>
+</head>
+<body>
+<div class="row">
+    <div class="navbar navbar-default" role="navigation">
+        <div class="container-fluid" style="background-color: #ff9722">
+            <div class="col-md-2" style="background-color: #ff9722">
+                <a href="/">
+                    <img width="120" src="/static/logo.png" id="logo">
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav" style="background-color: #ff9722">
+                    <li class="dropdown">
+                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Projects <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#/projects">Open</a></li>
+                            <li><a href="#/new_project">Create New Project</a></li>
+                            <li><a href="#/competitors">Define Competitors</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Map & Cells <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="">Map</a></li>
+                            <li><a href="#/create_group_of_cells">Create group of cells</a></li>
+                            <li><a href="#/groups">Group of cells</a></li>
+                            <li><a href="#/table/rnd/rnd">Radio Network Data</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Route <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#/register_version_release">Register Version  Release</a></li>
+                            <li><a href="#">See Release Parameters</a></li>
+                            <li><a href="#/create_predefined_template">Create Predefined Template</a></li>
+                            <li><a href="#/predefined_templates">Predefined Templates</a></li>
+                            <li><a href="#/run_template">Run a Template</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div ng-view class="well">
+    </div>
+</body>
+</html>
