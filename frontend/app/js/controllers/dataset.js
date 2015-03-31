@@ -6,6 +6,6 @@ datasetControllers.controller('dataSetCtrl', ['$scope', '$http',
             $scope.columns = data.measurement_devices;
         });
         $scope.excel_complete = function(){
-            console.log()
+            console.log('ok')
         };
  }]);
