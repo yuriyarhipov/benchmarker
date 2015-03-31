@@ -10,7 +10,8 @@ var BenchApp = angular.module(
         'ng-context-menu',
         'projectControllers',
         'competitorControllers',
-        'datasetControllers'
+        'datasetControllers',
+        'routeControllers',
     ]);
 
 BenchApp.config(['$routeProvider',
@@ -18,6 +19,7 @@ BenchApp.config(['$routeProvider',
         $routeProvider.
             when('/projects',{
                 templateUrl: 'templates/projects.html',
+                controller: 'ProjectCtrl',
             }).
             when('/new_project',{
                 templateUrl: 'templates/new_project.html',
@@ -30,6 +32,10 @@ BenchApp.config(['$routeProvider',
             when('/upload_data_set', {
                 templateUrl: 'templates/upload_data_set.html',
                 controller: 'dataSetCtrl'
+            }).
+            when('/original_route', {
+                templateUrl: 'templates/original_route.html',
+                controller: 'originalCtrl'
             }).
             otherwise({
                 redirectTo: '/'

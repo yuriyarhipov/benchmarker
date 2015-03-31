@@ -13,3 +13,11 @@ projectControllers.controller('newProjectCtrl', ['$scope', '$http',
             });
         };
  }]);
+
+projectControllers.controller('ProjectCtrl', ['$scope', '$http',
+    function ($scope, $http) {
+        $http.get('/data/projects/').success(function(data){
+            $scope.projects = data;
+        });
+
+ }]);
