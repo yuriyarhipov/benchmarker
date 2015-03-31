@@ -12,6 +12,7 @@ var BenchApp = angular.module(
         'competitorControllers',
         'datasetControllers',
         'routeControllers',
+        'uiGmapgoogle-maps',
     ]);
 
 BenchApp.config(['$routeProvider',
