@@ -1,0 +1,41 @@
+<div class="row">
+    <form ng-upload="complete(content)" class="form-horizontal col-sm-6" role="form" action="/data/save_file/" upload-options-enable-rails-csrf>
+    <div class="form-group">
+        <label for="module" class="col-sm-3 control-label">Select Module</label>
+        <div class="col-sm-9" id="module">
+                <ui-select ng-model="module.selected" theme="bootstrap"
+                    ng-disabled="disabled"
+                    reset-search-input="false">
+                    <ui-select-match placeholder="Enter a module...">{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="module in modules | filter:$select.search">
+                        {{module}}
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+    </div>
+    <div class="form-group">
+        <label for="file" class="col-sm-3 control-label">File</label>
+        <div class="col-sm-9">
+            <input type="file" id="file" name="uploaded_file">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-9">
+            <button type="submit" ng-disabled="$isLoading" class="btn btn-success">Upload</button>
+            <button class="btn btn-default" type="reset">Cancel</button>
+        </div>
+
+    </div>
+
+</form>
+
+</div>
+<div class="row">
+    <table class="table table-striped">
+        <tr ng-repeat="f in files">
+            <td>{{ f.filename }}</td>
+            <td><a href="#">Delete</a></td>
+        </tr>
+    </table>
+</div>

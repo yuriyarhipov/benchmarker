@@ -13,4 +13,7 @@ urlpatterns = patterns('',
     url(r'^data/competitors/', elements_views.competitors),
     url(r'^data/upload_data_set/', elements_views.upload_data_set),
     url(r'^data/datasets/', elements_views.datasets),
+    url(r'^data/get_modules/', elements_views.get_modules),
+    url(r'^data/save_file/', elements_views.save_file),
+    url(r'^data/get_files/', elements_views.get_files),
 )

@@ -1,16 +1,19 @@
+from os.path import basename
+
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
 
-from elements.models import Project, Competitor, DataSet
+from elements.models import Project, Competitor, DataSet, RouteFile
 from lib.excel import Excel
+from lib.archive import Archive
 
 
 def handle_uploaded_file(files):
     path = settings.STATICFILES_DIRS[0]
     result = []
     for f in files:
-        filename = '/xml/'.join([path, f.name])
+        filename = '/'.join([path, f.name])
         destination = open(filename, 'wb+')
         for chunk in f.chunks():
             destination.write(chunk)
@@ -110,4 +113,28 @@ def datasets(request):
     data['equipment'] = DataSet.objects.filter().first().equipment
     data['measurement_devices'] =[m.measurement_device for m in DataSet.objects.filter().distinct('measurement_device')]
     return Response(data)
+
+
+@api_view(['GET', ])
+def get_modules(request):
+    modules = ['Module %s' % i for i in range(1,51)]
+    return Response(modules)
+
+
+@api_view(['POST', ])
+def save_file(request):
+    project = Project.objects.filter().first()
+    uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('uploaded_file'))[0]).get_files()
+    for f in uploaded_files:
+        RouteFile.objects.create(project=project, filename=f, module='', latitude='', longitude='')
+    return Response([])
+
+
+@api_view(['GET', ])
+def get_files(request):
+    files = [{'filename': basename(f.filename), 'module': f.module} for f in RouteFile.objects.all()]
+    return Response(files)
+
+
+
 

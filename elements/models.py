@@ -27,3 +27,13 @@ class DataSet(models.Model):
     measurement_device = models.TextField()
     value = models.TextField()
 
+
+class RouteFile(models.Model):
+    project = models.ForeignKey(Project)
+    filename = models.TextField()
+    module = models.TextField()
+    latitude = models.TextField()
+    longitude = models.TextField()
+
+
+
