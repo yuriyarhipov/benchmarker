@@ -14,6 +14,7 @@ var BenchApp = angular.module(
         'routeControllers',
         'uiGmapgoogle-maps',
         'filesControllers',
+        'activeProjectModule',
     ]);
 
 BenchApp.config(['$routeProvider',
@@ -27,7 +28,7 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/new_project.html',
                 controller: 'newProjectCtrl'
             }).
-            when('/competitors', {
+            when('/:project/competitors', {
                 templateUrl: 'templates/competitors.html',
                 controller: 'competitorCtrl'
             }).
@@ -39,9 +40,13 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/original_route.html',
                 controller: 'originalCtrl'
             }).
-            when('/fileshub', {
+            when('/:project/fileshub', {
                 templateUrl: 'templates/fileshub.html',
                 controller: 'fileshubCtrl'
+            }).
+            when('/', {
+                templateUrl: 'templates/index.html',
+                controller: 'appCtrl'
             }).
             otherwise({
                 redirectTo: '/'

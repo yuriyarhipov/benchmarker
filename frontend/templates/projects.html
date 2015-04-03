@@ -2,7 +2,7 @@
     <table class="table table-stripped col-md-12">
         <tbody>
             <tr ng-repeat="project in projects">
-                <td>{{ project }}</td>
+                <td><a href="#/{{ project.id }}/fileshub/">{{ project.project_name }}</a></td>
             </tr>
         </tbody>
     </table>

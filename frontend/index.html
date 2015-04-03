@@ -30,9 +30,10 @@
     <script type='text/javascript' src='/app/js/controllers/dataset.js'></script>
     <script type='text/javascript' src='/app/js/controllers/routes.js'></script>
     <script type='text/javascript' src='/app/js/controllers/fileshub.js'></script>
+    <script type='text/javascript' src='/app/js/active_project.js'></script>
 </head>
 <body>
-<div class="row">
+<div class="row" ng-controller="menuCtrl">
     <div class="navbar navbar-default" role="navigation">
         <div class="container-fluid" style="background-color: #ff9722">
             <div class="col-md-2" style="background-color: #ff9722">
@@ -49,7 +50,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="#/projects">Open</a></li>
                             <li><a href="#/new_project">Create New Project</a></li>
-                            <li><a href="#/competitors">Define Competitors</a></li>
+                            <li><a ng-href="#/{{ project }}/competitors">Define Competitors</a></li>
                             <li><a href="#/fileshub">FilesHub</a></li>
                         </ul>
                     </li>
@@ -93,6 +94,7 @@
     </div>
 </div>
 <div class="container-fluid">
+    <span ng-bind="test"></span>
     <div ng-view class="well">
     </div>
 </div>

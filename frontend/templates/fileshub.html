@@ -1,5 +1,5 @@
 <div class="row">
-    <form ng-upload="complete(content)" class="form-horizontal col-sm-6" role="form" action="/data/save_file/" upload-options-enable-rails-csrf>
+    <form ng-upload="complete()" class="form-horizontal col-sm-6" role="form" action="/data/save_file/" upload-options-enable-rails-csrf>
     <div class="form-group">
         <label for="module" class="col-sm-3 control-label">Select Module</label>
         <div class="col-sm-9" id="module">
@@ -22,6 +22,8 @@
     <div class="form-group">
         <div class="col-sm-3"></div>
         <div class="col-sm-9">
+            <input class="hidden" name="project" ng-model="project">
+            <input class="hidden" name="module" ng-model="module.selected">
             <button type="submit" ng-disabled="$isLoading" class="btn btn-success">Upload</button>
             <button class="btn btn-default" type="reset">Cancel</button>
         </div>
@@ -35,6 +37,9 @@
     <table class="table table-striped">
         <tr ng-repeat="f in files">
             <td>{{ f.filename }}</td>
+            <td>{{ f.module }}</td>
+            <td>{{ f.latitude }}</td>
+            <td>{{ f.longitude }}</td>
             <td><a href="#">Delete</a></td>
         </tr>
     </table>

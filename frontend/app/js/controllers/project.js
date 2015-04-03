@@ -21,3 +21,21 @@ projectControllers.controller('ProjectCtrl', ['$scope', '$http',
         });
 
  }]);
+
+projectControllers.controller('appCtrl', ['$scope', '$http', '$cookies', '$location',
+    function ($scope, $http, $cookies, $location) {
+        var project = $cookies.project;
+        if (project){
+            $location.path('/' + project + '/fileshub/');
+        } else {
+            $location.path('/projects/');
+
+        }
+ }]);
+
+ projectControllers.controller('menuCtrl', ['$scope', '$routeParams', 'activeProjectService',
+    function ($scope, $routeParams, activeProjectService) {
+        $scope.$on('handleBroadcast', function() {
+            $scope.project = activeProjectService.project;
+        });
+ }]);

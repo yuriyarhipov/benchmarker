@@ -1,9 +1,10 @@
 <div class="row">
-    <form ng-upload="excel_complete(content)" class="form-horizontal col-sm-10" role="form" action="/data/competitors_upload_template/">
+    <form ng-upload="excel_complete()" class="form-horizontal col-sm-10" role="form" action="/data/competitors_upload_template/">
         <div class="form-group">
             <label class="col-sm-3 control-label" for="upload">Upload template</label>
             <div class="col-sm-4">
                 <input type="file" name="excel" id="upload">
+                <input class="hidden" name="project_id" ng-value="project_id">
             </div>
             <div class="col-sm-5">
                 <button class="btn btn-success" type="submit">Upload</button>

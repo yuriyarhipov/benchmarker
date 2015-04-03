@@ -6,7 +6,7 @@
     </form>
     <table class="table table-striped">
         <tr ng-repeat="project in projects">
-            <td>{{ project }}</td>
+            <td><a href="#/{{ project.id }}/fileshub/">{{ project.project_name }}</a></td>
             <td><a href="#">Delete</a></td>
         </tr>
     </table>
