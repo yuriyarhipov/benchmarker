@@ -6,19 +6,20 @@ class Route(object):
     latitude = 'All-Latitude Decimal Degree (Text)'
     longitude = 'All-Longitude Decimal Degree (Text)'
 
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self):
         self.conn = psycopg2.connect(
             'host = localhost dbname = benchmarker user = postgres password = 1297536'
         )
 
     def create_table(self):
         cursor = self.conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS points (filename TEXT, time TEXT, ms TEXT, latitude TEXT, longitude TEXT)''' )
+        cursor.execute('''CREATE TABLE IF NOT EXISTS
+            points (filename TEXT, time TEXT, ms TEXT, latitude TEXT, longitude TEXT)''' )
         cursor.execute('''DELETE FROM points WHERE filename='%s' ''' % (basename(self.filename)))
         self.conn.commit()
 
-    def parse(self):
+    def parse(self, filename):
+        self.filename = filename
         with open(self.filename) as f:
             first_line = f.readline()
             columns = [col for col in first_line.split('\t')]
