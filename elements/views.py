@@ -7,6 +7,7 @@ from django.conf import settings
 from elements.models import Project, Competitor, DataSet, RouteFile
 from lib.excel import Excel
 from lib.archive import Archive
+from lib.route import Route
 
 
 def handle_uploaded_file(files):
@@ -129,15 +130,17 @@ def get_modules(request):
 def save_file(request):
     project_id = request.POST.get('project')
     module = request.POST.get('module')
-    print project_id
     project = Project.objects.get(id=project_id)
     uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('uploaded_file'))[0]).get_files()
+    Route(uploaded_files[0])
     for f in uploaded_files:
+        print f
         RouteFile.objects.create(project=project,
                                  filename=f,
                                  module=module,
                                  latitude='All-Latitude Decimal Degree',
                                  longitude='All-Longitude Decimal Degree')
+
     return Response(dict(message='OK'))
 
 
@@ -154,6 +157,15 @@ def get_files(request, project_id):
             })
 
     return Response(files)
+
+@api_view(['GET', ])
+def get_points(request):
+    points = Route('').get_points()
+    print(points)
+    return Response(points)
+
+
+
 
 
 
