@@ -132,7 +132,7 @@ def save_file(request):
     module = request.POST.get('module')
     project = Project.objects.get(id=project_id)
     uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('uploaded_file'))[0]).get_files()
-    Route(uploaded_files[0])
+    Route(uploaded_files[0]).parse()
     for f in uploaded_files:
         print f
         RouteFile.objects.create(project=project,
