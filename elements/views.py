@@ -161,7 +161,6 @@ def get_files(request, project_id):
 @api_view(['GET', ])
 def get_points(request):
     points = Route('').get_points()
-    print(points)
     return Response(points)
 
 
