@@ -1,0 +1,27 @@
+<div class="row">
+    <form class="form">
+    <div class="col-md-4">
+        <label class="col-sm-3 control-label">Select Module</label>
+        <div class="col-sm-9" id="module">
+                <ui-select ng-model="module.selected" theme="bootstrap"
+                    ng-disabled="disabled"
+                    reset-search-input="false">
+                    <ui-select-match placeholder="Enter a module...">{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="module in modules | filter:$select.search">
+                        {{module}}
+                    </ui-select-choices>
+                </ui-select>
+        </div>
+    </div>
+    <div class="col=sm-2">
+        <input type="button" ng-click="showRoute()" value="Show route" class="btn btn-default">
+    </div>
+    </form>
+
+    <div class="col-md-12">
+        <ui-gmap-google-map center='map.center' zoom='map.zoom'>
+            <ui-gmap-markers models="routeMarkers" coords="'self'" icon="'icon'">
+            </ui-gmap-markers>
+        </ui-gmap-google-map>
+    </div>
+</div>

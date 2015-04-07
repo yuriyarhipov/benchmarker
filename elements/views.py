@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
 
-from elements.models import Project, Competitor, DataSet, RouteFile
+from elements.models import Project, Competitor, DataSet, RouteFile, StandartRoute
 from lib.excel import Excel
 from lib.archive import Archive
 from lib.route import Route
@@ -43,8 +43,6 @@ def projects(request):
 @api_view(['POST', ])
 def competitors_upload_template(request):
     project_id = request.POST.get('project_id')
-    print project_id
-    print request.POST
     project = Project.objects.get(id=project_id)
     filename = handle_uploaded_file(request.FILES.getlist('excel'))[0]
     for competitor in Excel(filename).get_competitors_template():
@@ -122,7 +120,7 @@ def datasets(request):
 
 @api_view(['GET', ])
 def get_modules(request):
-    modules = ['Module %s' % i for i in range(1,51)]
+    modules = ['%s' % i for i in range(1,51)]
     return Response(modules)
 
 
@@ -161,9 +159,30 @@ def get_files(request, project_id):
     return Response(files)
 
 @api_view(['GET', ])
-def get_points(request):
-    points = Route('').get_points()
+def get_points(request,  project_id, route_id, module_id):
+    project = Project.objects.get(id=project_id)
+    distance = StandartRoute.objects.get(id=route_id).distance
+    files = [f.filename for f in RouteFile.objects.filter(project=project, module=module_id)]
+    points = Route().get_points(files, distance)
     return Response(points)
+
+
+@api_view(['POST', ])
+def save_standart_route(request, project_id):
+    route_name = request.POST.get('route_name')
+    distance = request.POST.get('distance')
+    project = Project.objects.get(id=project_id)
+    StandartRoute.objects.filter(project=project, route_name=route_name).delete()
+    StandartRoute.objects.create(project=project, route_name=route_name, distance=distance)
+    return Response([])
+
+
+@api_view(['GET', ])
+def routes(request, project_id):
+    routes = []
+    for route in StandartRoute.objects.all().order_by('route_name'):
+        routes.append(dict(id=route.id, route_name=route.route_name))
+    return Response(routes)
 
 
 

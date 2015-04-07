@@ -16,5 +16,8 @@ urlpatterns = patterns('',
     url(r'^data/get_modules/', elements_views.get_modules),
     url(r'^data/save_file/', elements_views.save_file),
     url(r'^data/(\S+)/get_files/', elements_views.get_files),
-    url(r'^data/get_points/', elements_views.get_points),
+    url(r'^data/(\S+)/(\S+)/(\S+)/get_points/', elements_views.get_points),
+    url(r'^data/(\S+)/save_standart_route/', elements_views.save_standart_route),
+    url(r'^data/(\S+)/routes/', elements_views.routes),
+
 )

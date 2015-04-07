@@ -1,6 +1,8 @@
 import psycopg2
 from os.path import basename
 
+from geopy.distance import vincenty
+
 class Route(object):
     filename = None
     latitude = 'All-Latitude Decimal Degree (Text)'
@@ -40,14 +42,24 @@ class Route(object):
                     i += 1
         self.conn.commit()
 
-    def get_points(self):
+    def get_points(self, filenames, distance):
         data = []
         cursor = self.conn.cursor()
-        cursor.execute('SELECT * FROM points;');
+
+        sql_filename = ','.join(["'%s'" % basename(f) for f in filenames])
+        cursor.execute('SELECT * FROM points WHERE filename IN (%s);' % (sql_filename));
         i = 0
         for row in cursor:
             i += 1
-            data.append(dict(longitude=row[4], latitude=row[3], id=i))
+            if len(data) == 0:
+                data.append(dict(longitude=row[4], latitude=row[3], id=i))
+            else:
+                last_point = data[-1]
+
+                current_point = dict(longitude=row[4], latitude=row[3], id=i)
+                current_distance = vincenty((last_point['latitude'], last_point['longitude']), (current_point['latitude'], current_point['longitude'])).meters
+                if current_distance > distance:
+                    data.append(current_point)
         return data
 
 

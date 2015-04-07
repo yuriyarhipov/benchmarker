@@ -1,0 +1,22 @@
+
+    <form>
+        <div class="form-group">
+            <div class="col-md-1">
+                <label>Route name</label>
+            </div>
+            <input type="text" ng-model="route_name">
+        </div>
+        <div class="form-group">
+            <div class="col-md-1">
+                <label>Distance</label>
+            </div>
+            <input type="text" ng-model="distance">
+        </div>
+        <button class="btn btn-success" ng-click="saveRoute()">Save</button>
+    </form>
+    <table class="table table-striped">
+        <tr ng-repeat="route in routes">
+            <td><a href="#/{{project}}/route/{{ route.id }}/">{{ route.route_name }}</a></td>
+            <td><a href="#">Delete</a></td>
+        </tr>
+    </table>

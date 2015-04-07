@@ -48,6 +48,14 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/index.html',
                 controller: 'appCtrl'
             }).
+            when('/:project/create_standart_route', {
+                templateUrl: 'templates/create_standart_route.html',
+                controller: 'createStandartRouteCtrl'
+            }).
+            when('/:project/route/:route', {
+                templateUrl: 'templates/route.html',
+                controller: 'routeCtrl'
+            }).
             otherwise({
                 redirectTo: '/'
             });

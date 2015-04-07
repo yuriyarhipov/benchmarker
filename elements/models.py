@@ -36,4 +36,7 @@ class RouteFile(models.Model):
     longitude = models.TextField()
 
 
-
+class StandartRoute(models.Model):
+    project = models.ForeignKey(Project)
+    route_name = models.TextField()
+    distance = models.FloatField(default=5)
