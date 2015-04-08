@@ -56,7 +56,7 @@ class Route(object):
             else:
                 last_point = data[-1]
 
-                current_point = dict(longitude=row[4], latitude=row[3], id=i)
+                current_point = dict(longitude=row[4], latitude=row[3], id=i, icon='/static/bul.png')
                 current_distance = vincenty((last_point['latitude'], last_point['longitude']), (current_point['latitude'], current_point['longitude'])).meters
                 if current_distance > distance:
                     data.append(current_point)

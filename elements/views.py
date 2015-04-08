@@ -180,9 +180,16 @@ def save_standart_route(request, project_id):
 @api_view(['GET', ])
 def routes(request, project_id):
     routes = []
-    for route in StandartRoute.objects.all().order_by('route_name'):
+    project = Project.objects.get(id=project_id)
+    for route in StandartRoute.objects.filter(project=project).order_by('route_name'):
         routes.append(dict(id=route.id, route_name=route.route_name))
     return Response(routes)
+
+@api_view(['GET', ])
+def modules(request, project_id):
+    project = Project.objects.get(id=project_id)
+    modules = [ m.module for m in RouteFile.objects.filter(project=project).distinct('module').order_by('module')]
+    return Response(modules)
 
 
 

@@ -33,13 +33,17 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams',
         var standart_route_id = $routeParams.route;
         $scope.routeMarkers = [];
         $scope.module = {};
-        $http.get('/data/get_modules/').success(function(data){
+        $scope.route = {};
+        $http.get('/data/' + project_id + '/modules/').success(function(data){
             $scope.modules = data;
+        });
+        $http.get('/data/' + project_id + '/routes/').success(function(data){
+            $scope.routes = data;
         });
 
         $scope.showRoute = function(){
             $scope.module
-            $http.get('/data/' + project_id + '/' + standart_route_id + '/' + $scope.module.selected + '/get_points/').success(function(data){
+            $http.get('/data/' + project_id + '/' + $scope.route.selected.id + '/' + $scope.module.selected + '/get_points/').success(function(data){
                 $scope.routeMarkers = data
                 latitude = parseFloat($scope.routeMarkers[0].latitude);
                 longitude = parseFloat($scope.routeMarkers[0].longitude);
