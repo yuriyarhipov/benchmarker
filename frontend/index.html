@@ -49,9 +49,8 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="#/projects">Open</a></li>
-                            <li><a href="#/new_project">Create New Project</a></li>
-                            <li><a ng-href="#/{{ project }}/competitors">Define Competitors</a></li>
-                            <li><a href="#/fileshub">FilesHub</a></li>
+                            <li><a href="#/new_project">Create New</a></li>
+                            <li><a href="#/fileshub">Add Measurements files</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -59,19 +58,10 @@
                             Define Data Set<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="http://issue.yura.cc/issue/benchmarker-8">Select Data Collection Tool</a></li>
-                            <li><a href="#">Select Data Set</a></li>
-                            <li><a href="#/upload_data_set">Upload Data Set</a></li>
-                            <li><a href="#">View Available Data Sets</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            Map & Cells <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="http://issue.yura.cc/issue/benchmarker-6">Load Cell Site information</a></li>
-                            <li><a href="http://issue.yura.cc/issue/benchmarker-7">Create a Region</a></li>
+                            <li><a ng-href="#/{{ project }}/competitors">Define Competitors</a></li>
+                            <li><a ng-href="#">Upload Cell Information</a></li>
+                            <li><a href="#">Open Dataset</a></li>
+                            <li><a href="#/upload_data_set">Upload New Dataset</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -80,13 +70,46 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="#/{{ project }}/create_standart_route">Create Standard Route</a></li>
-                            <li><a href="#/{{ project }}/create_standart_route">Standards Routes</a></li>
                             <li><a href="http://issue.yura.cc/issue/benchmarker-4">Merge Routes</a></li>
+                            <li><a href="#">Create  a SubRoute</a></li>
                             <li><a href="http://issue.yura.cc/issue/benchmarker-5">Compare</a></li>
 
                         </ul>
                     </li>
-
+                    <li class="dropdown">
+                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Graphs <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="http://issue.yura.cc/issue/benchmarker-6">Create Legends</a></li>
+                            <li><a href="http://issue.yura.cc/issue/benchmarker-7">Create Graphs</a></li>
+                            <li><a href="http://issue.yura.cc/issue/benchmarker-7">Accuracy</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Maps<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="http://issue.yura.cc/issue/benchmarker-6">Load Cell Site information</a></li>
+                            <li><a href="http://issue.yura.cc/issue/benchmarker-7">Create a Region</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Fixes<span class="caret"></span>
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Reports<span class="caret"></span>
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Settings<span class="caret"></span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
