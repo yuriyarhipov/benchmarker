@@ -131,7 +131,7 @@ def save_file(request):
     project = Project.objects.get(id=project_id)
     uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('uploaded_file'))[0]).get_files()
     for f in uploaded_files:
-        Route().parse(f)
+        Route().parse(project_id, module, f)
         RouteFile.objects.filter(project=project,
                                  filename=f,
                                  module=module).delete()
@@ -163,7 +163,7 @@ def get_points(request,  project_id, route_id, module_id):
     project = Project.objects.get(id=project_id)
     distance = StandartRoute.objects.get(id=route_id).distance
     files = [f.filename for f in RouteFile.objects.filter(project=project, module=module_id)]
-    points = Route().get_points(files, distance)
+    points = Route().get_points(project_id, module_id, files, distance)
     return Response(points)
 
 

@@ -12,31 +12,38 @@ routeControllers.controller('originalCtrl', ['$scope', '$http',
         });
 }]);
 
-routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams',
-    function ($scope, $http, $routeParams) {
-        var project = $routeParams.project
-        $scope.project = project;
-        $http.get('/data/' + project + '/routes/').success(function(data){
+routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
+    function ($scope, $http, $routeParams, activeProjectService) {
+        var project_id = $routeParams.project
+        activeProjectService.setProject(project_id);
+
+        $scope.project = project_id;
+        $http.get('/data/' + project_id + '/routes/').success(function(data){
             $scope.routes = data;
         });
         $scope.saveRoute = function(){
-            $http.post('/data/' + project + '/save_standart_route/',$.param({'route_name':$scope.route_name, 'distance': $scope.distance})).success(function(){
-                $http.get('/data/' + project + '/routes/').success(function(data){
+            $http.post('/data/' + project_id + '/save_standart_route/',$.param({'route_name':$scope.route_name, 'distance': $scope.distance})).success(function(){
+                $http.get('/data/' + project_id + '/routes/').success(function(data){
                     $scope.routes = data;
                 });
             })
         };
 }]);
-routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams',
-    function ($scope, $http, $routeParams) {
+
+routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
+    function ($scope, $http, $routeParams, activeProjectService) {
         var project_id = $routeParams.project
         var standart_route_id = $routeParams.route;
+
+        activeProjectService.setProject(project_id);
         $scope.routeMarkers = [];
         $scope.module = {};
         $scope.route = {};
+
         $http.get('/data/' + project_id + '/modules/').success(function(data){
             $scope.modules = data;
         });
+
         $http.get('/data/' + project_id + '/routes/').success(function(data){
             $scope.routes = data;
         });
@@ -50,7 +57,4 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams',
                 $scope.map = { center: { latitude: latitude, longitude: longitude }, zoom: 10 };
             });
         };
-
-
-
 }]);
