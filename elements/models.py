@@ -31,6 +31,7 @@ class DataSet(models.Model):
 class RouteFile(models.Model):
     project = models.ForeignKey(Project)
     filename = models.TextField()
+    filetype = models.TextField()
     module = models.TextField()
     latitude = models.TextField()
     longitude = models.TextField()

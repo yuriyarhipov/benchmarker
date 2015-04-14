@@ -118,15 +118,17 @@ def get_modules(request):
 def save_file(request):
     project_id = request.POST.get('project')
     module = request.POST.get('module')
+    filetype = request.POST.get('filetype')
     project = Project.objects.get(id=project_id)
     uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('uploaded_file'))[0]).get_files()
     for f in uploaded_files:
-        Route().parse(project_id, module, f)
+        Route().parse(project_id,filetype, module, f)
         RouteFile.objects.filter(project=project,
                                  filename=f,
                                  module=module).delete()
         RouteFile.objects.create(project=project,
                                  filename=f,
+                                 filetype=filetype,
                                  module=module,
                                  latitude='All-Latitude Decimal Degree',
                                  longitude='All-Longitude Decimal Degree')

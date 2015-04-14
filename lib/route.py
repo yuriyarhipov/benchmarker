@@ -20,8 +20,11 @@ class Route(object):
         cursor.execute('''DELETE FROM points WHERE filename='%s' ''' % (basename(self.filename)))
         self.conn.commit()
 
-    def parse(self, project_id, module, filename):
+    def parse(self, project_id, filetype, module, filename):
         self.filename = filename
+        if filetype == 'NETIMIZER':
+            self.latitude = 'Latitude'
+            self.longitude = 'Longitude'
         with open(self.filename) as f:
             first_line = f.readline()
             columns = [col for col in first_line.split('\t')]

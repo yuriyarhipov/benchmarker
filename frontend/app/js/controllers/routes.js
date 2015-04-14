@@ -8,7 +8,7 @@ routeControllers.controller('originalCtrl', ['$scope', '$http',
             latitude = parseFloat($scope.routeMarkers[0].latitude);
             longitude = parseFloat($scope.routeMarkers[0].longitude);
 
-            $scope.map = { center: { latitude: latitude, longitude: longitude }, zoom: 10 };
+            $scope.map = { center: { latitude: latitude, longitude: longitude }, zoom: 3 };
         });
 }]);
 
