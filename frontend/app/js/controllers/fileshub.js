@@ -2,10 +2,12 @@ var filesControllers = angular.module('filesControllers', []);
 
 filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
     function ($scope, $http, $routeParams, activeProjectService) {
-        $scope.module = {};
+        $scope.module = {'selected': '1'};
         var project_id = $routeParams.project;
         $scope.project = project_id;
         activeProjectService.setProject(project_id);
+        $scope.equipments = ['TEMS', 'NETIMIZER']
+        $scope.equipment= {'selected': 'TEMS'}
 
 
         $http.get('/data/get_modules/').success(function(data){

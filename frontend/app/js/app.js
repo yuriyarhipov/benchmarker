@@ -32,8 +32,16 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/competitors.html',
                 controller: 'competitorCtrl'
             }).
-            when('/upload_data_set', {
+            when('/:project/upload_data_set', {
                 templateUrl: 'templates/upload_data_set.html',
+                controller: 'dataSetCtrl'
+            }).
+            when('/:project/add_dataset', {
+                templateUrl: 'templates/upload_data_set.html',
+                controller: 'uploadDataSetCtrl'
+            }).
+            when('/:project/dataset', {
+                templateUrl: 'templates/dataset.html',
                 controller: 'dataSetCtrl'
             }).
             when('/original_route', {

@@ -8,6 +8,7 @@ from elements.models import Project, Competitor, DataSet, RouteFile, StandartRou
 from lib.excel import Excel
 from lib.archive import Archive
 from lib.route import Route
+from lib.datatset import DataSet
 
 
 def handle_uploaded_file(files):
@@ -92,29 +93,18 @@ def upload_data_set(request):
     filename = handle_uploaded_file(request.FILES.getlist('excel'))[0]
     data = Excel(filename).get_data_set()
     equipment = data[0][1]
-    modules = [col for col in data[1]][1:]
+    columns = [col for col in data[1]][1:]
+    dataset = DataSet()
     for data_row in data[2:]:
         module = data_row[0]
         data_row = data_row[1:]
-        for ms in data_row:
-            if ms:
-                idx = data_row.index(ms)
-                DataSet.objects.create(
-                    project=project,
-                    module=module,
-                    equipment=equipment,
-                    measurement_device=modules[idx],
-                    value=ms
-                )
-
+        dataset.add_row(project.id, equipment, module, columns, data_row)
     return Response([])
 
 
 @api_view(['GET', ])
-def datasets(request):
-    data = dict()
-    data['equipment'] = DataSet.objects.filter().first().equipment
-    data['measurement_devices'] =[m.measurement_device for m in DataSet.objects.filter().distinct('measurement_device')]
+def datasets(request, project_id):
+    data = DataSet().get_dataset(project_id)
     return Response(data)
 
 

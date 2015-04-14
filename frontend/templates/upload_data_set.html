@@ -14,14 +14,16 @@
 <div class="row">
     <table class="table table-striped">
         <thead>
-            <th>
-                <td>module</td>
+            <tr>
                 <td ng-repeat="col in columns">{{ col }}</td>
-            </th>
+            </tr>
         </thead>
-        <tr ng-repeat="project in projects">
-            <td>{{ project }}</td>
-            <td><a href="#">Delete</a></td>
-        </tr>
+        <tbody>
+            <tr ng-repeat="row in data track by $index">
+                <td ng-repeat="col in row track by $index">
+                    {{ col }}
+                </td>
+            </tr>
+        </tbody>
     </table>
 </div>

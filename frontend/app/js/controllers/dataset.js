@@ -1,11 +1,27 @@
 var datasetControllers = angular.module('datasetControllers', []);
 
-datasetControllers.controller('dataSetCtrl', ['$scope', '$http',
-    function ($scope, $http) {
-        $http.get('/data/datasets').success(function(data){
-            $scope.columns = data.measurement_devices;
+datasetControllers.controller('uploadDataSetCtrl', ['$scope', '$http', '$routeParams',
+    function ($scope, $http, $routeParams) {
+        var project_id = $routeParams.project;
+        $scope.project = project_id;
+        $http.get('/data/' + project_id + '/datasets').success(function(data){
+            $scope.columns = data.columns;
+            $scope.data = data.data;
         });
         $scope.excel_complete = function(){
-            console.log('ok')
+            $http.get('/data/' + project_id + '/datasets').success(function(data){
+                $scope.columns = data.columns;
+                $scope.data = data.data;
+            });
         };
+ }]);
+
+ datasetControllers.controller('dataSetCtrl', ['$scope', '$http', '$routeParams',
+    function ($scope, $http, $routeParams) {
+        var project_id = $routeParams.project;
+        $scope.project = project_id;
+        $http.get('/data/' + project_id + '/datasets').success(function(data){
+            $scope.columns = data.columns;
+            $scope.data = data.data;
+        });
  }]);
