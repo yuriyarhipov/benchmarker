@@ -72,6 +72,6 @@ class Route(object):
                 if current_distance > distance:
                     route_distance = route_distance + current_distance
                     data.append(current_point)
-        return route_distance, data
+        return int(route_distance/1000), data
 
 
