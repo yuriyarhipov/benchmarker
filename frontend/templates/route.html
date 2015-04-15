@@ -10,7 +10,6 @@
                     </ui-select-choices>
                 </ui-select>
         </div>
-
         <div class="col-sm-3" id="module">
                 <ui-select ng-model="module.selected" theme="bootstrap"
                     ng-disabled="disabled"
@@ -27,6 +26,9 @@
     </form>
 </div>
 <div class="row">
+    <div class="col-md-12">
+        <h4>{{ distance }}</h4>
+    </div>
     <div class="col-md-12">
         <ui-gmap-google-map center='map.center' zoom='map.zoom'>
             <ui-gmap-markers models="routeMarkers" coords="'self'" icon="'icon'">

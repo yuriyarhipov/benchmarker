@@ -1,0 +1,74 @@
+<div class="row">
+    <form class="form">
+        <div class="form-group col-md-12">
+            <label for="competitor" class="col-md-1 control-label">Competitor</label>
+            <div class="col-md-11">
+                <input type="text" id="competitor" name="competitor" ng-model="competitor_data.competitor">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="gsm" class="col-md-1 control-label">GSM</label>
+            <div class="col-md-11">
+                <input type="checkbox" id="gsm" name="gsm" ng-model="competitor_data.gsm">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="wcdma" class="col-md-1 control-label">WCDMA</label>
+            <div class="col-md-11">
+                <input type="checkbox" id="wcdma" name="wcdma" ng-model="competitor_data.wcdma">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="lte" class="col-md-1 control-label">LTE</label>
+            <div class="col-md-11">
+                <input type="checkbox" id="lte" name="lte" ng-model="competitor_data.lte">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="future" class="col-md-1 control-label">FUTURE</label>
+            <div class="col-md-11">
+                <input type="checkbox" id="future" name="future" ng-model="competitor_data.future">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="mcc" class="col-md-1 control-label">MCC</label>
+            <div class="col-md-11">
+                <input type="text" id="mcc" name="mcc" ng-model="competitor_data.mcc">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="mnc" class="col-md-1 control-label">MNC</label>
+            <div class="col-md-11">
+                <input type="text" id="mnc" name="mnc" ng-model="competitor_data.mnc">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="gsm_freq" class="col-md-1 control-label">GSM_Freq</label>
+            <div class="col-md-11">
+                <input type="text" id="gsm_freq" name="gsm_freq" ng-model="competitor_data.gsm_freq">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="wcdma_carriers" class="col-md-1 control-label">WCDMA_Carriers(DL)</label>
+            <div class="col-md-11">
+                <input type="text" id="wcdma_carriers" name="wcdma_carriers" ng-model="competitor_data.wcdma_carriers">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="lte_carriers" class="col-md-1 control-label">LTE_Carriers(DL)</label>
+            <div class="col-md-11">
+                <input type="text" id="lte_carriers" name="lte_carriers" ng-model="competitor_data.lte_carriers">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="future_carriers" class="col-md-1 control-label">FUTURE_Carriers</label>
+            <div class="col-md-11">
+                <input type="text" id="future_carriers" name="future_carriers" ng-model="competitor_data.future_carriers">
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <input type="hidden" ng-model="competitor_data.competitor_id">
+            <button class="btn btn-default" type="button" ng-click="onSave()" >Save</button>
+        </div>
+    </form>
+</div>

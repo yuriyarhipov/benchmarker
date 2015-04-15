@@ -7,7 +7,7 @@ from os import path
 
 class Archive:
 
-    xml_path = '/opt/tmp'
+    xml_path = '/tmp/xml'
 
 
     def __init__(self, file):

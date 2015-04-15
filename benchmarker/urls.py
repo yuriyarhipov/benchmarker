@@ -20,4 +20,6 @@ urlpatterns = patterns('',
     url(r'^data/(\S+)/save_standart_route/', elements_views.save_standart_route),
     url(r'^data/(\S+)/routes/', elements_views.routes),
     url(r'^data/(\S+)/modules/', elements_views.modules),
+    url(r'^data/(\S+)/save_competitor/', elements_views.save_competitor),
+    url(r'^data/(\S+)/competitor/(\S+)', elements_views.competitor),
 )

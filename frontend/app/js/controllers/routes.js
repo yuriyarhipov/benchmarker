@@ -51,7 +51,8 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
         $scope.showRoute = function(){
             $scope.module
             $http.get('/data/' + project_id + '/' + $scope.route.selected.id + '/' + $scope.module.selected + '/get_points/').success(function(data){
-                $scope.routeMarkers = data
+                $scope.routeMarkers = data.route;
+                $scope.distance = data.distance;
                 latitude = parseFloat($scope.routeMarkers[0].latitude);
                 longitude = parseFloat($scope.routeMarkers[0].longitude);
                 $scope.map = { center: { latitude: latitude, longitude: longitude }, zoom: 10 };

@@ -13,10 +13,14 @@
     </form>
 </div>
 <div class="row">
+    <a href="#/{{ project }}/0/edit_competitor/" class="btn btn-default">Add new</a>
+</div>
+
+<div class="row">
     <table class="table table-striped">
         <thead>
             <tr>
-                <td>_Freq</td>
+                <td>Competitor</td>
                 <td>GSM</td>
                 <td>WCDMA</td>
                 <td>LTE</td>
@@ -31,7 +35,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="competitor in competitors">
-                <td>{{ competitor.0 }}</td>
+                <td><a href="#{{ project }}/{{ competitor.11 }}/edit_competitor">{{ competitor.0 }}</td>
                 <td>{{ competitor.1 }}</td>
                 <td>{{ competitor.2 }}</td>
                 <td>{{ competitor.3 }}</td>

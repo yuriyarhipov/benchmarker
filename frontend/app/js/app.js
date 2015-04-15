@@ -64,6 +64,10 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/route.html',
                 controller: 'routeCtrl'
             }).
+            when('/:project/:competitor/edit_competitor', {
+                templateUrl: 'templates/edit_competitor.html',
+                controller: 'editCompetiorCtrl'
+            }).
             otherwise({
                 redirectTo: '/'
             });

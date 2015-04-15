@@ -81,7 +81,8 @@ def competitors(request, project_id):
             competitor.gsm_freq,
             competitor.wcdma_carriers,
             competitor.lte_carriers,
-            competitor.future_carriers
+            competitor.future_carriers,
+            competitor.id
         ]
         data.append(row)
     return Response(data)
@@ -155,8 +156,8 @@ def get_points(request,  project_id, route_id, module_id):
     project = Project.objects.get(id=project_id)
     distance = StandartRoute.objects.get(id=route_id).distance
     files = [f.filename for f in RouteFile.objects.filter(project=project, module=module_id)]
-    points = Route().get_points(project_id, module_id, files, distance)
-    return Response(points)
+    distance, points = Route().get_points(project_id, module_id, files, distance)
+    return Response(dict(route=points, distance=distance))
 
 
 @api_view(['POST', ])
@@ -182,6 +183,58 @@ def modules(request, project_id):
     project = Project.objects.get(id=project_id)
     modules = [ m.module for m in RouteFile.objects.filter(project=project).distinct('module').order_by('module')]
     return Response(modules)
+
+@api_view(['POST', ])
+def save_competitor(request, project_id):
+    project = Project.objects.get(id=project_id)
+    competitor = request.POST.get('competitor', 0)
+    gsm = request.POST.get('gsm', False)
+    wcdma = request.POST.get('wcdma', False)
+    lte = request.POST.get('lte', False)
+    future = request.POST.get('future', False)
+    mcc = request.POST.get('mcc', '')
+    mnc = request.POST.get('mnc', '')
+    gsm_freq = request.POST.get('gsm_freq', '')
+    wcdma_carriers = request.POST.get('wcdma_carriers', '')
+    lte_carriers = request.POST.get('lte_carriers', '')
+    future_carriers = request.POST.get('future_carriers', '')
+    competitor_id = request.POST.get('competitor_id', '')
+    if competitor_id != '0':
+        Competitor.objects.get(id=competitor_id).delete()
+    Competitor.objects.create(
+            project=project,
+            competitor=competitor,
+            gsm=gsm,
+            wcdma=wcdma,
+            lte=lte,
+            future=future,
+            mcc=mcc,
+            mnc=mnc,
+            gsm_freq=gsm_freq,
+            wcdma_carriers=wcdma_carriers,
+            lte_carriers=lte_carriers,
+            future_carriers=future_carriers
+        )
+    
+    return Response([])
+
+@api_view(['GET', ])
+def competitor(request, project_id, competiotor_id):
+    data = dict()
+    comp = Competitor.objects.get(id=int(competiotor_id))
+    data['competitor'] = comp.competitor
+    data['gsm'] = comp.gsm
+    data['lte'] = comp.lte
+    data['wcdma'] = comp.wcdma
+    data['future'] = comp.future
+    data['mcc'] = comp.mcc
+    data['mnc'] = comp.mnc
+    data['gsm_freq'] = comp.gsm_freq
+    data['wcdma_carriers'] = comp.wcdma_carriers
+    data['lte_carriers'] = comp.lte_carriers
+    data['future_carriers'] = comp.future_carriers
+    return Response(data)
+
 
 
 
