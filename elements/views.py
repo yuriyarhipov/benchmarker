@@ -235,6 +235,12 @@ def competitor(request, project_id, competiotor_id):
     data['future_carriers'] = comp.future_carriers
     return Response(data)
 
+@api_view(['GET', ])
+def files(request, project_id, module):
+    project = Project.objects.get(id=project_id)
+    data = [basename(f.filename) for f in RouteFile.objects.filter(project=project, module=module)]
+    return Response(data)
+
 
 
 
