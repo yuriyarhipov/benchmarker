@@ -22,15 +22,10 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
             $scope.routes = data;
         });
 
-        $http.get('/data/' + project_id + '/modules/').success(function(data){
+        $http.get('/data/' + project_id + '/module_files/').success(function(data){
             $scope.modules = data;
         });
 
-        $scope.onModuleChange = function(){
-            $http.get('/data/' + project_id + '/'+ $scope.selected_module + '/files/').success(function(data){
-                $scope.module_files = data;
-            });
-        }
         $scope.saveRoute = function(){
             $http.post('/data/' + project_id + '/save_standart_route/',$.param({'route_name':$scope.route_name, 'distance': $scope.distance})).success(function(){
                 $http.get('/data/' + project_id + '/routes/').success(function(data){

@@ -236,9 +236,10 @@ def competitor(request, project_id, competiotor_id):
     return Response(data)
 
 @api_view(['GET', ])
-def files(request, project_id, module):
+def module_files(request, project_id):
     project = Project.objects.get(id=project_id)
-    data = [basename(f.filename) for f in RouteFile.objects.filter(project=project, module=module)]
+    data = [dict(filename=basename(f.filename), module=f.module) for f in RouteFile.objects.filter(project=project)]
+
     return Response(data)
 
 
