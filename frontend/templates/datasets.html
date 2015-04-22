@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col-md-12">
+        <h4>Datasets:</h4>
+    </div>
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td class="col-md-2">Dataset</td>
+                    <td class="col-md-10">Template</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="dataset in datasets">
+                    <td><a href="#{{ project }}/datasets/{{ dataset.id }}">{{ dataset.dataset_name }}</td>
+                    <td>{{ dataset.filename }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

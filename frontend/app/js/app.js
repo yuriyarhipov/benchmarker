@@ -5,7 +5,6 @@ var BenchApp = angular.module(
         'ngCookies',
         'ui.bootstrap',
         'highcharts-ng',
-        'ngUpload',
         'ui.select',
         'ng-context-menu',
         'projectControllers',
@@ -15,6 +14,7 @@ var BenchApp = angular.module(
         'uiGmapgoogle-maps',
         'filesControllers',
         'activeProjectModule',
+        'angularFileUpload',
     ]);
 
 BenchApp.config(['$routeProvider',
@@ -32,15 +32,15 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/competitors.html',
                 controller: 'competitorCtrl'
             }).
-            when('/:project/upload_data_set', {
-                templateUrl: 'templates/upload_data_set.html',
-                controller: 'dataSetCtrl'
-            }).
-            when('/:project/add_dataset', {
-                templateUrl: 'templates/upload_data_set.html',
+            when('/:project/upload_dataset', {
+                templateUrl: 'templates/upload_dataset.html',
                 controller: 'uploadDataSetCtrl'
             }).
-            when('/:project/dataset', {
+            when('/:project/datasets', {
+                templateUrl: 'templates/datasets.html',
+                controller: 'dataSetsCtrl'
+            }).
+            when('/:project/datasets/:dataset_id', {
                 templateUrl: 'templates/dataset.html',
                 controller: 'dataSetCtrl'
             }).
@@ -63,10 +63,6 @@ BenchApp.config(['$routeProvider',
             when('/:project/route/:route', {
                 templateUrl: 'templates/route.html',
                 controller: 'routeCtrl'
-            }).
-            when('/:project/:competitor/edit_competitor', {
-                templateUrl: 'templates/edit_competitor.html',
-                controller: 'editCompetiorCtrl'
             }).
             otherwise({
                 redirectTo: '/'
