@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
 
-from elements.models import Project, RouteFile, StandartRoute
+from elements.models import Project
+from routes.models import RouteFile, StandartRoute
 
 from lib.archive import Archive
 from lib.route import Route

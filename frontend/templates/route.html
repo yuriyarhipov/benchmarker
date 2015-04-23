@@ -1,31 +1,4 @@
 <div class="row">
-    <form class="form">
-        <div class="col-sm-3" id="route">
-                <ui-select ng-model="route.selected" theme="bootstrap"
-                    ng-disabled="disabled"
-                    reset-search-input="false">
-                    <ui-select-match placeholder="Enter a route...">{{$select.selected.route_name}}</ui-select-match>
-                    <ui-select-choices repeat="route in routes | filter:$select.search">
-                        {{route.route_name}}
-                    </ui-select-choices>
-                </ui-select>
-        </div>
-        <div class="col-sm-3" id="module">
-                <ui-select ng-model="module.selected" theme="bootstrap"
-                    ng-disabled="disabled"
-                    reset-search-input="false">
-                    <ui-select-match placeholder="Enter a module...">{{$select.selected}}</ui-select-match>
-                    <ui-select-choices repeat="module in modules | filter:$select.search">
-                        {{module}}
-                    </ui-select-choices>
-                </ui-select>
-        </div>
-    <div class="col=sm-2">
-        <input type="button" ng-click="showRoute()" value="Show route" class="btn btn-default">
-    </div>
-    </form>
-</div>
-<div class="row">
     <div class="col-md-12">
         <h4>Route distance {{ distance }} km.</h4>
     </div>

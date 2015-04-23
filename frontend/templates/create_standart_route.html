@@ -1,4 +1,3 @@
-
     <form>
         <div class="form-group col-md-12">
             <div class="col-md-1">
@@ -21,7 +20,7 @@
                 <label>Module</label>
             </div>
             <div class="col-md-3">
-                <select class="form-control file_select" ng-model="selected_module" ng-options="module.filename group by module.module for module in modules" ng-change="onModuleChange()" multiple></select>
+                <select class="form-control file_select" ng-model="selected_files" ng-options="module.filename group by module.module for module in modules" ng-change="onModuleChange()" multiple></select>
             </div>
         </div>
         <button class="btn btn-success" ng-click="saveRoute()">Save</button>

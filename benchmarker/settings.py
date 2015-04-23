@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'elements',
     'dataset',
     'competitors',
+    'routes',
 )
 
 MIDDLEWARE_CLASSES = (
