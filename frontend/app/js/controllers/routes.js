@@ -48,20 +48,16 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
     function ($scope, $http, $routeParams, activeProjectService) {
         var project_id = $routeParams.project
         var route_id = $routeParams.route;
+        $scope.routeMarkers = []
         activeProjectService.setProject(project_id);
         $scope.routeMarkers = [];
-        $http.get('/data/' + project_id + '/routes/' + route_id).success(function(){
-            console.log('ok');
-
+        $http.get('/data/' + project_id + '/routes/' + route_id).success(function(data){
+            $scope.routeMarkers = data.route;
+            $scope.distance = data.distance;
+            latitude = parseFloat($scope.routeMarkers[0].latitude);
+            longitude = parseFloat($scope.routeMarkers[0].longitude);
+            $scope.map = { center: { latitude: latitude, longitude: longitude }, zoom: 10 };
         });
-
-
-
-        //        $scope.routeMarkers = data.route;
-        //        $scope.distance = data.distance;
-        //        latitude = parseFloat($scope.routeMarkers[0].latitude);
-        //        longitude = parseFloat($scope.routeMarkers[0].longitude);
-        //        $scope.map = { center: { latitude: latitude, longitude: longitude }, zoom: 10 };
 }]);
 
 routeControllers.controller('routesCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',

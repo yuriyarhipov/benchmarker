@@ -8,8 +8,6 @@ from elements.models import Project
 from routes.models import RouteFile, StandartRoute
 
 from lib.archive import Archive
-from lib.route import Route
-
 
 
 def handle_uploaded_file(files):
@@ -119,7 +117,7 @@ def modules(request, project_id):
 @api_view(['GET', ])
 def module_files(request, project_id):
     project = Project.objects.get(id=project_id)
-    data = [dict(filename=basename(f.filename), module=f.module) for f in RouteFile.objects.filter(project=project)]
+    data = [dict(filename=f.filename, module=f.module) for f in RouteFile.objects.filter(project=project)]
 
     return Response(data)
 

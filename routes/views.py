@@ -3,8 +3,7 @@ from rest_framework.response import Response
 
 from elements.models import Project
 from models import StandartRoute
-from lib.files import handle_uploaded_file
-from lib.excel import Excel
+from routes.route import Route
 
 
 @api_view(['POST', 'GET'])
@@ -30,7 +29,14 @@ def routes(request, project_id):
 
 @api_view(['POST', 'GET'])
 def route(request, project_id, route_id):
-    data = []
-    route_files = StandartRoute.objects.get(id=route_id, project_id=project_id).route_files.split(',')
+    route = []
+    distance = float(0)
+    sr = StandartRoute.objects.get(id=route_id, project_id=project_id)
+    route_files = sr.route_files.split(',')
+    distance = sr.distance
+    for f in route_files:
+        file_distance, file_route = Route(f).get_points(distance)
+        route.extend(file_route)
+        distance = distance + file_distance
 
-    return Response(data)
+    return Response({'route': route, 'distance': distance})
