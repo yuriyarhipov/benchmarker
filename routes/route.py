@@ -1,7 +1,7 @@
 import psycopg2
 from os.path import basename
 
-from geopy.distance import vincenty
+from geopy.distance import vincenty, great_circle
 
 class Route(object):
     filename = None
@@ -17,8 +17,8 @@ class Route(object):
         idx_latitude = None
         if latitude in columns:
             idx_latitude = columns.index(latitude)
-        #elif 'latitude' in columns:
-        #    idx_latitude = columns.index('latitude')
+        elif 'latitude' in columns:
+            idx_latitude = columns.index('latitude')
         return idx_latitude
 
     def get_longitude_idx(self, columns):
@@ -26,8 +26,8 @@ class Route(object):
         idx_longitude = None
         if longitude in columns:
             idx_longitude = columns.index(longitude)
-        #elif 'longitude' in columns:
-        #    idx_longitude = columns.index('longitude')
+        elif 'longitude' in columns:
+            idx_longitude = columns.index('longitude')
         return idx_longitude
 
     def get_points(self, distance):
@@ -42,18 +42,18 @@ class Route(object):
             i = 0
             for row in f:
                 row = row.split('\t')
-                if (row[2] != 'Not Valid'):
+                if (row[2] != 'Not Valid') and (row[idx_longitude] != ''):
                     i += 1
                     current_point = dict(longitude=row[idx_longitude], latitude=row[idx_latitude], id=i, icon='/static/bul.png')
-
                     if len(points) == 0:
                         points.append(current_point)
+                        previous_point = current_point
                     else:
-                        previous_point = points[-1]
-                        current_distance = vincenty((previous_point['latitude'], previous_point['longitude']), (current_point['latitude'], current_point['longitude'])).meters
-                        route_distance = route_distance + current_distance
-                        if current_distance > distance:
+                        point_distance = vincenty((points[-1]['latitude'], points[-1]['longitude']), (current_point['latitude'], current_point['longitude'])).meters
+                        if point_distance > distance:
                             points.append(current_point)
+                            route_distance = route_distance + vincenty((previous_point['latitude'], previous_point['longitude']), (current_point['latitude'], current_point['longitude'])).meters
+                        previous_point = current_point
         return int(route_distance /1000), points
 
 
