@@ -11,6 +11,7 @@
     <link href="/css/tree-control-attribute.css" rel="stylesheet" type="text/css"/>
     <link href="/css/select.min.css" rel="stylesheet" type="text/css"/>
     <link href="/css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/color-picker.css" rel="stylesheet" type="text/css"/>
     <script type='text/javascript' src='/js/angular.js'></script>
     <script type='text/javascript' src='/js/jquery.js'></script>
     <script type='text/javascript' src='/js/angular-route.min.js'></script>
@@ -23,6 +24,7 @@
     <script type='text/javascript' src='/js/ng-context-menu.js'></script>
     <script type='text/javascript' src='/js/angular-google-maps.min.js'></script>
     <script type='text/javascript' src='/js/lodash.min.js'></script>
+    <script type='text/javascript' src='/js/color-picker.js'></script>
     <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
     <script type='text/javascript' src='/app/js/app.js'></script>
     <script type='text/javascript' src='/app/js/controllers/project.js'></script>
@@ -71,8 +73,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="#/{{ project }}/create_standart_route">Create Standard Route</a></li>
                             <li><a href="#/{{ project }}/routes">Standard Routes</a></li>
-                            <li><a href="http://issue.yura.cc/issue/benchmarker-4">Merge Routes</a></li>
-                            <li><a href="#">Create  a SubRoute</a></li>
+                            <li><a href="#/{{ project }}/routes_merge">Merge Routes</a></li>
                             <li><a href="http://issue.yura.cc/issue/benchmarker-5">Compare</a></li>
 
                         </ul>

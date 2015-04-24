@@ -48,7 +48,6 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
     function ($scope, $http, $routeParams, activeProjectService) {
         var project_id = $routeParams.project
         var route_id = $routeParams.route;
-        $scope.routeMarkers = []
         activeProjectService.setProject(project_id);
         $scope.routeMarkers = [];
         $http.get('/data/' + project_id + '/routes/' + route_id).success(function(data){
@@ -68,5 +67,40 @@ routeControllers.controller('routesCtrl', ['$scope', '$http', '$routeParams', 'a
         $http.get('/data/' + project_id + '/routes/').success(function(data){
             $scope.routes = data;
         });
+
+}]);
+
+routeControllers.controller('merge_routesCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
+    function ($scope, $http, $routeParams, activeProjectService) {
+        $scope.colors = [
+            '#468966',
+            '#FFF0A5',
+            '#FFB03B',
+            '#B64926',
+            '#8E2800',
+            '#e1e1e1'
+        ];
+        var project_id = $routeParams.project
+        activeProjectService.setProject(project_id);
+        $scope.routes = {};
+        $scope.routeMarkers = [];
+        $scope.project = project_id;
+        $http.get('/data/' + project_id + '/routes/').success(function(data){
+            $scope.routes.entities = data;
+        });
+
+        $scope.onMerge = function(){
+            for (i=0;i<$scope.routes.entities.length; i++){
+                if ($scope.routes.entities[i].isChecked){
+                    $http.get('/data/' + project_id + '/routes/' + $scope.routes.entities[i].id).success(function(data){
+                        $scope.routeMarkers = data.route;
+                        $scope.distance = data.distance;
+                        latitude = parseFloat($scope.routeMarkers[0].latitude);
+                        longitude = parseFloat($scope.routeMarkers[0].longitude);
+                        $scope.map = { center: { latitude: latitude, longitude: longitude }, zoom: 10 };
+                    });
+                }
+            }
+        };
 
 }]);
