@@ -19,9 +19,20 @@
             <div class="col-md-1 ">
                 <label>Module</label>
             </div>
-            <div class="col-md-3">
-                <select class="form-control file_select" ng-model="selected_files" ng-options="module.filename group by module.module for module in modules" ng-change="onModuleChange()" multiple></select>
+            <div class="col-md-3" id="equipment">
+                <ui-select ng-model="module.selected" theme="bootstrap"
+                    ng-disabled="disabled"
+                    ng-change="onModule(module.selected)"
+                    reset-search-input="false">
+                    <ui-select-match placeholder="Enter module...">{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="module in modules | filter:$select.search">
+                        {{ module }}
+                    </ui-select-choices>
+                </ui-select>
             </div>
+        </div>
+        <div class="col-md-12" ng-repeat="file in files">
+            <input type="checkbox" checklist-model="selected_files" checklist-value="file"> {{ file }}
         </div>
         <button class="btn btn-success" ng-click="saveRoute()">Save</button>
     </form>

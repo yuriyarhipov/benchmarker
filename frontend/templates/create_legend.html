@@ -1,0 +1,22 @@
+<div class="row">
+    <table class="table table-stripped col-md-12">
+        <tbody>
+        <tr ng-repeat="route in routes.entities" ng-class="{selected: route.isChecked}">
+            <td class="col-md-1"><input type="checkbox" ng-model="route.isChecked" ng-change="selectEntity()"></td>
+            <td class="col-md-2">{{route.route_name}}</td>
+            <td class="col-md-2"><ng-color-picker selected='selected'></ng-color-picker></td>
+            <td class="col-md-7"></td>
+        </tr>
+    </tbody>
+    </table>
+    <button class="btn btn-success" ng-click="onMerge()">Show routes</button>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <ui-gmap-google-map center='map.center' zoom='map.zoom'>
+            <ui-gmap-markers models="routeMarkers" coords="'self'" icon="'icon'">
+            </ui-gmap-markers>
+        </ui-gmap-google-map>
+    </div>
+</div>

@@ -9,6 +9,8 @@ class RouteFile(models.Model):
     module = models.TextField()
     latitude = models.TextField()
     longitude = models.TextField()
+    columns = models.TextField()
+    status = models.TextField()
 
 
 class StandartRoute(models.Model):

@@ -12,34 +12,34 @@ routeControllers.controller('originalCtrl', ['$scope', '$http',
         });
 }]);
 
-routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
-    function ($scope, $http, $routeParams, activeProjectService) {
+routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location',
+    function ($scope, $http, $routeParams, activeProjectService, $location) {
         var project_id = $routeParams.project
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
+        $scope.selected_files = [];
 
         $http.get('/data/' + project_id + '/routes/').success(function(data){
             $scope.routes = data;
         });
 
-        $http.get('/data/' + project_id + '/module_files/').success(function(data){
+        $http.get('/data/' + project_id + '/modules/').success(function(data){
             $scope.modules = data;
         });
 
+        $scope.onModule = function(module_id){
+            $http.get('/data/' + project_id + '/module_files/' + module_id).success(function(data){
+                $scope.files = data;
+            });
+        }
+
         $scope.saveRoute = function(){
-            var selected_files = []
-            for (i=0; i<$scope.selected_files.length; i++){
-                selected_files.push($scope.selected_files[i].filename);
-            }
-            console.log(selected_files);
             $http.post('/data/' + project_id + '/routes/',$.param(
                     {
                         'route_name':$scope.route_name,
                         'distance': $scope.distance,
-                        'files': selected_files.toString()})).success(function(){
-                $http.get('/data/' + project_id + '/routes/').success(function(data){
-                    $scope.routes = data;
-                });
+                        'files': $scope.selected_files.toString()})).success(function(){
+                $location.path('/' + project_id +   '/routes/')
             })
         };
 }]);

@@ -16,6 +16,7 @@ var BenchApp = angular.module(
         'activeProjectModule',
         'angularFileUpload',
         'ngColorPicker',
+        'checklist-model',
     ]);
 
 BenchApp.config(['$routeProvider',
@@ -68,6 +69,10 @@ BenchApp.config(['$routeProvider',
             when('/:project/routes/', {
                 templateUrl: 'templates/routes.html',
                 controller: 'routesCtrl'
+            }).
+            when('/:project/routes_merge', {
+                templateUrl: 'templates/merge_routes.html',
+                controller: 'merge_routesCtrl'
             }).
             when('/:project/routes_merge', {
                 templateUrl: 'templates/merge_routes.html',

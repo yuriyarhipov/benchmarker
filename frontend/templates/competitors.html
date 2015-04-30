@@ -19,7 +19,9 @@
         <tbody>
             <tr ng-repeat="row in data track by $index">
                 <td ng-repeat="col in row track by $index">
-                    {{ col }}
+                    <a href="#">
+                        {{ col }}
+                    </a>
                 </td>
             </tr>
         </tbody>

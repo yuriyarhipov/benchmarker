@@ -6,6 +6,7 @@ from django.conf import settings
 
 from elements.models import Project
 from routes.models import RouteFile, StandartRoute
+import tasks
 
 from lib.archive import Archive
 
@@ -53,6 +54,7 @@ def save_file(request, project_id):
     project = Project.objects.get(id=project_id)
     uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('file'))[0]).get_files()
     for f in uploaded_files:
+        tasks.worker.delay()
         RouteFile.objects.filter(project=project,
                                  filename=f,
                                  module=module).delete()
@@ -62,6 +64,7 @@ def save_file(request, project_id):
                                  module=module,
                                  latitude='All-Latitude Decimal Degree',
                                  longitude='All-Longitude Decimal Degree')
+
 
     return Response(dict(message='OK'))
 
@@ -115,10 +118,10 @@ def modules(request, project_id):
 
 
 @api_view(['GET', ])
-def module_files(request, project_id):
+def module_files(request, project_id, module_name):
     project = Project.objects.get(id=project_id)
-    data = [dict(filename=f.filename, module=f.module) for f in RouteFile.objects.filter(project=project)]
-
+    data = list(set(basename(f.filename) for f in RouteFile.objects.filter(project=project, module=module_name)))
+    data.sort()
     return Response(data)
 
 
