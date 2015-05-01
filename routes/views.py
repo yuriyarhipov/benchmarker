@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from elements.models import Project
-from models import StandartRoute
+from models import StandartRoute, RouteFile
 from routes.route import Route
 
 
@@ -31,10 +31,13 @@ def routes(request, project_id):
 def route(request, project_id, route_id):
     route = []
     distance = float(0)
+    project = Project.objects.get(id=project_id)
     sr = StandartRoute.objects.get(id=route_id, project_id=project_id)
     route_files = sr.route_files.split(',')
     distance = sr.distance
     for f in route_files:
+        print f
+        f = RouteFile.objects.filter(project=project, filename__contains=f).first()
         file_distance, file_route = Route(f).get_points(distance)
         route.extend(file_route)
         distance = distance + file_distance

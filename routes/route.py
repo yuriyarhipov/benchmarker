@@ -9,11 +9,13 @@ class Route(object):
     latitude = 'All-Latitude Decimal Degree (Text)'
     longitude = 'All-Longitude Decimal Degree (Text)'
 
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self, f):
+        self.filename = f.filename
+        self.longitude =f.longitude
+        self.latitude =f.latitude
 
     def get_latitude_idx(self, columns):
-        latitude = 'All-Latitude'
+        latitude = self.latitude
         idx_latitude = None
         if latitude in columns:
             idx_latitude = columns.index(latitude)
@@ -22,7 +24,7 @@ class Route(object):
         return idx_latitude
 
     def get_longitude_idx(self, columns):
-        longitude = 'All-Longitude'
+        longitude = self.longitude
         idx_longitude = None
         if longitude in columns:
             idx_longitude = columns.index(longitude)
