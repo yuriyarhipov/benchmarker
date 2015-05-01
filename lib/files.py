@@ -1,10 +1,10 @@
 from django.conf import settings
 
 
-def handle_uploaded_file(files):
+def handle_uploaded_file(uploaded_files):
     path = settings.STATICFILES_DIRS[0]
     result = []
-    for f in files:
+    for f in uploaded_files:
         filename = '/'.join([path, f.name])
         destination = open(filename, 'wb+')
         for chunk in f.chunks():
