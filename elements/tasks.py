@@ -32,11 +32,22 @@ def worker(project, module, equipment, uploaded_file):
                 cursor.execute('''INSERT INTO Routes (project_id, filename, module, row) VALUES (%s, %s, %s, %s)''', [
                     project.id, uploaded_file, module, json.dumps(data), ])
             connection.commit()
+
+        if 'All-Latitude Decimal Degree' in columns:
+            latitude = 'All-Latitude Decimal Degree'
+        else:
+            latitude = 'Latitude'
+
+        if 'All-Longitude Decimal Degree' in columns:
+            longitude = 'All-Longitude Decimal Degree'
+        else:
+            longitude = 'Longitude'
+
         RouteFile.objects.create(project=project,
             filename=uploaded_file,
             filetype=equipment,
             module=module,
-            latitude='All-Latitude Decimal Degree',
-            longitude='All-Longitude Decimal Degree')
+            latitude=latitude,
+            longitude=longitude)
 
 
