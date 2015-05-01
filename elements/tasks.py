@@ -23,22 +23,15 @@ def worker(project, module, equipment, uploaded_file):
         with open(uploaded_file) as f:
             columns_row = columns_pattern.sub('', f.readline())
             columns = columns_row.split('\t')
-            i = 0
             for row in f:
-                i += 1
                 data = dict()
                 row = row.split('\t')
                 for col in columns:
                     if row[columns.index(col)] != '':
                         data[col] = unicode(row[columns.index(col)], "ISO-8859-1")
-                cursor.execute('''INSERT INTO Routes (row) VALUES (%s)''', [
-                    json.dumps(data), ])
-                print i
+                cursor.execute('''INSERT INTO Routes (project_id, filename, module, row) VALUES (%s, %s, %s, %s)''', [
+                    project.id, uploaded_file, module, json.dumps(data), ])
             connection.commit()
-
-
-
-
         RouteFile.objects.create(project=project,
             filename=uploaded_file,
             filetype=equipment,
