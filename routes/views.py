@@ -27,7 +27,7 @@ def routes(request, project_id):
     return Response(data)
 
 
-@api_view(['POST', 'GET'])
+@api_view(['GET', ])
 def route(request, project_id, route_id):
     route = []
     distance = float(0)

@@ -52,19 +52,19 @@ def save_file(request, project_id):
     module = request.POST.get('module')
     equipment = request.POST.get('equipment')
     project = Project.objects.get(id=project_id)
-    tasks.worker.delay(project, module, equipment, request.FILES.getlist('file'))
-    #uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('file'))[0]).get_files()
-    #for f in uploaded_files:
-    #    tasks.worker.delay()
-    #    RouteFile.objects.filter(project=project,
-    #                             filename=f,
-    #                             module=module).delete()
-    #    RouteFile.objects.create(project=project,
-    #                             filename=f,
-    #                             filetype=equipment,
-    #                             module=module,
-    #                             latitude='All-Latitude Decimal Degree',
-    #                             longitude='All-Longitude Decimal Degree')
+    uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('file'))[0]).get_files()
+    for f in uploaded_files:
+        tasks.worker.delay(project, module, f)
+        RouteFile.objects.filter(project=project,
+                                 filename=f,
+                                 module=module).delete()
+        RouteFile.objects.create(project=project,
+                                 filename=f,
+                                 filetype=equipment,
+                                 module=module,
+                                 latitude='All-Latitude Decimal Degree',
+                                 longitude='All-Longitude Decimal Degree',
+                                 status='file')
 
 
     return Response(dict(message='OK'))
