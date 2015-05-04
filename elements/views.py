@@ -121,8 +121,7 @@ def modules(request, project_id):
 @api_view(['GET', ])
 def module_files(request, project_id, module_name):
     project = Project.objects.get(id=project_id)
-    data = list(set(basename(f.filename) for f in RouteFile.objects.filter(project=project, module=module_name)))
-    data.sort()
+    data = list(dict(label=basename(f.filename), filename=f.filename) for f in RouteFile.objects.filter(project=project, module=module_name))
     return Response(data)
 
 
