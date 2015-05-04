@@ -54,9 +54,8 @@ def save_file(request, project_id):
     project = Project.objects.get(id=project_id)
     uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('file'))[0]).get_files()
     for f in uploaded_files:
-        tasks.worker.delay(project, module, f)
         RouteFile.objects.filter(project=project,
-                                 filename=f,
+                                 filename__contains=basename(f),
                                  module=module).delete()
         RouteFile.objects.create(project=project,
                                  filename=f,
@@ -65,6 +64,7 @@ def save_file(request, project_id):
                                  latitude='All-Latitude Decimal Degree',
                                  longitude='All-Longitude Decimal Degree',
                                  status='file')
+        tasks.worker.delay(project, module, f)
 
 
     return Response(dict(message='OK'))

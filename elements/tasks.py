@@ -9,14 +9,12 @@ from routes.models import RouteFile
 
 @celery.task
 def worker(project, module, uploaded_file):
-    return
     cursor = connection.cursor()
     cursor.execute('CREATE TABLE IF NOT EXISTS Routes (project_id INT, filename TEXT, module TEXT, row JSON)')
     connection.commit()
 
     columns_pattern = re.compile('\[\S+\]')
 
-    RouteFile.objects.filter(project=project, filename=uploaded_file, module=module).delete()
     with open(uploaded_file) as f:
         columns_row = columns_pattern.sub('', f.readline())
         columns = columns_row.split('\t')
@@ -44,7 +42,6 @@ def worker(project, module, uploaded_file):
         project=project,
         filename=uploaded_file,
         module=module).first()
-
     rf.latitude = latitude
     rf.longitude = longitude
     rf.status= 'db'

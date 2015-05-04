@@ -14,13 +14,14 @@ filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 
         $scope.uploader.queueLimit = 1;
         $scope.uploader.onCompleteAll = function(){
             $location.path(project_id + '/fileshub/');
-        }
+        };
+
         $scope.uploader.onBeforeUploadItem = function(item){
             item.formData.push({
                 'equipment': $scope.equipment.selected,
                 'module': $scope.module.selected
                 });
-        }
+        };
 
         $scope.onUpload = function(){
             $scope.uploader.uploadAll()
