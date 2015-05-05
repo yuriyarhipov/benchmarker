@@ -7,7 +7,7 @@ class Competitor(object):
 
     def __init__(self):
         cursor = connection.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS Competitors (id SERIAL, project_id INT, competitor JSONB)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS Competitors (id SERIAL, project_id INT, competitor JSON)')
         connection.commit()
 
     def parse_file(self, project_id, filename):
