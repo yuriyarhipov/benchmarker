@@ -1,7 +1,6 @@
 from django.db import models
 from elements.models import Project
 
-
-class Competitor(models.Model):
-    project = models.ForeignKey(Project)
-    filename = models.TextField()
+class CompetitorFields(models.Model):
+    field_name = models.TextField()
+    field_type = models.TextField()

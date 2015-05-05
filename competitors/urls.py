@@ -4,5 +4,5 @@ import views as competitors_views
 
 urlpatterns = patterns('',
     (r'^$', competitors_views.competitors),
-    (r'^(?P<competitor_id>\w+)', competitors_views.competitor),
+    (r'^(?P<competitor_name>\w+)', competitors_views.competitor),
 )

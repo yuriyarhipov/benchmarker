@@ -34,6 +34,10 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/competitors.html',
                 controller: 'competitorCtrl'
             }).
+            when('/:project/competitors/:competitor', {
+                templateUrl: 'templates/competitor.html',
+                controller: 'editCompetitorCtrl'
+            }).
             when('/:project/upload_dataset', {
                 templateUrl: 'templates/upload_dataset.html',
                 controller: 'uploadDataSetCtrl'
