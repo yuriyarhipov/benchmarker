@@ -13,6 +13,7 @@ filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 
         $scope.uploader.url = '/data/' + project_id + '/save_file/';
         $scope.uploader.queueLimit = 1;
         $scope.uploader.onCompleteAll = function(){
+            console.log('onComplete');
             ngProgress.set(0);
             $location.path(project_id + '/fileshub/');
         };
@@ -29,6 +30,7 @@ filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 
         };
 
         $scope.uploader.onProgressItem = function(item, progress){
+            console.log(progress);
             ngProgress.set(progress);
         };
         $http.get('/data/get_modules/').success(function(data){
