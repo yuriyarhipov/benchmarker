@@ -1,6 +1,4 @@
-from numpy import mean
 from geopy.distance import vincenty
-from geopy.point import Point
 from django.db import connection
 
 
@@ -126,14 +124,6 @@ class StandartRoute(object):
                 result_points.append(point)
                 current_point = point
         return result_points
-
-    def create_point(self, points):
-        longitudes = []
-        latitudes = []
-        for point in points:
-            latitudes.append(float(point[0]))
-            longitudes.append(float(point[1]))
-        return [mean(latitudes), mean(longitudes)]
 
     def is_point_in_route(self, point, points, distance):
         for p in points:
