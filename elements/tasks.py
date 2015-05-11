@@ -3,8 +3,9 @@ import json
 from djcelery import celery
 from django.db import connection
 
-
 from routes.models import RouteFile
+from routes.models import StandartRoute
+from routes.route import StandartRoute as SR
 
 
 @celery.task
@@ -49,4 +50,17 @@ def worker(project, module, uploaded_file):
     rf.status= 'db'
     rf.save()
 
-
+@celery.task
+def create_standart_route(route_id):
+    cursor = connection.cursor()
+    cursor.execute('CREATE TABLE IF NOT EXISTS StandartRoutes (route_id INT, longitude TEXT, latitude TEXT)')
+    sr = StandartRoute.objects.get(id=route_id)
+    route_files = sr.route_files.split(',')
+    distance = sr.distance
+    points, route_distance = SR(route_files).get_points(distance)
+    sr.route_distance = int(route_distance)
+    sr.save()
+    cursor.execute('DELETE FROM StandartRoutes WHERE (route_id=%s)', (sr.id, ))
+    for point in points:
+        cursor.execute('INSERT INTO StandartRoutes (route_id, latitude, longitude) VALUES (%s, %s, %s)', (sr.id, point[0], point[1]))
+    connection.commit()

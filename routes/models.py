@@ -18,3 +18,4 @@ class StandartRoute(models.Model):
     route_name = models.TextField()
     distance = models.FloatField(default=5)
     route_files = models.TextField()
+    route_distance = models.FloatField(default=0)
