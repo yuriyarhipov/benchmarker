@@ -17,6 +17,7 @@ var BenchApp = angular.module(
         'angularFileUpload',
         'ngColorPicker',
         'checklist-model',
+        'ngProgress',
     ]);
 
 BenchApp.config(['$routeProvider',
