@@ -3,8 +3,8 @@ from rest_framework.response import Response
 
 from elements.models import Project
 from django.db import connection
-from models import StandartRoute, RouteFile
-from routes.route import Route, StandartRoute as SR
+from models import StandartRoute
+from routes.route import StandartRoute as SR
 
 
 
@@ -27,7 +27,13 @@ def routes(request, project_id):
         sr = StandartRoute.objects.get(id=sr.id)
         route_files = sr.route_files.split(',')
         distance = sr.distance
-        points, route_distance = SR(route_files).get_points(distance)
+
+        points, fake_distance = SR(route_files).get_points(distance)
+        if distance != 10:
+            fake_points, route_distance = SR(route_files).get_points(10)
+        else:
+            route_distance = fake_distance
+
         sr.route_distance = int(route_distance)
         sr.save()
         cursor.execute('DELETE FROM StandartRoutes WHERE (route_id=%s)', (sr.id, ))
@@ -43,12 +49,9 @@ def routes(request, project_id):
 
 @api_view(['GET', ])
 def route(request, project_id, route_id):
-    distance = float(0)
     sr = StandartRoute.objects.get(id=route_id, project_id=project_id)
     route_id = sr.id
     route = SR(None).get_route(route_id)
-
-
     return Response({'route': route, 'distance': sr.route_distance})
 
 
