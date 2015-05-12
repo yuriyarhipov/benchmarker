@@ -14,25 +14,7 @@ class Route(object):
         self.latitude = f.latitude
         self.status = f.status
 
-    def get_latitude_idx(self, columns):
-        columns = [col.lower() for col in columns]
-        latitude = self.latitude
-        idx_latitude = None
-        if latitude.lower() in columns:
-            idx_latitude = columns.index(latitude)
-        elif 'latitude' in columns:
-            idx_latitude = columns.index('latitude')
-        return idx_latitude
 
-    def get_longitude_idx(self, columns):
-        columns = [col.lower() for col in columns]
-        longitude = self.longitude
-        idx_longitude = None
-        if longitude.lower() in columns:
-            idx_longitude = columns.index(longitude)
-        elif 'longitude' in columns:
-            idx_longitude = columns.index('longitude')
-        return idx_longitude
 
     def get_points(self, distance):
         if self.status == 'db':
@@ -88,11 +70,31 @@ class Route(object):
 
 
 class StandartRoute(object):
-    latitude_column_name = 'All-Latitude Decimal Degree (Text)'
-    longitude_column_name = 'All-Longitude Decimal Degree (Text)'
+    latitude = 'All-Latitude Decimal Degree (Text)'
+    longitude = 'All-Longitude Decimal Degree (Text)'
 
     def __init__(self, files):
         self.files = files
+
+    def get_latitude_idx(self, columns):
+        columns = [col.lower() for col in columns]
+        latitude = self.latitude.lower()
+        idx_latitude = None
+        if latitude.lower() in columns:
+            idx_latitude = columns.index(latitude)
+        elif 'latitude' in columns:
+            idx_latitude = columns.index('latitude')
+        return idx_latitude
+
+    def get_longitude_idx(self, columns):
+        columns = [col.lower() for col in columns]
+        longitude = self.longitude.lower()
+        idx_longitude = None
+        if longitude.lower() in columns:
+            idx_longitude = columns.index(longitude)
+        elif 'longitude' in columns:
+            idx_longitude = columns.index('longitude')
+        return idx_longitude
 
     def get_distance(self, points):
         if len(points) < 2:
@@ -108,8 +110,8 @@ class StandartRoute(object):
         points = []
         with open(filename) as f:
             columns = f.readline().split('\t')
-            longitude_index = columns.index(self.longitude_column_name)
-            latitude_index = columns.index(self.latitude_column_name)
+            longitude_index = self.get_longitude_idx(columns)
+            latitude_index = self.get_latitude_idx(columns)
             for row in f:
                 row = row.split('\t')
                 longitude = row[longitude_index].strip()

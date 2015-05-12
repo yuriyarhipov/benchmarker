@@ -40,6 +40,4 @@ filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 
         $http.get('/data/' + project_id + '/get_files/').success(function(data){
             $scope.files = data;
         });
-
-
  }]);

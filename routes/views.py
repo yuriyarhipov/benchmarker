@@ -2,9 +2,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from elements.models import Project
+from django.db import connection
 from models import StandartRoute, RouteFile
 from routes.route import Route, StandartRoute as SR
-from elements.tasks import create_standart_route
+
 
 
 @api_view(['POST', 'GET'])
@@ -21,8 +22,18 @@ def routes(request, project_id):
             route_name=route_name,
             distance=distance,
             route_files=route_files)
-        create_standart_route.delay(sr.id)
-
+        cursor = connection.cursor()
+        cursor.execute('CREATE TABLE IF NOT EXISTS StandartRoutes (route_id INT, longitude TEXT, latitude TEXT)')
+        sr = StandartRoute.objects.get(id=sr.id)
+        route_files = sr.route_files.split(',')
+        distance = sr.distance
+        points, route_distance = SR(route_files).get_points(distance)
+        sr.route_distance = int(route_distance)
+        sr.save()
+        cursor.execute('DELETE FROM StandartRoutes WHERE (route_id=%s)', (sr.id, ))
+        for point in points:
+            cursor.execute('INSERT INTO StandartRoutes (route_id, latitude, longitude) VALUES (%s, %s, %s)', (sr.id, point[0], point[1]))
+        connection.commit()
 
     elif request.method == 'GET':
         for standart_route in StandartRoute.objects.filter(project=project).order_by('route_name'):

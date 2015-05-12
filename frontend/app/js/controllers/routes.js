@@ -12,8 +12,8 @@ routeControllers.controller('originalCtrl', ['$scope', '$http',
         });
 }]);
 
-routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location',
-    function ($scope, $http, $routeParams, activeProjectService, $location) {
+routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location', 'ngProgress',
+    function ($scope, $http, $routeParams, activeProjectService, $location, ngProgress) {
         var project_id = $routeParams.project
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
@@ -34,12 +34,15 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
         }
 
         $scope.saveRoute = function(){
+            ngProgress.start();
             $http.post('/data/' + project_id + '/routes/',$.param(
                     {
                         'route_name':$scope.route_name,
                         'distance': $scope.distance,
                         'files': $scope.selected_files.toString()})).success(function(){
-                $location.path('/' + project_id +   '/routes/')
+                ngProgress.stop();
+                ngProgress.set(0);
+                $location.path('/' + project_id +   '/routes/');
             })
         };
 }]);
