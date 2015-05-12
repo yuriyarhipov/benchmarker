@@ -1,8 +1,17 @@
 <div class="row">
     <table class="table table-stripped col-md-12">
+        <thead>
+            <tr>
+                <td>Route name</td>
+                <td>Route distance</td>
+                <td></td>
+            </tr>
+        </thead>
         <tbody>
             <tr ng-repeat="route in routes">
                 <td><a href="#/{{ project }}/route/{{ route.id }}">{{ route.route_name }}</a></td>
+                <td><a href="#/{{ project }}/route/{{ route.id }}">{{ route.route_distance }}</a></td>
+                <td><a href="" ng-click="onDelete(route.id)">Delete</a></td>
             </tr>
         </tbody>
     </table>

@@ -36,6 +36,7 @@ class StandartRoute(object):
         distance = 0
         for p in points[1:]:
             current_distance = vincenty(current_point, p).km
+            current_point=p
             distance += current_distance
         return distance
 
@@ -95,6 +96,7 @@ class StandartRoute(object):
         cursor = connection.cursor()
         cursor.execute('SELECT longitude, latitude FROM StandartRoutes WHERE (route_id=%s)', (route_id, ))
         i = 0
+
         for row in cursor:
             points.append(dict(longitude=row[0], latitude=row[1], id=i, icon='/static/bul.png'))
             i += 1

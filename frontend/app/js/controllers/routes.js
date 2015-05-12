@@ -71,6 +71,12 @@ routeControllers.controller('routesCtrl', ['$scope', '$http', '$routeParams', 'a
             $scope.routes = data;
         });
 
+        $scope.onDelete = function(route_id){
+            $http.delete('/data/' + project_id + '/routes/' + route_id).success(function(data){
+                $scope.routes = data;
+            });
+        };
+
 }]);
 
 routeControllers.controller('merge_routesCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',

@@ -43,16 +43,27 @@ def routes(request, project_id):
 
     elif request.method == 'GET':
         for standart_route in StandartRoute.objects.filter(project=project).order_by('route_name'):
-            data.append({'id': standart_route.id, 'route_name': standart_route.route_name})
+            data.append({'id': standart_route.id, 'route_name': standart_route.route_name, 'route_distance': standart_route.route_distance})
+
     return Response(data)
 
 
-@api_view(['GET', ])
+@api_view(['GET', 'DELETE'])
 def route(request, project_id, route_id):
-    sr = StandartRoute.objects.get(id=route_id, project_id=project_id)
-    route_id = sr.id
-    route = SR(None).get_route(route_id)
-    return Response({'route': route, 'distance': sr.route_distance})
+    project = Project.objects.get(id=project_id)
+    if request.method == 'GET':
+        sr = StandartRoute.objects.get(id=route_id, project_id=project_id)
+        route_id = sr.id
+        route = SR(None).get_route(route_id)
+        return Response({'route': route, 'distance': sr.route_distance})
+
+    elif request.method == 'DELETE':
+        data = []
+        StandartRoute.objects.filter(id=route_id, project_id=project_id).delete()
+        for standart_route in StandartRoute.objects.filter(project=project).order_by('route_name'):
+            data.append({'id': standart_route.id, 'route_name': standart_route.route_name, 'route_distance': standart_route.route_distance})
+        return Response(data)
+
 
 
 
