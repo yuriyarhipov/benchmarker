@@ -47,7 +47,7 @@ class StandartRoute(object):
             with open(filename) as f:
                 columns = f.readline().split(',')
                 data = [row.split(',') for row in f]
-        elif '.xls':
+        elif '.xls' in filename:
             data = Excel(filename).get_data()
             columns = data[0]
             data = data[1:]
