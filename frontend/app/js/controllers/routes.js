@@ -33,6 +33,12 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
             });
         }
 
+        $scope.onSelectAllClick = function(){
+            $scope.selected_files = $scope.files.map(function(item) { return item.filename; });
+
+        };
+
+
         $scope.saveRoute = function(){
             ngProgress.start();
             $http.post('/data/' + project_id + '/routes/',$.param(

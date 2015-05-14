@@ -31,6 +31,9 @@
                 </ui-select>
             </div>
         </div>
+        <div class="col-md-12">
+            <a href="" ng-click="onSelectAllClick()"  ng-show="files">Select all</a>
+        </div>
         <div class="col-md-12" ng-repeat="file in files">
             <input type="checkbox" checklist-model="selected_files" checklist-value="file.filename"> {{ file.label }}
         </div>
