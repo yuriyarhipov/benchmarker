@@ -11,13 +11,13 @@ var BenchApp = angular.module(
         'competitorControllers',
         'datasetControllers',
         'routeControllers',
-        'uiGmapgoogle-maps',
         'filesControllers',
         'activeProjectModule',
         'angularFileUpload',
         'ngColorPicker',
         'checklist-model',
         'ngProgress',
+        'openlayers-directive',
     ]);
 
 BenchApp.config(['$routeProvider',
@@ -88,14 +88,6 @@ BenchApp.config(['$routeProvider',
             });
 
     }]);
-
-BenchApp.config(function(uiGmapGoogleMapApiProvider) {
-    uiGmapGoogleMapApiProvider.configure({
-        key: 'AIzaSyDsNl8wB__2qRld9ou_9wBv3xqA9l5t-UM',
-        v: '3.17',
-        libraries: 'weather,geometry,visualization'
-    });
-})
 
 BenchApp.run(function($rootScope, $http, $cookies){
     $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;

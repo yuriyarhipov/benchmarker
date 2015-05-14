@@ -29,12 +29,7 @@ def routes(request, project_id):
         distance = sr.distance
 
         points, fake_distance = SR(route_files).get_points(distance)
-        if distance != 10:
-            fake_points, route_distance = SR(route_files).get_points(10)
-        else:
-            route_distance = fake_distance
-
-        sr.route_distance = int(route_distance)
+        sr.route_distance = int(fake_distance)
         sr.save()
         cursor.execute('DELETE FROM StandartRoutes WHERE (route_id=%s)', (sr.id, ))
         for point in points:

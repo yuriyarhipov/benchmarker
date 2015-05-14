@@ -3,9 +3,14 @@
         <h4>Route distance {{ distance }} km.</h4>
     </div>
     <div class="col-md-12">
-        <ui-gmap-google-map center='map.center' zoom='map.zoom'>
-            <ui-gmap-markers models="routeMarkers" coords="'self'" icon="'icon'">
-            </ui-gmap-markers>
-        </ui-gmap-google-map>
+        <openlayers ol-center="center" ol-markers="markers" ol-controls="controls" width="100%" height="600px">
+            <ol-control name="zoom"></ol-control>
+            <ol-marker ng-repeat="marker in markers" lat="marker.lat" lon="marker.lon" ol-style="custom_style"></ol-marker>
+        </openlayers>
+    </div>
+    <div class="col-md-8">
+    </div>
+    <div class="col-md-4">
+        <input type="range" min="0" max="20" ng-change="onZoom()" ng-model="zoom" />
     </div>
 </div>

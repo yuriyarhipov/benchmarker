@@ -51,15 +51,43 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
     function ($scope, $http, $routeParams, activeProjectService) {
         var project_id = $routeParams.project
         var route_id = $routeParams.route;
+        var custom_style = {
+                image: {
+                    icon: {
+                        anchor: [0.5, 1],
+                        anchorXUnits: 'fraction',
+                        anchorYUnits: 'fraction',
+                        opacity: 0.90,
+                        src: 'static/bul.png'
+                    }
+                }
+            };
         activeProjectService.setProject(project_id);
-        $scope.routeMarkers = [];
         $http.get('/data/' + project_id + '/routes/' + route_id).success(function(data){
-            $scope.routeMarkers = data.route;
+            $scope.markers = data.route;
             $scope.distance = data.distance;
-            latitude = parseFloat($scope.routeMarkers[0].latitude);
-            longitude = parseFloat($scope.routeMarkers[0].longitude);
-            $scope.map = { center: { latitude: latitude, longitude: longitude }, zoom: 10 };
+            latitude = parseFloat($scope.markers[0].lat);
+            longitude = parseFloat($scope.markers[0].lon);
+            $scope.zoom = 15;
+            $scope.center = {
+                    lat: latitude,
+                    lon: longitude,
+                    zoom: $scope.zoom,
+                };
+            $scope.custom_style = custom_style;
+            $scope.controls = [
+                { name: 'zoom', active: true },
+                { name: 'rotate', active: true },
+                { name: 'attribution', active: true }
+            ]
         });
+        $scope.onZoom = function(){
+            $scope.center = {
+                lat: latitude,
+                lon: longitude,
+                zoom: $scope.zoom,
+            };
+        };
 }]);
 
 routeControllers.controller('routesCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',

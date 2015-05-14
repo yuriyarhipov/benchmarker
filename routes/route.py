@@ -1,5 +1,6 @@
 from geopy.distance import vincenty
 from django.db import connection
+from lib.excel import Excel
 
 
 class StandartRoute(object):
@@ -42,12 +43,23 @@ class StandartRoute(object):
 
     def get_points_from_file(self, filename, distance):
         points = []
-        with open(filename) as f:
-            columns = f.readline().split('\t')
+        if '.csv' in filename:
+            with open(filename) as f:
+                columns = f.readline().split(',')
+                data = [row.split(',') for row in f]
+        elif '.xls':
+            data = Excel(filename).get_data()
+            columns = data[0]
+            data = data[1:]
+        else:
+            with open(filename) as f:
+                columns = f.readline().split('\t')
+                data = [row.split('\t') for row in f]
+
+        if data and columns:
             longitude_index = self.get_longitude_idx(columns)
             latitude_index = self.get_latitude_idx(columns)
-            for row in f:
-                row = row.split('\t')
+            for row in data:
                 longitude = row[longitude_index].strip()
                 latitude = row[latitude_index].strip()
                 if longitude and latitude:
@@ -58,6 +70,16 @@ class StandartRoute(object):
             if vincenty(current_point, point).meters > distance:
                 result_points.append(point)
                 current_point = point
+
+        points = result_points
+        result_points = [points[0], ]
+        for point in points[1:]:
+            in_route = False
+            for p in result_points:
+                if vincenty(p, point).meters < distance:
+                    in_route = True
+            if not in_route:
+                result_points.append(point)
         return result_points
 
     def is_point_in_route(self, point, points, distance):
@@ -95,11 +117,8 @@ class StandartRoute(object):
         points = []
         cursor = connection.cursor()
         cursor.execute('SELECT longitude, latitude FROM StandartRoutes WHERE (route_id=%s)', (route_id, ))
-        i = 0
-
         for row in cursor:
-            points.append(dict(longitude=row[0], latitude=row[1], id=i, icon='/static/bul.png'))
-            i += 1
+            points.append(dict(lon=float(row[0]), lat=float(row[1])))
         return points
 
 
