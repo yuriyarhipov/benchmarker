@@ -36,6 +36,7 @@
     <script type='text/javascript' src='/app/js/controllers/dataset.js'></script>
     <script type='text/javascript' src='/app/js/controllers/routes.js'></script>
     <script type='text/javascript' src='/app/js/controllers/fileshub.js'></script>
+    <script type='text/javascript' src='/app/js/controllers/settings.js'></script>
     <script type='text/javascript' src='/app/js/active_project.js'></script>
 </head>
 <body>
@@ -115,6 +116,9 @@
                         <a style="color: #ffffff" class="dropdown-toggle" data-toggle="dropdown" href="#">
                             Settings<span class="caret"></span>
                         </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#/{{ project }}/coordinates">Coordinates Definition</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>

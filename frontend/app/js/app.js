@@ -18,6 +18,7 @@ var BenchApp = angular.module(
         'checklist-model',
         'ngProgress',
         'openlayers-directive',
+        'settingsControllers',
     ]);
 
 BenchApp.config(['$routeProvider',
@@ -82,6 +83,10 @@ BenchApp.config(['$routeProvider',
             when('/:project/routes_merge', {
                 templateUrl: 'templates/merge_routes.html',
                 controller: 'merge_routesCtrl'
+            }).
+            when('/:project/coordinates', {
+                templateUrl: 'templates/coordinates.html',
+                controller: 'coordinatesCtrl'
             }).
             otherwise({
                 redirectTo: '/'

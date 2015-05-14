@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'dataset',
     'competitors',
     'routes',
+    'equipment',
 )
 
 MIDDLEWARE_CLASSES = (
