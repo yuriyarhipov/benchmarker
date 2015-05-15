@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from geopy.distance import vincenty
 from django.db import connection
 from lib.excel import Excel
@@ -63,55 +65,51 @@ class StandartRoute(object):
                 longitude = row[longitude_index].strip()
                 latitude = row[latitude_index].strip()
                 if longitude and latitude:
-                    points.append([latitude, longitude])
-        current_point = points[0]
-        result_points = []
-        for point in points[1:]:
-            if vincenty(current_point, point).meters > distance:
-                result_points.append(point)
-                current_point = point
+                    points.append([float(latitude), float(longitude)])
 
-        points = result_points
-        result_points = [points[0], ]
-        for point in points[1:]:
-            in_route = False
-            for p in result_points:
-                if vincenty(p, point).meters < distance:
-                    in_route = True
-            if not in_route:
-                result_points.append(point)
-        return result_points
+        points = self.fast_distance(points, distance)
+        points.sort()
+        points = self.fast_distance(points, distance)
+        points.sort(key=itemgetter(0))
+        points = self.fast_distance(points, distance)
+        points.sort(key=itemgetter(1))
+        points = self.fast_distance(points, distance)
+        return points
 
-    def is_point_in_route(self, point, points, distance):
+    def fast_distance(self, points, distance):
+        result = [points[0], ]
+        points = points[1:]
         for p in points:
-            if vincenty(p, point).meters < distance:
-                return True
-        return False
+            if vincenty(result[-1], p).meters > distance:
+                result.append(p)
+        return result
 
-    def filter_points(self, base_points, points, distance):
-        result = []
-        for point in points:
-            if not self.is_point_in_route(point, base_points, distance):
-                result.append(point)
+    def slow_distance(self, points, distance):
+        result = [points[0], ]
+        points = points[1:]
+        for p in points:
+            status = True
+            for rp in result:
+                if vincenty(p, rp).meters < distance:
+                    status = False
+                    break
+            if status:
+                result.append(p)
         return result
 
     def get_points(self, distance):
         points = []
         route_distance = 0
         for f in self.files:
-            points.append(self.get_points_from_file(f, distance))
-        if len(points) > 1:
-            result = points[0]
-            route_distance = self.get_distance(result)
-            points = points[1:]
-            for files_points in points:
-                filtered_points = self.filter_points(result, files_points, distance)
-                route_distance += self.get_distance(filtered_points)
-                result.extend(filtered_points)
-        else:
-            result = points[0]
-            route_distance = self.get_distance(result)
-        return result, route_distance
+            points.extend(self.get_points_from_file(f, distance))
+        points.sort()
+        points = self.fast_distance(points, distance)
+        points.sort(key=itemgetter(0))
+        points = self.fast_distance(points, distance)
+        points.sort(key=itemgetter(1))
+        points = self.fast_distance(points, distance)
+        points = self.slow_distance(points, distance)
+        return points, route_distance
 
     def get_route(self, route_id):
         points = []
