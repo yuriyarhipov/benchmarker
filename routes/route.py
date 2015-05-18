@@ -68,12 +68,16 @@ class StandartRoute(object):
                     points.append([float(latitude), float(longitude)])
 
         points = self.fast_distance(points, distance)
+        points = self.middle_distance(points, distance)
         points.sort()
         points = self.fast_distance(points, distance)
+        points = self.middle_distance(points, distance)
         points.sort(key=itemgetter(0))
         points = self.fast_distance(points, distance)
+        points = self.middle_distance(points, distance)
         points.sort(key=itemgetter(1))
         points = self.fast_distance(points, distance)
+        points = self.middle_distance(points, distance)
         return points
 
     def fast_distance(self, points, distance):
@@ -82,7 +86,6 @@ class StandartRoute(object):
         for p in points:
             if vincenty(result[-1], p).meters > distance:
                 result.append(p)
-        result = self.middle_distance(result, distance)
         return result
 
     def slow_distance(self, points, distance):
@@ -113,12 +116,15 @@ class StandartRoute(object):
             points.extend(self.get_points_from_file(f, distance))
         points.sort()
         points = self.fast_distance(points, distance)
+        points = self.middle_distance(points, distance)
         points.sort(key=itemgetter(0))
         points = self.fast_distance(points, distance)
+        points = self.middle_distance(points, distance)
         points.sort(key=itemgetter(1))
         points = self.fast_distance(points, distance)
+        points = self.middle_distance(points, distance)
         if points:
-            route_distance = int((len(points) - 1) * distance/1000)
+            route_distance = float((len(points) - 1) * distance/1000)
 
         return points, route_distance
 
