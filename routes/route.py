@@ -123,6 +123,7 @@ class StandartRoute(object):
         points.sort(key=itemgetter(1))
         points = self.fast_distance(points, distance)
         points = self.middle_distance(points, distance)
+        points = self.slow_distance(points, distance)
         if points:
             route_distance = float((len(points) - 1) * distance/1000)
 
