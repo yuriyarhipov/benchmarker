@@ -9,7 +9,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="route in routes">
-                <td><a href="#/{{ project }}/route/{{ route.id }}">{{ route.route_name }}</a></td>
+                <td><a href="#/{{ project }}/route/{{ route.id }}">{{ route.route_name }} ({{ route.distance }}meters)</a></td>
                 <td><a href="#/{{ project }}/route/{{ route.id }}">{{ route.route_distance }}</a></td>
                 <td><a href="" ng-click="onDelete(route.id)">Delete</a></td>
             </tr>

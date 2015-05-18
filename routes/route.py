@@ -82,6 +82,7 @@ class StandartRoute(object):
         for p in points:
             if vincenty(result[-1], p).meters > distance:
                 result.append(p)
+        result = self.middle_distance(result, distance)
         return result
 
     def slow_distance(self, points, distance):
@@ -97,6 +98,14 @@ class StandartRoute(object):
                 result.append(p)
         return result
 
+    def middle_distance(self, points, distance):
+        i = 0
+        result = []
+        while (i < len(points)):
+            result.extend(self.slow_distance(points[i:i + 100], distance))
+            i += 100
+        return result
+
     def get_points(self, distance):
         points = []
         route_distance = 0
@@ -108,7 +117,9 @@ class StandartRoute(object):
         points = self.fast_distance(points, distance)
         points.sort(key=itemgetter(1))
         points = self.fast_distance(points, distance)
-        points = self.slow_distance(points, distance)
+        if points:
+            route_distance = int((len(points) - 1) * distance/1000)
+
         return points, route_distance
 
     def get_route(self, route_id):

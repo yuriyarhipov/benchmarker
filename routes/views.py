@@ -38,7 +38,7 @@ def routes(request, project_id):
 
     elif request.method == 'GET':
         for standart_route in StandartRoute.objects.filter(project=project).order_by('route_name'):
-            data.append({'id': standart_route.id, 'route_name': standart_route.route_name, 'route_distance': standart_route.route_distance})
+            data.append({'id': standart_route.id, 'route_name': standart_route.route_name, 'route_distance': standart_route.route_distance, 'distance': standart_route.distance})
 
     return Response(data)
 

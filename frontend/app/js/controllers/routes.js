@@ -18,6 +18,7 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
         $scope.selected_files = [];
+        $scope.distance = 5;
 
         $http.get('/data/' + project_id + '/routes/').success(function(data){
             $scope.routes = data;
