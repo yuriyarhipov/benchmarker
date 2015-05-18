@@ -20,6 +20,7 @@ var BenchApp = angular.module(
         'openlayers-directive',
         'settingsControllers',
         'angularSpinner',
+        'flash',
     ]);
 
 BenchApp.config(['$routeProvider',

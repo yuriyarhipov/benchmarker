@@ -12,8 +12,8 @@ routeControllers.controller('originalCtrl', ['$scope', '$http',
         });
 }]);
 
-routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location', 'ngProgress', 'usSpinnerService',
-    function ($scope, $http, $routeParams, activeProjectService, $location, ngProgress, usSpinnerService) {
+routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location', 'ngProgress', 'usSpinnerService', 'Flash',
+    function ($scope, $http, $routeParams, activeProjectService, $location, ngProgress, usSpinnerService, Flash) {
         var project_id = $routeParams.project
 
         activeProjectService.setProject(project_id);
@@ -54,6 +54,8 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
                 ngProgress.stop();
                 ngProgress.set(0);
                 usSpinnerService.stop('spinner-1');
+                message = 'Route "' + $scope.route_name + '" is ready'
+                Flash.create('success', message, 'custom-class');
                 $location.path('/' + project_id +   '/routes/');
             })
         };
