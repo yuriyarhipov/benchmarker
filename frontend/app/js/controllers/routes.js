@@ -12,13 +12,15 @@ routeControllers.controller('originalCtrl', ['$scope', '$http',
         });
 }]);
 
-routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location', 'ngProgress',
-    function ($scope, $http, $routeParams, activeProjectService, $location, ngProgress) {
+routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location', 'ngProgress', 'usSpinnerService',
+    function ($scope, $http, $routeParams, activeProjectService, $location, ngProgress, usSpinnerService) {
         var project_id = $routeParams.project
+
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
         $scope.selected_files = [];
         $scope.distance = 5;
+        $scope.show_form = true;
 
         $http.get('/data/' + project_id + '/routes/').success(function(data){
             $scope.routes = data;
@@ -42,6 +44,8 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
 
         $scope.saveRoute = function(){
             ngProgress.start();
+            usSpinnerService.spin('spinner-1');
+            $scope.show_form = false;
             $http.post('/data/' + project_id + '/routes/',$.param(
                     {
                         'route_name':$scope.route_name,
@@ -49,6 +53,7 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
                         'files': $scope.selected_files.toString()})).success(function(){
                 ngProgress.stop();
                 ngProgress.set(0);
+                usSpinnerService.stop('spinner-1');
                 $location.path('/' + project_id +   '/routes/');
             })
         };

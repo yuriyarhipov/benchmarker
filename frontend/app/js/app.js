@@ -19,6 +19,7 @@ var BenchApp = angular.module(
         'ngProgress',
         'openlayers-directive',
         'settingsControllers',
+        'angularSpinner',
     ]);
 
 BenchApp.config(['$routeProvider',
