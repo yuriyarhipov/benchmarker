@@ -41,6 +41,7 @@
     <script type='text/javascript' src='/app/js/controllers/fileshub.js'></script>
     <script type='text/javascript' src='/app/js/controllers/settings.js'></script>
     <script type='text/javascript' src='/app/js/active_project.js'></script>
+    <script type='text/javascript' src='/app/js/controllers/graphs.js'></script>
 </head>
 <body>
 <div class="row" ng-controller="menuCtrl">
@@ -91,9 +92,9 @@
                             Graphs <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#/{{ project }}/create_legends">Create Legends</a></li>
-                            <li><a href="http://issue.yura.cc/issue/benchmarker-7">Create Graphs</a></li>
-                            <li><a href="http://issue.yura.cc/issue/benchmarker-7">Accuracy</a></li>
+                            <li><a href="#/{{ project }}/legends">Create Legends</a></li>
+                            <li><a href="#/{{ project }}/graphs">Create Graphs</a></li>
+                            <li><a href="#/{{ project }}/accuracy">Accuracy</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">

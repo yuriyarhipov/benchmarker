@@ -21,6 +21,7 @@ var BenchApp = angular.module(
         'settingsControllers',
         'angularSpinner',
         'flash',
+        'graphsControllers',
     ]);
 
 BenchApp.config(['$routeProvider',
@@ -89,6 +90,14 @@ BenchApp.config(['$routeProvider',
             when('/:project/coordinates', {
                 templateUrl: 'templates/coordinates.html',
                 controller: 'coordinatesCtrl'
+            }).
+            when('/:project/legends', {
+                templateUrl: 'templates/legends.html',
+                controller: 'legendsCtrl'
+            }).
+            when('/:project/graphs', {
+                templateUrl: 'templates/graphs.html',
+                controller: 'graphsCtrl'
             }).
             otherwise({
                 redirectTo: '/'
