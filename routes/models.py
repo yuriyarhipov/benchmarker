@@ -15,7 +15,9 @@ class RouteFile(models.Model):
 
 class StandartRoute(models.Model):
     project = models.ForeignKey(Project)
+    route_time = models.TextField()
     route_name = models.TextField()
+    points_amount = models.IntegerField(default=0)
     distance = models.FloatField(default=5)
     route_files = models.TextField()
     route_distance = models.FloatField(default=0)

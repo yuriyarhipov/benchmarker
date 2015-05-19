@@ -105,8 +105,8 @@ class StandartRoute(object):
         i = 0
         result = []
         while (i < len(points)):
-            result.extend(self.slow_distance(points[i:i + 100], distance))
-            i += 100
+            result.extend(self.slow_distance(points[i:i + 10], distance))
+            i += 10
         return result
 
     def get_points(self, distance):
