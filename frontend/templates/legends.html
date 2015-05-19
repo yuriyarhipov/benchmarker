@@ -22,14 +22,14 @@
             </thead>
             <tfoot>
                 <tr>
-                    <td><input class="form-control" type="text"></td>
-                    <td><input class="form-control" type="text"></td>
-                    <td><input class="form-control" type="text"></td>
-                    <td><input class="form-control" type="color"></td>
+                    <td><input class="form-control" type="text" ng-model="range_from"></td>
+                    <td><input class="form-control" type="text" ng-model="range_symbol"></td>
+                    <td><input class="form-control" type="text" ng-model="range_to"></td>
+                    <td><input class="form-control" type="color" ng-model="range_color"></td>
                 </tr>
                 <tr>
                     <td>
-                        <button class="btn btn-default">Add another range</button>
+                        <button class="btn btn-default" ng-click="onAddRange([range_from, range_symbol, range_to, range_color])">Add another range</button>
                     </td>
                 </tr>
             </tfoot>
@@ -38,7 +38,7 @@
                     <td>{{ range.from }}</td>
                     <td>{{ range.symbol }}</td>
                     <td>{{ range.to }}</td>
-                    <td>{{ range.color }}</td>
+                    <td style="background-color:{{ range.color }}"></td>
                 </tr>
             </tbody>
         </table>

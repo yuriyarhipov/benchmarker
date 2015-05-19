@@ -6,6 +6,7 @@ import dataset.urls as datasets_urls
 import competitors.urls as competitors_urls
 import routes.urls as routes_urls
 import equipment.urls as equipment_urls
+import graphs.urls as graphs_urls
 
 admin.autodiscover()
 
@@ -14,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^data/(?P<project_id>\w+)/datasets/', include(datasets_urls)),
     url(r'^data/(?P<project_id>\w+)/competitors/', include(competitors_urls)),
     url(r'^data/(?P<project_id>\w+)/routes/', include(routes_urls)),
+    url(r'^data/(?P<project_id>\w+)/graphs/', include(graphs_urls)),
     url(r'^data/(?P<project_id>\w+)/settings/equipments', include(equipment_urls)),
     url(r'^data/get_elements/', elements_views.get_elements),
     url(r'^data/projects/', elements_views.projects),
