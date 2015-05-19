@@ -90,13 +90,7 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
                 };
             $scope.custom_style = custom_style;
         });
-        $scope.onZoom = function(){
-            $scope.center = {
-                lat: latitude,
-                lon: longitude,
-                zoom: $scope.zoom,
-            };
-        };
+
 }]);
 
 routeControllers.controller('routesCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',

@@ -45,7 +45,6 @@ class StandartRoute(object):
 
     def get_points_from_file(self, filename, distance):
         points = []
-        file_distance = 0
         if '.csv' in filename:
             with open(filename) as f:
                 columns = f.readline().split(',')
@@ -66,23 +65,15 @@ class StandartRoute(object):
                 longitude = row[longitude_index].strip()
                 latitude = row[latitude_index].strip()
                 if longitude and latitude:
-                    if  points:
-                        file_distance += vincenty(points[-1], [float(latitude), float(longitude)])
                     points.append([float(latitude), float(longitude)])
 
-        print file_distance
         points = self.fast_distance(points, distance)
-        points = self.middle_distance(points, distance)
         points.sort()
         points = self.fast_distance(points, distance)
-        points = self.middle_distance(points, distance)
         points.sort(key=itemgetter(0))
         points = self.fast_distance(points, distance)
-        points = self.middle_distance(points, distance)
         points.sort(key=itemgetter(1))
         points = self.fast_distance(points, distance)
-        points = self.middle_distance(points, distance)
-
         return points
 
     def fast_distance(self, points, distance):
@@ -91,6 +82,8 @@ class StandartRoute(object):
         for p in points:
             if vincenty(result[-1], p).meters > distance:
                 result.append(p)
+        if distance > 50:
+            result = self.middle_distance(result, distance)
         return result
 
     def slow_distance(self, points, distance):
@@ -107,12 +100,11 @@ class StandartRoute(object):
         return result
 
     def middle_distance(self, points, distance):
-        return points
         i = 0
         result = []
         while (i < len(points)):
-            result.extend(self.slow_distance(points[i:i + 10], distance))
-            i += 10
+            result.extend(self.slow_distance(points[i:i + 100], distance))
+            i += 100
         return result
 
     def get_points(self, distance):
@@ -122,13 +114,10 @@ class StandartRoute(object):
             points.extend(self.get_points_from_file(f, distance))
         points.sort()
         points = self.fast_distance(points, distance)
-        points = self.middle_distance(points, distance)
         points.sort(key=itemgetter(0))
         points = self.fast_distance(points, distance)
-        points = self.middle_distance(points, distance)
         points.sort(key=itemgetter(1))
         points = self.fast_distance(points, distance)
-        points = self.middle_distance(points, distance)
         points = self.slow_distance(points, distance)
         if points:
             route_distance = float((len(points) - 1) * distance/1000)
