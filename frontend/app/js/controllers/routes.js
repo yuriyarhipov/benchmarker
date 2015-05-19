@@ -61,8 +61,8 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
         };
 }]);
 
-routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
-    function ($scope, $http, $routeParams, activeProjectService) {
+routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', 'olData',
+    function ($scope, $http, $routeParams, activeProjectService, olData) {
         var project_id = $routeParams.project
         var route_id = $routeParams.route;
         var custom_style = {
@@ -89,11 +89,6 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
                     zoom: $scope.zoom,
                 };
             $scope.custom_style = custom_style;
-            $scope.controls = [
-                { name: 'zoom', active: true },
-                { name: 'rotate', active: true },
-                { name: 'attribution', active: true }
-            ]
         });
         $scope.onZoom = function(){
             $scope.center = {
