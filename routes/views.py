@@ -35,13 +35,12 @@ def routes(request, project_id):
         sr.route_distance = int(fake_distance)
 
         cursor.execute('DELETE FROM StandartRoutes WHERE (route_id=%s)', (sr.id, ))
-        #for point in points:
-        #    cursor.execute('INSERT INTO StandartRoutes (route_id, latitude, longitude) VALUES (%s, %s, %s)', (sr.id, point[0], point[1]))
+        for point in points:
+            cursor.execute('INSERT INTO StandartRoutes (route_id, latitude, longitude) VALUES (%s, %s, %s)', (sr.id, point[0], point[1]))
         connection.commit()
         sr.route_time = int(clock()- start_time)
         sr.points_amount = len(points)
         sr.save()
-
 
     elif request.method == 'GET':
         for standart_route in StandartRoute.objects.filter(project=project).order_by('route_name'):
