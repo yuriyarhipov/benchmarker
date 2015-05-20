@@ -45,6 +45,7 @@ class StandartRoute(object):
 
     def get_points_from_file(self, filename, distance):
         points = []
+        f_distance = 0
         if '.csv' in filename:
             with open(filename) as f:
                 columns = f.readline().split(',')
@@ -65,6 +66,8 @@ class StandartRoute(object):
                 longitude = row[longitude_index].strip()
                 latitude = row[latitude_index].strip()
                 if longitude and latitude:
+                    if points:
+                        f_distance += vincenty(points[-1], [float(latitude), float(longitude)])
                     points.append([float(latitude), float(longitude)])
 
         points = self.fast_distance(points, distance)
@@ -74,7 +77,7 @@ class StandartRoute(object):
         points = self.fast_distance(points, distance)
         points.sort(key=itemgetter(1))
         points = self.fast_distance(points, distance)
-        return points
+        return points, f_distance
 
     def fast_distance(self, points, distance):
         result = [points[0], ]
@@ -111,7 +114,9 @@ class StandartRoute(object):
         points = []
         route_distance = 0
         for f in self.files:
-            points.extend(self.get_points_from_file(f, distance))
+            file_points, file_distance = self.get_points_from_file(f, distance)
+            route_distance += file_distance
+            points.extend(file_points)
         points.sort()
         points = self.fast_distance(points, distance)
         points.sort(key=itemgetter(0))
@@ -119,9 +124,6 @@ class StandartRoute(object):
         points.sort(key=itemgetter(1))
         points = self.fast_distance(points, distance)
         points = self.slow_distance(points, distance)
-        if points:
-            route_distance = float((len(points) - 1) * distance/1000)
-
         return points, route_distance
 
     def get_route(self, route_id):
