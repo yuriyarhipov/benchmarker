@@ -32,17 +32,6 @@ class StandartRoute(object):
             idx_longitude = columns.index('longitude')
         return idx_longitude
 
-    def get_distance(self, points):
-        if len(points) < 2:
-            return 0
-        current_point = points[0]
-        distance = 0
-        for p in points[1:]:
-            current_distance = vincenty(current_point, p).km
-            current_point=p
-            distance += current_distance
-        return distance
-
     def get_points_from_file(self, filename, distance):
         points = []
         f_distance = 0
@@ -80,9 +69,6 @@ class StandartRoute(object):
         for p in points:
             if vincenty(result[-1], p).meters > distance:
                 result.append(p)
-        if distance > 50:
-            print 'middle'
-            result = self.middle_distance(result, distance)
         return result
 
     def slow_distance(self, points, distance):
@@ -96,14 +82,6 @@ class StandartRoute(object):
                     break
             if status:
                 result.append(p)
-        return result
-
-    def middle_distance(self, points, distance):
-        i = 0
-        result = []
-        while (i < len(points)):
-            result.extend(self.slow_distance(points[i:i + 100], distance))
-            i += 100
         return result
 
     def map_distance(self, points, distance):
