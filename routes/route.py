@@ -71,12 +71,7 @@ class StandartRoute(object):
                     points.append([float(latitude), float(longitude)])
 
         points = self.fast_distance(points, distance)
-        points.sort()
-        points = self.fast_distance(points, distance)
-        points.sort(key=itemgetter(0))
-        points = self.fast_distance(points, distance)
-        points.sort(key=itemgetter(1))
-        points = self.fast_distance(points, distance)
+        points = self.map_distance(points, distance)
         return points, f_distance
 
     def fast_distance(self, points, distance):
@@ -86,6 +81,7 @@ class StandartRoute(object):
             if vincenty(result[-1], p).meters > distance:
                 result.append(p)
         if distance > 50:
+            print 'middle'
             result = self.middle_distance(result, distance)
         return result
 
@@ -110,6 +106,19 @@ class StandartRoute(object):
             i += 100
         return result
 
+    def map_distance(self, points, distance):
+        points_dict = dict()
+        result_points = []
+        for p in points:
+            key_point = float("{0:.4f}".format(p[0]))
+            if key_point not in points_dict:
+                points_dict[key_point] = []
+            points_dict[key_point].append(p)
+
+        for key, points in points_dict.iteritems():
+            result_points.extend(self.slow_distance(points, distance))
+        return result_points
+
     def get_points(self, distance):
         points = []
         route_distance = 0
@@ -117,13 +126,7 @@ class StandartRoute(object):
             file_points, file_distance = self.get_points_from_file(f, distance)
             route_distance += file_distance
             points.extend(file_points)
-        points.sort()
-        points = self.fast_distance(points, distance)
-        points.sort(key=itemgetter(0))
-        points = self.fast_distance(points, distance)
-        points.sort(key=itemgetter(1))
-        points = self.fast_distance(points, distance)
-        points = self.slow_distance(points, distance)
+        points = self.map_distance(points, distance)
         return points, route_distance
 
     def get_route(self, route_id):
