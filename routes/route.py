@@ -55,13 +55,11 @@ class StandartRoute(object):
                 longitude = row[longitude_index].strip()
                 latitude = row[latitude_index].strip()
                 if longitude and latitude:
-                    if points:
-                        f_distance += vincenty(points[-1], [float(latitude), float(longitude)])
                     points.append([float(latitude), float(longitude)])
 
         points = self.fast_distance(points, distance)
         points = self.map_distance(points, distance)
-        return points, f_distance
+        return points
 
     def fast_distance(self, points, distance):
         result = [points[0], ]
@@ -101,9 +99,13 @@ class StandartRoute(object):
         points = []
         route_distance = 0
         for f in self.files:
-            file_points, file_distance = self.get_points_from_file(f, distance)
-            route_distance += file_distance
-            points.extend(file_points)
+            points.extend(self.get_points_from_file(f, distance))
+
+        points = self.fast_distance(points, distance)
+        points.sort(key=itemgetter(0))
+        points = self.fast_distance(points, distance)
+        points.sort(key=itemgetter(1))
+        points = self.fast_distance(points, distance)
         points = self.map_distance(points, distance)
         return points, route_distance
 
