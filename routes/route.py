@@ -58,7 +58,6 @@ class StandartRoute(object):
                     points.append([float(latitude), float(longitude)])
 
         points = self.fast_distance(points, distance)
-        points = self.map_distance(points, distance)
         return points
 
     def fast_distance(self, points, distance):
@@ -99,14 +98,13 @@ class StandartRoute(object):
         points = []
         route_distance = 0
         for f in self.files:
+            print f
             points.extend(self.get_points_from_file(f, distance))
-
+        points.sort()
         points = self.fast_distance(points, distance)
-        points.sort(key=itemgetter(0))
-        points = self.fast_distance(points, distance)
-        points.sort(key=itemgetter(1))
-        points = self.fast_distance(points, distance)
+        print "fast %s" % len(points)
         points = self.map_distance(points, distance)
+        print "map %s" % len(points)
         return points, route_distance
 
     def get_route(self, route_id):
