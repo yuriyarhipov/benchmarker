@@ -58,6 +58,9 @@ class StandartRoute(object):
                     points.append([float(latitude), float(longitude)])
 
         points = self.fast_distance(points, distance)
+        points.sort()
+        points = self.fast_distance(points, distance)
+        points = self.map_distance(points, distance)
         return points
 
     def fast_distance(self, points, distance):
@@ -89,6 +92,8 @@ class StandartRoute(object):
             if key_point not in points_dict:
                 points_dict[key_point] = []
             points_dict[key_point].append(p)
+
+        print len(points_dict.keys())
 
         for key, points in points_dict.iteritems():
             result_points.extend(self.slow_distance(points, distance))
