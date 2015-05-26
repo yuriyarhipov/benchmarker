@@ -60,7 +60,10 @@ class StandartRoute(object):
         points = self.fast_distance(points, distance)
         points.sort()
         points = self.fast_distance(points, distance)
-        points = self.map_distance(points, distance)
+        points.sort(key=itemgetter(1))
+        points = self.fast_distance(points, distance)
+        points = self.sort_points(points)
+        points = self.fast_distance(points, distance)
         return points
 
     def fast_distance(self, points, distance):
@@ -71,46 +74,25 @@ class StandartRoute(object):
                 result.append(p)
         return result
 
-    def slow_distance(self, points, distance):
-        result = [points[0], ]
-        points = points[1:]
-        for p in points:
-            status = True
-            for rp in result:
-                if vincenty(p, rp).meters < distance:
-                    status = False
-                    break
-            if status:
-                result.append(p)
-        return result
-
-    def map_distance(self, points, distance):
-        points_dict = dict()
-        result_points = []
-        for p in points:
-            key_point = float("{0:.4f}".format(p[0]))
-            if key_point not in points_dict:
-                points_dict[key_point] = []
-            points_dict[key_point].append(p)
-
-        print len(points_dict.keys())
-
-        for key, points in points_dict.iteritems():
-            result_points.extend(self.slow_distance(points, distance))
-        return result_points
+    def sort_points(self, points):
+        temp_result = []
+        for point in points:
+            temp_result.append([point, point[0] + point[1]])
+        temp_result.sort(key=itemgetter(1))
+        points = [p[0] for p in temp_result]
+        return points
 
     def get_points(self, distance):
         points = []
-        route_distance = 0
         for f in self.files:
-            print f
             points.extend(self.get_points_from_file(f, distance))
         points.sort()
         points = self.fast_distance(points, distance)
-        print "fast %s" % len(points)
-        points = self.map_distance(points, distance)
-        print "map %s" % len(points)
-        return points, route_distance
+        points.sort(key=itemgetter(1))
+        points = self.fast_distance(points, distance)
+        points = self.sort_points(points)
+        points = self.fast_distance(points, distance)
+        return points
 
     def get_route(self, route_id):
         points = []

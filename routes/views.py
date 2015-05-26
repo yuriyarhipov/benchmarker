@@ -31,8 +31,8 @@ def routes(request, project_id):
         route_files = sr.route_files.split(',')
         distance = sr.distance
 
-        points, fake_distance = SR(route_files).get_points(distance)
-        sr.route_distance = int(fake_distance)
+        points = SR(route_files).get_points(distance)
+        sr.route_distance = int(0)
 
         cursor.execute('DELETE FROM StandartRoutes WHERE (route_id=%s)', (sr.id, ))
         for point in points:
