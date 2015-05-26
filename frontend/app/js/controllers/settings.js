@@ -1,6 +1,6 @@
 var settingsControllers = angular.module('settingsControllers', []);
 
-routeControllers.controller('coordinatesCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location',
+settingsControllers.controller('coordinatesCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location',
     function ($scope, $http, $routeParams, activeProjectService, $location) {
         var project_id = $routeParams.project
         activeProjectService.setProject(project_id);
@@ -32,4 +32,19 @@ routeControllers.controller('coordinatesCtrl', ['$scope', '$http', '$routeParams
                 $location.path('/' + project_id + '/coordinates/');
             });
         };
+}]);
+
+settingsControllers.controller('calculationsCtrl', ['$scope', '$http',
+    function ($scope, $http) {
+       console.log('calculations');
+}]);
+
+settingsControllers.controller('favoritesCtrl', ['$scope', '$http',
+    function ($scope, $http) {
+       console.log('favorites');
+}]);
+
+settingsControllers.controller('performanceCtrl', ['$scope', '$http',
+    function ($scope, $http) {
+       console.log('performance');
 }]);

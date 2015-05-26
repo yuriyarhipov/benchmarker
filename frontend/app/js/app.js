@@ -99,6 +99,18 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/graphs.html',
                 controller: 'graphsCtrl'
             }).
+            when('/:project/calculations', {
+                templateUrl: 'templates/calculations.html',
+                controller: 'calculationsCtrl'
+            }).
+            when('/:project/favorites', {
+                templateUrl: 'templates/favorites.html',
+                controller: 'favoritesCtrl'
+            }).
+            when('/:project/performance', {
+                templateUrl: 'templates/performance.html',
+                controller: 'performanceCtrl'
+            }).
             otherwise({
                 redirectTo: '/'
             });

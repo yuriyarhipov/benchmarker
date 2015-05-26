@@ -31,6 +31,7 @@ class Excel(object):
                 for curr_cell in range(worksheet.ncols):
                     data_row.append(str(worksheet.cell_value(curr_row, curr_cell)))
                 data.append(data_row)
+            print len(data)
         return data
 
     def get_competitors_template(self):
