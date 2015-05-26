@@ -7,8 +7,6 @@ from django.db import connection
 from models import StandartRoute
 from routes.route import StandartRoute as SR
 
-
-
 @api_view(['POST', 'GET'])
 def routes(request, project_id):
     project = Project.objects.get(id=project_id)
@@ -55,7 +53,6 @@ def routes(request, project_id):
 
     return Response(data)
 
-
 @api_view(['GET', 'DELETE'])
 def route(request, project_id, route_id):
     project = Project.objects.get(id=project_id)
@@ -76,26 +73,4 @@ def route(request, project_id, route_id):
                 'points_amount': standart_route.points_amount,
                 'route_time': standart_route.route_time})
         return Response(data)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
