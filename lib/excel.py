@@ -34,19 +34,18 @@ class Excel(object):
                         data_row.append(str(worksheet.cell_value(curr_row, curr_cell)))
                     data.append(data_row)
             except:
-                tree = etree.parse(self.filename)
-                root = tree.getroot()
-                for worksheet in root:
-                    if 'Worksheet' in worksheet.tag:
-                        for table in worksheet:
-                            if 'Table' in table.tag:
-                                for row in table:
-                                    data_row = []
-                                    if 'Row' in row.tag:
-                                        for cell in row:
-                                            for d in cell:
-                                                data_row.append(d.text)
-                                    data.append(data_row)
+                context = etree.iterparse(
+                    self.filename,
+                    events=('end',),
+                    tag='{urn:schemas-microsoft-com:office:spreadsheet}Row')
+
+                for event, elem in context:
+                    row = []
+                    for cell in elem:
+                        for data_cell in cell:
+                            row.append(data_cell.text)
+                    elem.clear()
+                    data.append(row)
 
         return data
 
