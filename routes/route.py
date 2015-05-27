@@ -56,7 +56,10 @@ class StandartRoute(object):
                     longitude = row[longitude_index].strip()
                     latitude = row[latitude_index].strip()
                     if longitude and latitude:
-                        points.append([float(latitude), float(longitude)])
+                        try:
+                            points.append([float(latitude), float(longitude)])
+                        except:
+                            print latitude, longitude
 
 
         points = self.fast_distance(points, distance)
