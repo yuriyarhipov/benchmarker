@@ -52,10 +52,12 @@ class StandartRoute(object):
             longitude_index = self.get_longitude_idx(columns)
             latitude_index = self.get_latitude_idx(columns)
             for row in data:
-                longitude = row[longitude_index].strip()
-                latitude = row[latitude_index].strip()
-                if longitude and latitude:
-                    points.append([float(latitude), float(longitude)])
+                if row:
+                    longitude = row[longitude_index].strip()
+                    latitude = row[latitude_index].strip()
+                    if longitude and latitude:
+                        points.append([float(latitude), float(longitude)])
+
 
         points = self.fast_distance(points, distance)
         points.sort()
@@ -64,6 +66,7 @@ class StandartRoute(object):
         points = self.fast_distance(points, distance)
         points = self.sort_points(points)
         points = self.fast_distance(points, distance)
+        print points
         return points
 
     def fast_distance(self, points, distance):
