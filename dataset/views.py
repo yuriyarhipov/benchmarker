@@ -24,13 +24,19 @@ def datasets(request, project_id):
 
 @api_view(['GET' ])
 def dataset(request, project_id, dataset_id):
-    print project_id
-    print dataset_id
     dataset = DataSet.objects.get(id=dataset_id)
     data = Excel(dataset.filename).get_data()
     columns = data[0]
     data = data[1:]
     return Response({'columns': columns, 'data': data})
+
+@api_view(['GET' ])
+def tests(request, project_id):
+
+    return Response(['test1', 'test2', ])
+
+
+
 
 
 

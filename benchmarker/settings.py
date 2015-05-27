@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'competitors',
     'routes',
     'equipment',
+    'graphs',
 )
 
 MIDDLEWARE_CLASSES = (

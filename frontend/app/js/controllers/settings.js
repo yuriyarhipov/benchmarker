@@ -34,9 +34,20 @@ settingsControllers.controller('coordinatesCtrl', ['$scope', '$http', '$routePar
         };
 }]);
 
-settingsControllers.controller('calculationsCtrl', ['$scope', '$http',
-    function ($scope, $http) {
-       console.log('calculations');
+settingsControllers.controller('calculationsCtrl', ['$scope', '$http','$routeParams', 'activeProjectService',
+    function ($scope, $http, $routeParams, activeProjectService) {
+        var project_id = $routeParams.project
+        activeProjectService.setProject(project_id);
+        $scope.project = project_id;
+        $scope.equipments = ['TEMS', 'NETIMIZER'];
+        $scope.networks = ['GSM', 'LTE', 'WCDMA'];
+        $scope.networks = ['GSM', 'LTE', 'WCDMA'];
+        $http.get('/data/' + project_id + '/graphs/legends/').success(function(data){
+            $scope.legends = data;
+        });
+        $http.get('/data/' + project_id + '/datasets/tests/').success(function(data){
+            $scope.tests = data;
+        });
 }]);
 
 settingsControllers.controller('favoritesCtrl', ['$scope', '$http',
