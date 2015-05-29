@@ -41,13 +41,36 @@ settingsControllers.controller('calculationsCtrl', ['$scope', '$http','$routePar
         $scope.project = project_id;
         $scope.equipments = ['TEMS', 'NETIMIZER'];
         $scope.networks = ['GSM', 'LTE', 'WCDMA'];
-        $scope.networks = ['GSM', 'LTE', 'WCDMA'];
+        $scope.operations = ['Average', 'Sum', 'Max', 'Min', 'Mode'];
+        $scope.equipment = {};
+        $scope.network = {};
+        $scope.operation = {};
+        $scope.legend = {'selected': {}};
+        $scope.test = {};
         $http.get('/data/' + project_id + '/graphs/legends/').success(function(data){
             $scope.legends = data;
         });
+
         $http.get('/data/' + project_id + '/datasets/tests/').success(function(data){
             $scope.tests = data;
         });
+        $http.get('/data/' + project_id + '/graphs/calculations/').success(function(data){
+            $scope.calculations = data;
+        });
+
+        $scope.OnSave = function(){
+            var params = {};
+            params.calc_name = $scope.calc_name;
+            params.equipment = $scope.equipment.selected;
+            params.network = $scope.network.selected;
+            params.legend = $scope.legend.selected.id;
+            params.test = $scope.test.selected;
+            params.column = $scope.column;
+            params.operation = $scope.operation.selected;
+            $http.post('/data/' + project_id + '/graphs/calculations/', $.param(params)).success(function(data){
+                $scope.calculations = data;
+            });
+        };
 }]);
 
 settingsControllers.controller('favoritesCtrl', ['$scope', '$http',

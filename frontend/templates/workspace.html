@@ -1,0 +1,106 @@
+<form>
+    <div class="form-group col-md-12">
+        <div class="col-md-3">
+            <label>Name</label>
+        </div>
+        <div class="col-md-3">
+            <input class="form-control" type="text" ng-model="workspace">
+        </div>
+    </div>
+    <div class="form-group col-md-12">
+        <div class="col-md-3">
+            <label>Select a Route</label>
+        </div>
+        <div class="col-md-3" id="route">
+            <ui-select ng-model="route.selected"
+                       theme="bootstrap"
+                       ng-disabled="disabled"
+                       reset-search-input="false">
+                <ui-select-match>{{$select.selected.route_name}}</ui-select-match>
+                <ui-select-choices repeat="route in routes | filter:$select.search">
+                    {{route.route_name}}
+                </ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+    <div class="form-group col-md-12">
+        <div class="col-md-3">
+            <label>Select a Competitor</label>
+        </div>
+        <div class="col-md-3" id="competitor">
+            <ui-select ng-model="competitor.selected"
+                       theme="bootstrap"
+                       ng-disabled="disabled"
+                       reset-search-input="false">
+                <ui-select-match>{{$select.selected}}</ui-select-match>
+                <ui-select-choices repeat="competitor in competitors | filter:$select.search">
+                    {{ competitor }}
+                </ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+    <div class="form-group col-md-12">
+        <div class="col-md-3">
+            <label>Select a Technology</label>
+        </div>
+        <div class="col-md-3" id="network">
+            <ui-select ng-model="network.selected"
+                       theme="bootstrap"
+                       ng-disabled="disabled"
+                       reset-search-input="false">
+                <ui-select-match>{{$select.selected}}</ui-select-match>
+                <ui-select-choices repeat="network in networks | filter:$select.search">
+                    {{ network }}
+                </ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+    <div class="form-group col-md-12">
+        <div class="col-md-3">
+            <label>Select a Performance Test</label>
+        </div>
+        <div class="col-md-3" id="test">
+            <ui-select ng-model="test.selected"
+                       theme="bootstrap"
+                       ng-disabled="disabled"
+                       reset-search-input="false">
+                <ui-select-match>{{$select.selected}}</ui-select-match>
+                <ui-select-choices repeat="test in tests | filter:$select.search">
+                    {{ test }}
+                </ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+
+    <div class="form-group col-md-12">
+        <div class="col-md-3">
+            <label>Select a Calculation</label>
+        </div>
+        <div class="col-md-3" id="calculation">
+            <ui-select ng-model="calculation.selected"
+                       theme="bootstrap"
+                       ng-disabled="disabled"
+                       reset-search-input="false">
+                <ui-select-match>{{$select.selected.calculation_name}}</ui-select-match>
+                <ui-select-choices repeat="calculation in calculations | filter:$select.search">
+                    {{ calculation.calculation_name }}
+                </ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+
+    <button class="btn btn-success" ng-click="OnSave()">Save</button>
+</form>
+<div class="row">
+    <h4>Workspaces:</h4>
+</div>
+<div class="row">
+    <table class="table col-md-12">
+        <tr ng-repeat="workspace in workspaces">
+            <td>{{ workspace }}</td>
+            <td><a href="">Map</a></td>
+            <td><a href="">Graphs</a></td>
+        </tr>
+    </table>
+
+</div>

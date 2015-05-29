@@ -28,3 +28,8 @@ def competitor(request, project_id, competitor_name):
         Competitor().save_competitor(project_id, competitor_name, request.POST)
     return Response([])
 
+@api_view(['GET', ])
+def competitor_names(request, project_id):
+    columns, data = Competitor().get_competitors(project_id)
+    return Response([row[columns.index('Competitor')] for row in data])
+

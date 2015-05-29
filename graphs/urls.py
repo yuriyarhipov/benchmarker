@@ -5,5 +5,7 @@ import views as graphs_views
 urlpatterns = patterns('',
     (r'^$', graphs_views.graphs),
     (r'^legends/$', graphs_views.legends),
+    (r'^calculations/$', graphs_views.calculations),
+    (r'^workspaces/$', graphs_views.workspaces),
     (r'^legends/(?P<legend_id>\w+)', graphs_views.legend),
 )

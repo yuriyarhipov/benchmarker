@@ -46,7 +46,45 @@ graphsControllers.controller('legendsCtrl', ['$scope', '$http', '$routeParams', 
         }
 
 }]);
-graphsControllers.controller('graphsCtrl', ['$scope', '$http',
-    function ($scope, $http) {
-        console.log('ok');
+graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams', 'activeProjectService',
+    function ($scope, $http, $routeParams, activeProjectService) {
+        var project_id = $routeParams.project
+        activeProjectService.setProject(project_id);
+        $scope.project = project_id;
+        $scope.networks = ['GSM', 'LTE', 'WCDMA'];
+        $scope.route = {'selected': {}};
+        $scope.competitor = {};
+        $scope.network = {};
+        $scope.test = {};
+        $scope.calculation = {};
+
+        $http.get('/data/' + project_id + '/routes/').success(function(data){
+            $scope.routes = data;
+        });
+        $http.get('/data/' + project_id + '/competitors/competitor_names/').success(function(data){
+            $scope.competitors = data;
+        });
+        $http.get('/data/' + project_id + '/datasets/tests/').success(function(data){
+            $scope.tests = data;
+        });
+        $http.get('/data/' + project_id + '/graphs/calculations/').success(function(data){
+            $scope.calculations = data;
+        });
+
+        $http.get('/data/' + project_id + '/graphs/workspaces/').success(function(data){
+            $scope.workspaces = data;
+        });
+
+        $scope.OnSave = function(){
+            var params = {}
+            params.workspace = $scope.workspace;
+            params.route = $scope.route.selected.id;
+            params.competitor = $scope.competitor.selected;
+            params.network = $scope.network.selected;
+            params.test = $scope.test.selected;
+            params.calculation = $scope.calculation.selected.calculation_name;
+            $http.post('/data/' + project_id + '/graphs/workspaces/',$.param(params)).success(function(data){
+                $scope.workspaces = data;
+            });
+        };
 }]);

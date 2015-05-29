@@ -4,7 +4,7 @@
             <label>Calculation (Name)</label>
         </div>
         <div class="col-md-3">
-            <input class="form-control" type="text" ng-model="route_name">
+            <input class="form-control" type="text" ng-model="calc_name">
         </div>
     </div>
     <div class="form-group col-md-12">
@@ -44,7 +44,7 @@
             <label>Select a Legend</label>
         </div>
         <div class="col-md-3" id="legend.id">
-            <ui-select ng-model="legend.selected.id"
+            <ui-select ng-model="legend.selected"
                        theme="bootstrap"
                        ng-disabled="disabled"
                        reset-search-input="false">
@@ -83,10 +83,52 @@
         <div class="col-md-3">
             <label>Math Operation</label>
         </div>
-        <div class="col-md-3">
-            <input class="form-control" type="text" ng-model="operation">
+        <div class="col-md-3" id="operation">
+            <ui-select ng-model="operation.selected"
+                       theme="bootstrap"
+                       ng-disabled="disabled"
+                       reset-search-input="false">
+                <ui-select-match>{{$select.selected}}</ui-select-match>
+                <ui-select-choices repeat="operation in operations | filter:$select.search">
+                    {{ operation }}
+                </ui-select-choices>
+            </ui-select>
         </div>
     </div>
+    <div class="form-group col-md-12">
+        <div class="col-md-12">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Delete empty spaces
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Replace empty spaces by <input type="text">
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Remove Zero "0" Values (Delete)
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Remove Max value
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Remove values (> Or <) than <input type="text">
+                </label>
+            </div>
+        </div>
 
-    <button class="btn btn-success" ng-click="saveRoute()">Save</button>
+    </div>
+    <button class="btn btn-success" ng-click="OnSave()">Save</button>
 </form>
+<table class="table col-md-12">
+    <tr ng-repeat="calc in calculations">
+        <td>{{ calc.calculation_name}}</td>
+    </tr>
+</table>

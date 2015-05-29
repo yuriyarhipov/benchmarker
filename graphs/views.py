@@ -1,7 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from graphs.models import Legend, LegendRange
+from graphs.models import Legend, LegendRange, Calculation, Workspaces
+from routes.models import StandartRoute
 
 @api_view(['GET', ])
 def graphs(request):
@@ -42,3 +43,45 @@ def legend(request, project_id, legend_id):
             Legend.objects.filter(id=legend_id).delete()
     legends = [{'legend_name':legend.legend_name, 'id': legend.id} for legend in Legend.objects.all()]
     return Response(legends)
+
+@api_view(['POST', 'GET'])
+def calculations(request, project_id):
+    if request.method == 'POST':
+        Calculation.objects.create(
+            calculation_name = request.POST.get('calc_name'),
+            equipment = request.POST.get('calc_name'),
+            technology = request.POST.get('network'),
+            legend = Legend.objects.get(id=request.POST.get('legend')),
+            test = request.POST.get('test'),
+            column = request.POST.get('column'),
+            operation = request.POST.get('operation')
+        )
+    data = []
+    for calc in Calculation.objects.all():
+        data.append({
+            'calculation_name': calc.calculation_name,
+            'equipment': calc.equipment,
+            'technology': calc.technology,
+            'test': calc.test,
+            'legend': calc.legend.legend_name,
+            'column': calc.column,
+            'operation': calc.operation,
+        })
+    return Response(data)
+
+
+@api_view(['POST', 'GET'])
+def workspaces(request, project_id):
+    if request.method == 'POST':
+        Workspaces.objects.create(
+            workspace_name = request.POST.get('workspace'),
+            route = StandartRoute.objects.get(id=request.POST.get('route')),
+            competitor = request.POST.get('competitor'),
+            network = request.POST.get('network'),
+            test = request.POST.get('test'),
+            calculation = Calculation.objects.get(calculation_name=request.POST.get('calculation'))
+        )
+    data = []
+    for workspace in Workspaces.objects.all():
+        data.append(workspace.workspace_name)
+    return Response(data)

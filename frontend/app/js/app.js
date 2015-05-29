@@ -95,9 +95,9 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/legends.html',
                 controller: 'legendsCtrl'
             }).
-            when('/:project/graphs', {
-                templateUrl: 'templates/graphs.html',
-                controller: 'graphsCtrl'
+            when('/:project/workspace', {
+                templateUrl: 'templates/workspace.html',
+                controller: 'workspaceCtrl'
             }).
             when('/:project/calculations', {
                 templateUrl: 'templates/calculations.html',

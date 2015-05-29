@@ -1,4 +1,5 @@
 from django.db import models
+from routes.models import StandartRoute
 
 class Legend(models.Model):
     legend_name = models.TextField()
@@ -19,3 +20,11 @@ class Calculation(models.Model):
     column = models.TextField()
     operation = models.TextField()
 
+
+class Workspaces(models.Model):
+    workspace_name = models.TextField()
+    route = models.ForeignKey(StandartRoute)
+    competitor = models.TextField()
+    network = models.TextField()
+    test = models.TextField()
+    calculation = models.ForeignKey(Calculation)
