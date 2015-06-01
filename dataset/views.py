@@ -27,6 +27,10 @@ def dataset(request, project_id, dataset_id):
 def tests(request, project_id):
     return Response(Datasets.get_test(project_id))
 
+@api_view(['GET' ])
+def dataset_tests(request, project_id, dataset_id=None):
+    return Response(Datasets.get_test(project_id, dataset_id))
+
 
 
 

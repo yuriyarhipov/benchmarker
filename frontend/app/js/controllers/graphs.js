@@ -64,6 +64,10 @@ graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams',
         $http.get('/data/' + project_id + '/competitors/competitor_names/').success(function(data){
             $scope.competitors = data;
         });
+        $http.get('/data/' + project_id + '/datasets/').success(function(data){
+            $scope.datasets = data;
+        });
+
         $http.get('/data/' + project_id + '/datasets/tests/').success(function(data){
             $scope.tests = data;
         });
@@ -74,6 +78,12 @@ graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams',
         $http.get('/data/' + project_id + '/graphs/workspaces/').success(function(data){
             $scope.workspaces = data;
         });
+
+        $scope.onChangeDataset = function(dataset_id){
+            $http.get('/data/' + project_id + '/datasets/' + dataset_id + '/tests/').success(function(data){
+                $scope.tests = data;
+            });
+        };
 
         $scope.OnSave = function(){
             var params = {}

@@ -9,16 +9,17 @@
     </div>
     <div class="form-group col-md-12">
         <div class="col-md-3">
-            <label>Select a Route</label>
+            <label>Select a Dataset</label>
         </div>
-        <div class="col-md-3" id="route">
-            <ui-select ng-model="route.selected"
+        <div class="col-md-3" id="dataset">
+            <ui-select ng-model="dataset.selected"
                        theme="bootstrap"
                        ng-disabled="disabled"
+                       ng-change="onChangeDataset(dataset.selected.id)"
                        reset-search-input="false">
-                <ui-select-match>{{$select.selected.route_name}}</ui-select-match>
-                <ui-select-choices repeat="route in routes | filter:$select.search">
-                    {{route.route_name}}
+                <ui-select-match>{{$select.selected.dataset_name}}</ui-select-match>
+                <ui-select-choices repeat="dataset in datasets | filter:$select.search">
+                    {{ dataset.dataset_name }}
                 </ui-select-choices>
             </ui-select>
         </div>

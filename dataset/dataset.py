@@ -50,9 +50,13 @@ class Datasets(object):
         return columns, result
 
     @staticmethod
-    def get_test(project_id):
+    def get_test(project_id, dataset_id=None):
         cursor = connection.cursor()
-        cursor.execute("SELECT dataset FROM datasets WHERE project_id=%s", (project_id, ))
+        if dataset_id:
+            cursor.execute("SELECT dataset FROM datasets WHERE (project_id=%s) AND (id=%s)", (project_id, dataset_id ))
+        else:
+            cursor.execute("SELECT dataset FROM datasets WHERE project_id=%s", (project_id, ))
+
         tests = set()
         for row in cursor:
             for ds in row[0]:
