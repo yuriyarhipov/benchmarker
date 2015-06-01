@@ -23,7 +23,14 @@
             <tfoot>
                 <tr>
                     <td><input class="form-control" type="text" ng-model="range_from"></td>
-                    <td><input class="form-control" type="text" ng-model="range_symbol"></td>
+                    <td>
+                        <select class="form-control" ng-model="range_symbol">
+                            <option><</option>
+                            <option>></option>
+                            <option>>=</option>
+                            <option><=</option>
+                        </select>
+                    </td>
                     <td><input class="form-control" type="text" ng-model="range_to"></td>
                     <td><input class="form-control" type="color" ng-model="range_color"></td>
                 </tr>
