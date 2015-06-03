@@ -8,6 +8,7 @@ from elements.models import Project
 from routes.models import RouteFile, StandartRoute
 
 from lib.archive import Archive
+from tasks import upload_file
 
 
 def handle_uploaded_file(files):
@@ -63,6 +64,7 @@ def save_file(request, project_id):
                                  latitude='All-Latitude Decimal Degree',
                                  longitude='All-Longitude Decimal Degree',
                                  status='file')
+        upload_file.delay(f, project_id, module)
 
     return Response(dict(message='OK'))
 

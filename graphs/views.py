@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from graphs.models import Legend, LegendRange, Calculation, Workspaces
 from routes.models import StandartRoute
+from workspace import Workspace
 
 @api_view(['GET', ])
 def graphs(request):
@@ -73,7 +74,8 @@ def calculations(request, project_id):
 @api_view(['POST', 'GET'])
 def workspaces(request, project_id):
     if request.method == 'POST':
-        Workspaces.objects.create(
+        Workspaces.objects.filter(workspace_name=request.POST.get('workspace')).delete()
+        ws = Workspaces.objects.create(
             workspace_name = request.POST.get('workspace'),
             route = StandartRoute.objects.get(id=request.POST.get('route')),
             competitor = request.POST.get('competitor'),
@@ -81,7 +83,17 @@ def workspaces(request, project_id):
             test = request.POST.get('test'),
             calculation = Calculation.objects.get(calculation_name=request.POST.get('calculation'))
         )
+        ws = Workspace(ws.workspace_name)
+
     data = []
     for workspace in Workspaces.objects.all():
-        data.append(workspace.workspace_name)
+        workspace_name = workspace.workspace_name
+        graph_id = workspace.graph_id()
+        data.append(dict(workspace_name=workspace.workspace_name, graph_id=graph_id))
     return Response(data)
+
+@api_view(['GET', ])
+def graph(request, project_id, graph_id):
+    print graph_id
+    return Response([])
+

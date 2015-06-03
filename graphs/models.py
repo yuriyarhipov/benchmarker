@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, connection
 from routes.models import StandartRoute
 
 class Legend(models.Model):
@@ -28,3 +28,8 @@ class Workspaces(models.Model):
     network = models.TextField()
     test = models.TextField()
     calculation = models.ForeignKey(Calculation)
+
+    def graph_id(self):
+        cursor = connection.cursor()
+        cursor.execute('SELECT id FROM Graphs WHERE workspace=%s', (self.id, ))
+        return cursor.fetchall()[0][0]

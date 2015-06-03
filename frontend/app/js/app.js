@@ -111,6 +111,10 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/performance.html',
                 controller: 'performanceCtrl'
             }).
+            when('/:project/graph/:graph_id', {
+                templateUrl: 'templates/graph.html',
+                controller: 'graphCtrl'
+            }).
             otherwise({
                 redirectTo: '/'
             });

@@ -9,6 +9,22 @@
     </div>
     <div class="form-group col-md-12">
         <div class="col-md-3">
+            <label>Select a Route</label>
+        </div>
+        <div class="col-md-3" id="route">
+            <ui-select ng-model="route.selected"
+                       theme="bootstrap"
+                       ng-disabled="disabled"
+                       reset-search-input="false">
+                <ui-select-match>{{$select.selected.route_name}}</ui-select-match>
+                <ui-select-choices repeat="route in routes | filter:$select.search">
+                    {{route.route_name}}
+                </ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+    <div class="form-group col-md-12">
+        <div class="col-md-3">
             <label>Select a Dataset</label>
         </div>
         <div class="col-md-3" id="dataset">
@@ -98,9 +114,9 @@
 <div class="row">
     <table class="table col-md-12">
         <tr ng-repeat="workspace in workspaces">
-            <td>{{ workspace }}</td>
+            <td>{{ workspace.workspace_name }}</td>
             <td><a href="">Map</a></td>
-            <td><a href="">Graphs</a></td>
+            <td><a href="#/{{ project }}/graph/{{ workspace.graph_id}}">Graphs</a></td>
         </tr>
     </table>
 

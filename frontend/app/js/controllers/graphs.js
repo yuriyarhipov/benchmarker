@@ -98,3 +98,65 @@ graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams',
             });
         };
 }]);
+
+graphsControllers.controller('graphCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
+    function ($scope, $http, $routeParams, activeProjectService) {
+        var project_id = $routeParams.project
+        var graph_id = $routeParams.graph_id
+        activeProjectService.setProject(project_id);
+        $scope.project = project_id;
+        $http.get('/data/' + project_id + '/graphs/graph/' + graph_id).success(function(data){
+            $scope.chartConfig = {
+                options: {
+                    chart: {
+                        type: 'column'
+                    }
+                },
+                series: [
+                    {
+                        data: [375, 458, 247, 118, 456, 583, 957, 1119],
+                        name: 'legend',
+                        dataLabels: {
+                            enabled: true,
+                            rotation: -90,
+                            color: '#FFFFFF',
+                            align: 'right',
+                            x: 4,
+                            y: 10,
+                            style: {
+                                fontSize: '13px',
+                                fontFamily: 'Verdana, sans-serif',
+                                textShadow: '0 0 3px black'
+                            }
+                        }
+                    }
+                ],
+                title: {
+                    text: 'Legend'
+                },
+                tooltip: {
+                    pointFormat: '<b>{point.y} </b>'
+                },
+                xAxis: {
+                    type: 'category',
+                    labels: {
+                        rotation: -45,
+                        align: 'right',
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'value'
+                    }
+                },
+                legend: {
+                    enabled: false
+                }
+            };
+        });
+}]);

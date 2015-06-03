@@ -1,3 +1,5 @@
+import json
+
 from operator import itemgetter
 
 from geopy.distance import vincenty
@@ -31,6 +33,56 @@ class StandartRoute(object):
         elif 'longitude' in columns:
             idx_longitude = columns.index('longitude')
         return idx_longitude
+
+    def save_points_to_database(self, filename, project_id, module):
+        points = []
+        f_distance = 0
+        if '.csv' in filename:
+            with open(filename) as f:
+                columns = f.readline().split(',')
+                data = [row.split(',') for row in f]
+        elif '.xls' in filename:
+            data = Excel(filename).get_data()
+            columns = data[0]
+            data = data[1:]
+        else:
+            with open(filename) as f:
+                columns = f.readline().split('\t')
+                data = [row.split('\t') for row in f]
+
+        if data and columns:
+            longitude_index = self.get_longitude_idx(columns)
+            latitude_index = self.get_latitude_idx(columns)
+
+            cursor = connection.cursor()
+            cursor.execute('CREATE TABLE IF NOT EXISTS uploaded_files (id SERIAL, filename TEXT, project_id INT, module INT, latitude NUMERIC, longitude NUMERIC, row JSON)')
+            cursor.execute('DELETE FROM uploaded_files WHERE (filename=%s) AND (project_id=%s) AND (module=%s)',
+                           (filename,
+                            project_id,
+                            module)
+                           )
+            connection.commit()
+
+            for row in data:
+                if row[longitude_index] and row[latitude_index] :
+                    longitude = row[longitude_index].strip()
+                    latitude = row[latitude_index].strip()
+                    cursor.execute(
+                        'INSERT INTO uploaded_files (filename, project_id, module, latitude, longitude, row) VALUES (%s, %s, %s, %s, %s, %s)',
+                        (filename,
+                        project_id,
+                        module,
+                        latitude,
+                        longitude,
+                        json.dumps(self.get_row(columns, row)))
+                    )
+            connection.commit()
+
+    def get_row(self, columns, row):
+        result = dict()
+        for col in columns:
+            result[col] = row[columns.index(col)]
+        return result
 
     def get_points_from_file(self, filename, distance):
         points = []
