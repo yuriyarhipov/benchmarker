@@ -89,7 +89,7 @@ def workspaces(request, project_id):
     for workspace in Workspaces.objects.all():
         workspace_name = workspace.workspace_name
         graph_id = workspace.graph_id()
-        data.append(dict(workspace_name=workspace.workspace_name, graph_id=graph_id))
+        data.append(dict(workspace_name=workspace.workspace_name, graph_id=graph_id, route_id=workspace.route.id))
     return Response(data)
 
 @api_view(['GET', ])
