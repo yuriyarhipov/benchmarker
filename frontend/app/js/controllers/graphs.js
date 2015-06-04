@@ -18,6 +18,13 @@ graphsControllers.controller('legendsCtrl', ['$scope', '$http', '$routeParams', 
             });
         };
 
+        $scope.onLegend = function(legend_id){
+            $http.get('/data/' + project_id + '/graphs/legends/'+legend_id).success(function(data){
+                $scope.legend_name = data.legend_name;
+                $scope.ranges = data.ranges;
+            });
+        };
+
 
         $scope.onAddRange = function(range){
             $scope.ranges.push({'from': range[0], 'symbol': range[1], 'to': range[2], 'color': range[3]});

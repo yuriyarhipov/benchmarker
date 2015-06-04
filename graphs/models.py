@@ -32,4 +32,7 @@ class Workspaces(models.Model):
     def graph_id(self):
         cursor = connection.cursor()
         cursor.execute('SELECT id FROM Graphs WHERE workspace=%s', (self.id, ))
-        return cursor.fetchall()[0][0]
+        if cursor.rowcount:
+            return cursor.fetchall()[0][0]
+        else:
+            return 0

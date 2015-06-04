@@ -26,10 +26,10 @@ def legends(request, project_id):
         while i < len(range_color):
             LegendRange.objects.create(
                 legend=legend,
-                range_color=range_color,
-                range_from=range_from,
-                range_to=range_to,
-                range_symbol=range_symbol
+                range_color=range_color[i],
+                range_from=range_from[i],
+                range_to=range_to[i],
+                range_symbol=range_symbol[i]
             )
             i += 1
     legends = [{'legend_name':legend.legend_name, 'id': legend.id} for legend in Legend.objects.all()]
@@ -42,8 +42,25 @@ def legend(request, project_id, legend_id):
             legend = Legend.objects.get(id=legend_id)
             LegendRange.objects.filter(legend=legend).delete()
             Legend.objects.filter(id=legend_id).delete()
-    legends = [{'legend_name':legend.legend_name, 'id': legend.id} for legend in Legend.objects.all()]
-    return Response(legends)
+        legends = [{'legend_name':legend.legend_name, 'id': legend.id} for legend in Legend.objects.all()]
+        return Response(legends)
+    elif request.method == 'GET':
+        if Legend.objects.filter(id=legend_id).exists():
+            legend = Legend.objects.get(id=legend_id)
+            ranges = []
+            for lr in LegendRange.objects.filter(legend=legend):
+                print lr.range_from
+                ranges.append({
+                    'from': lr.range_from,
+                    'to': lr.range_to,
+                    'symbol': lr.range_symbol,
+                    'color': lr.range_color
+                })
+
+            return Response({'legend_name':legend.legend_name, 'ranges':ranges})
+
+
+
 
 @api_view(['POST', 'GET'])
 def calculations(request, project_id):
