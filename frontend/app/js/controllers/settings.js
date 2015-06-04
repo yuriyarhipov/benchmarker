@@ -45,7 +45,7 @@ settingsControllers.controller('calculationsCtrl', ['$scope', '$http','$routePar
         $scope.equipment = {};
         $scope.network = {};
         $scope.operation = {};
-        $scope.legend = {'selected': {}};
+        $scope.legend = {};
         $scope.test = {};
         $http.get('/data/' + project_id + '/graphs/legends/').success(function(data){
             $scope.legends = data;
@@ -68,7 +68,32 @@ settingsControllers.controller('calculationsCtrl', ['$scope', '$http','$routePar
             params.column = $scope.column;
             params.operation = $scope.operation.selected;
             $http.post('/data/' + project_id + '/graphs/calculations/', $.param(params)).success(function(data){
+                $scope.calc_name = '';
+                $scope.equipment = {};
+                $scope.network = {};
+                $scope.operation = {};
+                $scope.legend = {};
+                $scope.test = {};
+                $scope.column = '';
                 $scope.calculations = data;
+            });
+        };
+
+        $scope.onDelete = function(calc_id){
+            $http.delete('/data/' + project_id + '/graphs/calculations/' + calc_id).success(function(data){
+                $scope.calculations = data;
+            });
+        };
+
+        $scope.onClick = function(calc_id){
+            $http.get('/data/' + project_id + '/graphs/calculations/' + calc_id).success(function(data){
+                $scope.calc_name = data.calculation_name;
+                $scope.network = {'selected': data.technology};
+                $scope.equipment = {'selected': data.equipment};
+                $scope.test = {'selected': data.test};
+                $scope.operation = {'selected': data.operation};
+                $scope.column = data.column;
+                $scope.legend = {'selected': data.legend};
             });
         };
 }]);

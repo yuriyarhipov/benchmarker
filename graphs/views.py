@@ -62,21 +62,36 @@ def legend(request, project_id, legend_id):
 
 
 
-@api_view(['POST', 'GET'])
-def calculations(request, project_id):
+@api_view(['POST', 'GET', 'DELETE'])
+def calculations(request, project_id, calculation_id=None):
     if request.method == 'POST':
+        Calculation.objects.filter(calculation_name = request.POST.get('calc_name')).delete()
         Calculation.objects.create(
             calculation_name = request.POST.get('calc_name'),
-            equipment = request.POST.get('calc_name'),
+            equipment = request.POST.get('equipment'),
             technology = request.POST.get('network'),
             legend = Legend.objects.get(id=request.POST.get('legend')),
             test = request.POST.get('test'),
             column = request.POST.get('column'),
             operation = request.POST.get('operation')
         )
+    elif request.method == 'DELETE':
+        Calculation.objects.filter(id=calculation_id).delete()
+    elif (request.method == 'GET') and calculation_id:
+        calc = Calculation.objects.get(id=calculation_id)
+        return Response({
+            'calculation_name': calc.calculation_name,
+            'equipment': calc.equipment,
+            'technology': calc.technology,
+            'test': calc.test,
+            'legend': {'id':calc.legend.id, 'legend_name':calc.legend.legend_name},
+            'column': calc.column,
+            'operation': calc.operation,
+        })
     data = []
     for calc in Calculation.objects.all():
         data.append({
+            'id':calc.id,
             'calculation_name': calc.calculation_name,
             'equipment': calc.equipment,
             'technology': calc.technology,
