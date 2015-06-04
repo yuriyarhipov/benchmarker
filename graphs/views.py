@@ -7,6 +7,7 @@ from workspace import Workspace
 
 @api_view(['GET', ])
 def graphs(request):
+
     return Response()
 
 @api_view(['POST', 'GET'])
@@ -119,13 +120,15 @@ def workspaces(request, project_id):
 
     data = []
     for workspace in Workspaces.objects.all():
-        workspace_name = workspace.workspace_name
         graph_id = workspace.graph_id()
         data.append(dict(workspace_name=workspace.workspace_name, graph_id=graph_id, route_id=workspace.route.id))
     return Response(data)
 
 @api_view(['GET', ])
 def graph(request, project_id, graph_id):
-    print graph_id
-    return Response([])
+    graph = Workspace.get_graph(graph_id)
+    data = []
+    for key, value in graph.iteritems():
+        data.append({'data': [value, ], 'name': key})
+    return Response(data)
 

@@ -116,32 +116,15 @@ graphsControllers.controller('graphCtrl', ['$scope', '$http', '$routeParams', 'a
         var graph_id = $routeParams.graph_id
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
-        $http.get('/data/' + project_id + '/graphs/graph/' + graph_id).success(function(data){
+        $http.get('/data/' + project_id + '/graphs/graph/' + graph_id).success(function(series_data){
+            console.log(series_data);
             $scope.chartConfig = {
                 options: {
                     chart: {
                         type: 'column'
                     }
                 },
-                series: [
-                    {
-                        data: [375, 458, 247, 118, 456, 583, 957, 1119],
-                        name: 'legend',
-                        dataLabels: {
-                            enabled: true,
-                            rotation: -90,
-                            color: '#FFFFFF',
-                            align: 'right',
-                            x: 4,
-                            y: 10,
-                            style: {
-                                fontSize: '13px',
-                                fontFamily: 'Verdana, sans-serif',
-                                textShadow: '0 0 3px black'
-                            }
-                        }
-                    }
-                ],
+                series: series_data,
                 title: {
                     text: 'Legend'
                 },
