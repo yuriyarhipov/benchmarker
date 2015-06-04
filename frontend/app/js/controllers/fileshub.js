@@ -30,7 +30,6 @@ filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 
         };
 
         $scope.uploader.onProgressItem = function(item, progress){
-            console.log(progress);
             ngProgress.set(progress);
         };
         $http.get('/data/get_modules/').success(function(data){

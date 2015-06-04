@@ -53,8 +53,8 @@ graphsControllers.controller('legendsCtrl', ['$scope', '$http', '$routeParams', 
         }
 
 }]);
-graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams', 'activeProjectService',
-    function ($scope, $http, $routeParams, activeProjectService) {
+graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams', 'activeProjectService', 'ngProgress',
+    function ($scope, $http, $routeParams, activeProjectService, ngProgress) {
         var project_id = $routeParams.project
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
@@ -93,6 +93,7 @@ graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams',
         };
 
         $scope.OnSave = function(){
+            ngProgress.start();
             var params = {}
             params.workspace = $scope.workspace;
             params.route = $scope.route.selected.id;
@@ -102,7 +103,10 @@ graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams',
             params.calculation = $scope.calculation.selected.calculation_name;
             $http.post('/data/' + project_id + '/graphs/workspaces/',$.param(params)).success(function(data){
                 $scope.workspaces = data;
+                ngProgress.stop();
+                ngProgress.set(0);
             });
+
         };
 }]);
 
