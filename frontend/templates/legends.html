@@ -58,7 +58,7 @@
     </div>
     <table class="table col-md-12">
         <tr ng-repeat="legend in legends">
-            <td class="col-md-2">{{ legend.legend_name }}</td>
+            <td class="col-md-2"><a href="" ng-click="onLegend(legend.id)>{{ legend.legend_name }}</a> </td>
             <td class="col-md-2"><a href="" ng-click="onDelete(legend.id)">delete</a></td>
             <td class="col-md-  8"></td>
         </tr>

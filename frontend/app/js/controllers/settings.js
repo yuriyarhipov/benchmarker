@@ -78,7 +78,21 @@ settingsControllers.controller('favoritesCtrl', ['$scope', '$http',
        console.log('favorites');
 }]);
 
-settingsControllers.controller('performanceCtrl', ['$scope', '$http',
-    function ($scope, $http) {
-       console.log('performance');
+settingsControllers.controller('performanceCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
+    function ($scope, $http, $routeParams, activeProjectService) {
+        $scope.selected_tests = [];
+        var project_id = $routeParams.project;
+        activeProjectService.setProject(project_id);
+        $scope.project = project_id;
+        $http.get('/data/' + project_id + '/datasets/tests/').success(function(data){
+            $scope.tests = data;
+        });
+        $http.get('/data/' + project_id + '/datasets/performance_tests/').success(function(data){
+            $scope.selected_tests = data;
+        });
+        $scope.onSave = function(){
+            $http.post('/data/' + project_id + '/datasets/performance_tests/', $.param({
+                'tests': $scope.selected_tests,
+            }));
+        };
 }]);

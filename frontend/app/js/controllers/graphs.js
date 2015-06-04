@@ -68,7 +68,7 @@ graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams',
             $scope.datasets = data;
         });
 
-        $http.get('/data/' + project_id + '/datasets/tests/').success(function(data){
+        $http.get('/data/' + project_id + '/datasets/performance_tests/').success(function(data){
             $scope.tests = data;
         });
         $http.get('/data/' + project_id + '/graphs/calculations/').success(function(data){

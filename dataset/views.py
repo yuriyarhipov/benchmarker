@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from lib.files import handle_uploaded_file
 from dataset import Datasets
 
-from models import DataSet
+from models import DataSet, PerformanceTest
 
 
 @api_view(['POST', 'GET' ])
@@ -22,6 +22,18 @@ def datasets(request, project_id):
 def dataset(request, project_id, dataset_id):
     columns, data = Datasets().get_dataset(dataset_id)
     return Response({'columns': columns, 'data': data})
+
+@api_view(['GET', 'POST',])
+def performance_tests(request, project_id):
+    if request.method == 'POST':
+        tests = request.POST.getlist('tests[]')
+        PerformanceTest.objects.filter().delete()
+        for test_name in tests:
+            PerformanceTest.objects.create(test_name=test_name)
+
+    selected_tests = [test.test_name for test in PerformanceTest.objects.all()]
+    return Response(selected_tests)
+
 
 @api_view(['GET' ])
 def tests(request, project_id):
