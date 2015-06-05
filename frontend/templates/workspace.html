@@ -115,7 +115,7 @@
     <table class="table col-md-12">
         <tr ng-repeat="workspace in workspaces">
             <td>{{ workspace.workspace_name }}</td>
-            <td><a href="#/{{ project }}/route/{{ workspace.route_id}}">Map</a></td>
+            <td><a href="#/{{ project }}/map/{{ workspace.graph_id}}">Map</a></td>
             <td><a href="#/{{ project }}/graph/{{ workspace.graph_id}}">Graphs</a></td>
         </tr>
     </table>

@@ -4,6 +4,8 @@ from operator import itemgetter
 
 from geopy.distance import vincenty
 from django.db import connection
+
+from routes.models import RouteFile
 from lib.excel import Excel
 
 
@@ -35,8 +37,6 @@ class StandartRoute(object):
         return idx_longitude
 
     def save_points_to_database(self, filename, project_id, module):
-        points = []
-        f_distance = 0
         if '.csv' in filename:
             with open(filename) as f:
                 columns = f.readline().split(',')
@@ -62,11 +62,15 @@ class StandartRoute(object):
                             module)
                            )
             connection.commit()
-
+            distance = 0
+            last_point = None
             for row in data:
                 if row[longitude_index] and row[latitude_index] :
                     longitude = row[longitude_index].strip()
                     latitude = row[latitude_index].strip()
+                    if last_point:
+                        distance += vincenty([latitude, longitude], last_point).meters
+                    last_point = [latitude, longitude]
                     cursor.execute(
                         'INSERT INTO uploaded_files (filename, project_id, module, latitude, longitude, row) VALUES (%s, %s, %s, %s, %s, %s)',
                         (filename,
@@ -77,6 +81,7 @@ class StandartRoute(object):
                         json.dumps(self.get_row(columns, row)))
                     )
             connection.commit()
+            RouteFile.objects.filter(filename=filename).update(distance=distance)
 
     def get_row(self, columns, row):
         result = dict()
@@ -86,7 +91,6 @@ class StandartRoute(object):
 
     def get_points_from_file(self, filename, distance):
         points = []
-        f_distance = 0
         if '.csv' in filename:
             with open(filename) as f:
                 columns = f.readline().split(',')
@@ -151,12 +155,12 @@ class StandartRoute(object):
         points = self.fast_distance(points, distance)
         return points
 
-    def get_route(self, route_id):
+    def get_route(self, route_id, color):
         points = []
         cursor = connection.cursor()
         cursor.execute('SELECT longitude, latitude FROM StandartRoutes WHERE (route_id=%s)', (route_id, ))
         for row in cursor:
-            points.append(dict(lon=float(row[0]), lat=float(row[1])))
+            points.append(dict(lon=float(row[0]), lat=float(row[1]), color=color))
         return points
 
 

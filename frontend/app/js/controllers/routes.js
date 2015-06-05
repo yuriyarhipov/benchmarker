@@ -50,6 +50,7 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
                     {
                         'route_name':$scope.route_name,
                         'distance': $scope.distance,
+                        'color': $scope.color,
                         'files': $scope.selected_files.toString()})).success(function(){
                 ngProgress.stop();
                 ngProgress.set(0);
@@ -65,17 +66,36 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
     function ($scope, $http, $routeParams, activeProjectService, olData) {
         var project_id = $routeParams.project
         var route_id = $routeParams.route;
+        var custom_point = new ol.style.Circle({
+            radius: 5,
+            fill: new ol.style.Fill({
+                color: '#ff9900',
+                opacity: 0.6
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#ffcc00',
+                opacity: 0.4
+            })
+        });
         var custom_style = {
-                image: {
-                    icon: {
-                        anchor: [0.5, 1],
-                        anchorXUnits: 'fraction',
-                        anchorYUnits: 'fraction',
-                        opacity: 0.90,
-                        src: 'static/bul.png'
-                    }
-                }
+                image: custom_point,
             };
+
+        var colored_points = {
+            '#000000':{
+                image: new ol.style.Circle({
+                radius: 5,
+                fill: new ol.style.Fill({
+                    color: '#000000',
+                    opacity: 0.6
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#000000',
+                    opacity: 0.4
+                })
+            }),
+            },
+        }
         activeProjectService.setProject(project_id);
         $http.get('/data/' + project_id + '/routes/' + route_id).success(function(data){
             $scope.markers = data.route;
@@ -88,7 +108,26 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
                     lon: longitude,
                     zoom: $scope.zoom,
                 };
-            $scope.custom_style = custom_style;
+
+            $scope.point_style = function(point_color){
+                if (!(point_color  in colored_points)){
+                    colored_points[point_color] = {
+                        image: new ol.style.Circle({
+                            radius: 5,
+                            fill: new ol.style.Fill({
+                                color: point_color,
+                                opacity: 0.6
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: point_color,
+                                opacity: 0.4
+                            })
+                            }),
+                    };
+
+                }
+                return colored_points[point_color];
+            };
         });
 
 }]);
@@ -142,5 +181,76 @@ routeControllers.controller('merge_routesCtrl', ['$scope', '$http', '$routeParam
                 }
             }
         };
+
+}]);
+
+
+routeControllers.controller('mapCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', 'olData',
+    function ($scope, $http, $routeParams, activeProjectService, olData) {
+        var project_id = $routeParams.project
+        var map_id = $routeParams.map_id;
+        var custom_point = new ol.style.Circle({
+            radius: 5,
+            fill: new ol.style.Fill({
+                color: '#ff9900',
+                opacity: 0.6
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#ffcc00',
+                opacity: 0.4
+            })
+        });
+        var custom_style = {
+                image: custom_point,
+            };
+
+        var colored_points = {
+            '#000000':{
+                image: new ol.style.Circle({
+                radius: 5,
+                fill: new ol.style.Fill({
+                    color: '#000000',
+                    opacity: 0.6
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#000000',
+                    opacity: 0.4
+                })
+            }),
+            },
+        }
+        activeProjectService.setProject(project_id);
+        $http.get('/data/' + project_id + '/graphs/map/' + map_id).success(function(data){
+            $scope.markers = data;
+            $scope.distance = data.distance;
+            latitude = parseFloat($scope.markers[0].lat);
+            longitude = parseFloat($scope.markers[0].lon);
+            $scope.zoom = 15;
+            $scope.center = {
+                    lat: latitude,
+                    lon: longitude,
+                    zoom: $scope.zoom,
+                };
+
+            $scope.point_style = function(point_color){
+                if (!(point_color  in colored_points)){
+                    colored_points[point_color] = {
+                        image: new ol.style.Circle({
+                            radius: 5,
+                            fill: new ol.style.Fill({
+                                color: point_color,
+                                opacity: 0.6
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: point_color,
+                                opacity: 0.4
+                            })
+                            }),
+                    };
+
+                }
+                return colored_points[point_color];
+            };
+        });
 
 }]);

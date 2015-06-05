@@ -132,3 +132,10 @@ def graph(request, project_id, graph_id):
         data.append({'data': [value, ], 'name': key})
     return Response(data)
 
+
+@api_view(['GET', ])
+def graphs_map(request, project_id, map_id):
+    graphs_map = Workspace.get_map(map_id)
+    return Response(graphs_map)
+
+

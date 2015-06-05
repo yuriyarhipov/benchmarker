@@ -115,6 +115,10 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/graph.html',
                 controller: 'graphCtrl'
             }).
+            when('/:project/map/:map_id', {
+                templateUrl: 'templates/map.html',
+                controller: 'mapCtrl'
+            }).
             otherwise({
                 redirectTo: '/'
             });
