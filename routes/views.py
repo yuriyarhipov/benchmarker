@@ -6,6 +6,7 @@ from elements.models import Project
 from django.db import connection
 from models import StandartRoute, RouteFile
 from routes.route import StandartRoute as SR
+from elements.tasks import write_points
 
 @api_view(['POST', 'GET'])
 def routes(request, project_id):
@@ -30,21 +31,27 @@ def routes(request, project_id):
         sr = StandartRoute.objects.get(id=sr.id)
         route_files = sr.route_files.split(',')
         distance = sr.distance
+        cursor.execute('DELETE FROM StandartRoutes WHERE (route_id=%s)', (sr.id, ))
 
         points = SR(route_files).get_points(distance)
-        sr.route_distance = int(0)
+        idx = 0
+        while idx < len(points):
+            write_points.delay(sr.id, distance, points[idx: idx+1000])
+            idx += 1000
 
-        cursor.execute('DELETE FROM StandartRoutes WHERE (route_id=%s)', (sr.id, ))
-        for point in points:
-            cursor.execute('INSERT INTO StandartRoutes (route_id, latitude, longitude) VALUES (%s, %s, %s)', (sr.id, point[0], point[1]))
+        #sr.route_distance = int(0)
+
+
+        #for point in points:
+        #    cursor.execute('INSERT INTO StandartRoutes (route_id, latitude, longitude) VALUES (%s, %s, %s)', (sr.id, point[0], point[1]))
         connection.commit()
         sr.route_time = int(clock()- start_time)
         sr.points_amount = len(points)
         route_distance = 0
-        for f in route_files:
-            if RouteFile.objects.filter(filename=f).exists():
-                route_distance += RouteFile.objects.filter(filename=f).first().distance
-        sr.route_distance = route_distance / 1000
+        #for f in route_files:
+        #    if RouteFile.objects.filter(filename=f).exists():
+        #        route_distance += RouteFile.objects.filter(filename=f).first().distance
+        #sr.route_distance = route_distance / 1000
         sr.save()
 
     elif request.method == 'GET':

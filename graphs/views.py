@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from graphs.models import Legend, LegendRange, Calculation, Workspaces
 from routes.models import StandartRoute
 from workspace import Workspace
+from lib.files import handle_uploaded_file
+from lib.excel import Excel
 
 @api_view(['GET', ])
 def graphs(request):
@@ -139,3 +141,28 @@ def graphs_map(request, project_id, map_id):
     return Response(graphs_map)
 
 
+@api_view(['POST', ])
+def upload_legend(request, project_id):
+    filename = handle_uploaded_file(request.FILES.getlist('file'))[0]
+    data = Excel(filename).get_data()
+    legends_data = dict()
+    current_legend = None
+    for row in data:
+        if row[0] == '**':
+            current_legend = row[1]
+            legends_data[current_legend] = []
+        elif ('From' not in str(row[1])) and (row[1] or row[2]):
+            legends_data[current_legend].append(row[1:])
+    for legend_name, legend_ranges in legends_data.iteritems():
+        Legend.objects.filter(legend_name=legend_name).delete()
+        legend = Legend.objects.create(legend_name=legend_name)
+        for legend_range in legend_ranges:
+            LegendRange.objects.create(
+                legend=legend,
+                range_color=legend_range[2],
+                range_from=legend_range[0],
+                range_to=legend_range[1],
+                range_symbol='>='
+            )
+
+    return Response([])

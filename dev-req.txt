@@ -14,3 +14,6 @@ psycopg2==2.5.2
 pytz==2014.1.1
 rarfile==2.6
 wsgiref==0.1.2
+djangorestframework
+markdown
+django-filter

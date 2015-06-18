@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     (r'^legends/(?P<legend_id>\w+)', graphs_views.legend),
     (r'^graph/(?P<graph_id>\w+)', graphs_views.graph),
     (r'^map/(?P<map_id>\w+)', graphs_views.graphs_map),
+    (r'^upload_legend', graphs_views.upload_legend),
 )

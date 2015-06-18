@@ -118,13 +118,13 @@ class StandartRoute(object):
                             print latitude, longitude
 
 
-        points = self.fast_distance(points, distance)
-        points.sort()
-        points = self.fast_distance(points, distance)
-        points.sort(key=itemgetter(1))
-        points = self.fast_distance(points, distance)
-        points = self.sort_points(points)
-        points = self.fast_distance(points, distance)
+        #points = self.fast_distance(points, distance)
+        #points.sort()
+        #points = self.fast_distance(points, distance)
+        #points.sort(key=itemgetter(1))
+        #points = self.fast_distance(points, distance)
+        #points = self.sort_points(points)
+        #points = self.fast_distance(points, distance)
         return points
 
     def fast_distance(self, points, distance):
@@ -147,12 +147,12 @@ class StandartRoute(object):
         points = []
         for f in self.files:
             points.extend(self.get_points_from_file(f, distance))
-        points.sort()
-        points = self.fast_distance(points, distance)
-        points.sort(key=itemgetter(1))
-        points = self.fast_distance(points, distance)
-        points = self.sort_points(points)
-        points = self.fast_distance(points, distance)
+        #points.sort()
+        #points = self.fast_distance(points, distance)
+        #points.sort(key=itemgetter(1))
+        #points = self.fast_distance(points, distance)
+        #points = self.sort_points(points)
+        #points = self.fast_distance(points, distance)
         return points
 
     def get_route(self, route_id, color):

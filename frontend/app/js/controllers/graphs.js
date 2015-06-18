@@ -1,7 +1,7 @@
 var graphsControllers = angular.module('graphsControllers', []);
 
-graphsControllers.controller('legendsCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
-    function ($scope, $http, $routeParams, activeProjectService) {
+graphsControllers.controller('legendsCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', 'FileUploader',
+    function ($scope, $http, $routeParams, activeProjectService, FileUploader) {
         var project_id = $routeParams.project
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
@@ -51,6 +51,10 @@ graphsControllers.controller('legendsCtrl', ['$scope', '$http', '$routeParams', 
                 $scope.legends = data;
             });
         }
+
+        var uploader = $scope.uploader = new FileUploader();
+        $scope.uploader.url = '/data/' + $scope.project_id + '/graphs/upload_legend/';
+        $scope.uploader.autoUpload = true;
 
 }]);
 graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams', 'activeProjectService', 'ngProgress',
