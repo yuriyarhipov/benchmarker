@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from graphs.models import Legend, LegendRange, Calculation, Workspaces
+from graphs.models import Legend, LegendRange, Calculation, Workspaces, Report
 from routes.models import StandartRoute
 from workspace import Workspace
 from lib.files import handle_uploaded_file
@@ -166,3 +166,63 @@ def upload_legend(request, project_id):
             )
 
     return Response([])
+
+@api_view(['POST', ])
+def upload_calculation(request, project_id):
+    filename = handle_uploaded_file(request.FILES.getlist('file'))[0]
+    data = Excel(filename).get_data()[1:]
+    for calc in data:
+        if Legend.objects.filter(legend_name__iexact=calc[3]).exists():
+            Calculation.objects.create(
+                calculation_name = calc[0],
+                equipment = calc[1],
+                technology = calc[2],
+                legend = Legend.objects.filter(legend_name__iexact=calc[3]).first(),
+                test = calc[4],
+                column = calc[5],
+                operation = calc[6]
+            )
+    return Response([])
+
+
+@api_view(['GET', ])
+def reports(request, project_id):
+    data = []
+    for r in Report.objects.all():
+        data.append(dict(
+            id= r.id,
+            page=r.page,
+            workspace=r.workspace,
+            report_map='X' if r.report_map == True else '',
+            graph='X' if r.graph == True else '',
+            full_slide='X' if r.full_slide == True else '',
+            title='X' if r.title == True else '',
+            ppt='X' if r.ppt == True else '',
+            excel='X' if r.excel == True else '',
+            kmz='X' if r.kmz == True else '',
+            tab='X' if r.tab == True else '',
+
+        ))
+    return Response(data)
+
+@api_view(['POST', ])
+def upload_report(request, project_id):
+    filename = handle_uploaded_file(request.FILES.getlist('file'))[0]
+    data = Excel(filename).get_data()[1:]
+    for row in data:
+        Report.objects.filter(workspace = row[1], page = row[0]).delete()
+        Report.objects.create(
+            page = row[0],
+            workspace = row[1],
+            report_map = True if row[2] == 'X' else False,
+            graph = True if row[2] == 'X' else False,
+            full_slide = True if row[2] == 'X' else False,
+            title = True if row[2] == 'X' else False,
+            ppt = True if row[2] == 'X' else False,
+            excel = True if row[2] == 'X' else False,
+            kmz = True if row[2] == 'X' else False,
+            tab = True if row[2] == 'X' else False
+        )
+    return Response([])
+
+

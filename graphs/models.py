@@ -36,3 +36,16 @@ class Workspaces(models.Model):
             return cursor.fetchall()[0][0]
         else:
             return 0
+
+class Report(models.Model):
+    page = models.TextField()
+    workspace = models.TextField()
+    report_map = models.BooleanField(default=False)
+    graph = models.BooleanField(default=False)
+    full_slide = models.BooleanField(default=False)
+    title = models.BooleanField(default=False)
+    ppt = models.BooleanField(default=False)
+    excel = models.BooleanField(default=False)
+    kmz = models.BooleanField(default=False)
+    tab = models.BooleanField(default=False)
+

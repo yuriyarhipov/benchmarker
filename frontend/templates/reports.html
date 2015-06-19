@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-2">
+            <label>Upload Report</label>
+        </div>
+        <div class="col-md-3">
+            <input type="file"  nv-file-select uploader="uploader">
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <td>Page</td>
+                <td>Workspace</td>
+                <td>Map</td>
+                <td>Graph</td>
+                <td>Full_Slide</td>
+                <td>Title</td>
+                <td>PPT</td>
+                <td>EXCEL</td>
+                <td>KMZ</td>
+                <td>TAB</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="report in reports">
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.page }}</a></td>
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.workspace }}</a></td>
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.report_map }}</a></td>
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.graph }}</a></td>
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.full_slide }}</a></td>
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.title }}</a></td>
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.ppt }}</a></td>
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.excel }}</a></td>
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.kmz }}</a></td>
+                <td><a href="/report/ {{report.id }}.ppt ">{{ report.tab }}</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

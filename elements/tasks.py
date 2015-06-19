@@ -19,7 +19,6 @@ def write_points(id_route, distance, rows):
         if status:
             result.append(row)
     cursor = connection.cursor()
-    print len(result)
     for point in result:
         cursor.execute('INSERT INTO StandartRoutes (route_id, latitude, longitude) VALUES (%s, %s, %s)', (id_route, point[0], point[1]))
 

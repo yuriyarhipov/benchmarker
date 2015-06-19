@@ -12,4 +12,7 @@ urlpatterns = patterns('',
     (r'^graph/(?P<graph_id>\w+)', graphs_views.graph),
     (r'^map/(?P<map_id>\w+)', graphs_views.graphs_map),
     (r'^upload_legend', graphs_views.upload_legend),
+    (r'^upload_calculation', graphs_views.upload_calculation),
+    (r'^upload_report', graphs_views.upload_report),
+    (r'^reports', graphs_views.reports),
 )

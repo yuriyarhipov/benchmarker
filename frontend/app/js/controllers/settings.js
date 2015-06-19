@@ -34,8 +34,8 @@ settingsControllers.controller('coordinatesCtrl', ['$scope', '$http', '$routePar
         };
 }]);
 
-settingsControllers.controller('calculationsCtrl', ['$scope', '$http','$routeParams', 'activeProjectService',
-    function ($scope, $http, $routeParams, activeProjectService) {
+settingsControllers.controller('calculationsCtrl', ['$scope', '$http','$routeParams', 'activeProjectService', 'FileUploader',
+    function ($scope, $http, $routeParams, activeProjectService, FileUploader) {
         var project_id = $routeParams.project
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
@@ -96,6 +96,9 @@ settingsControllers.controller('calculationsCtrl', ['$scope', '$http','$routePar
                 $scope.legend = {'selected': data.legend};
             });
         };
+        var uploader = $scope.uploader = new FileUploader();
+        $scope.uploader.url = '/data/' + $scope.project_id + '/graphs/upload_calculation/';
+        $scope.uploader.autoUpload = true;
 }]);
 
 settingsControllers.controller('favoritesCtrl', ['$scope', '$http',
@@ -120,4 +123,20 @@ settingsControllers.controller('performanceCtrl', ['$scope', '$http', '$routePar
                 'tests': $scope.selected_tests,
             }));
         };
+}]);
+
+settingsControllers.controller('reportsCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', 'FileUploader',
+    function ($scope, $http, $routeParams, activeProjectService, FileUploader) {
+        $scope.selected_tests = [];
+        var project_id = $routeParams.project;
+        activeProjectService.setProject(project_id);
+        $scope.project = project_id;
+        $http.get('/data/' + project_id + '/graphs/reports/').success(function(data){
+            console.log(data);
+            $scope.reports = data;
+        });
+        var uploader = $scope.uploader = new FileUploader();
+        $scope.uploader.url = '/data/' + $scope.project_id + '/graphs/upload_report/';
+        $scope.uploader.autoUpload = true;
+
 }]);
