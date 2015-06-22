@@ -1,12 +1,54 @@
+import json
 from djcelery import celery
-from routes.route import StandartRoute
 from django.db import connection
 from geopy.distance import vincenty
+from pandas import read_table
+
+
+@celery.task
+def write_file_chunks(filename, project_id, module, latitude_column_name, longitude_column_name, chunk):
+    return
+    cursor = connection.cursor()
+    for row in chunk.to_dict(orient='records'):
+        cursor.execute(
+            'INSERT INTO uploaded_files (filename, project_id, module, latitude, longitude, row) VALUES (%s, %s, %s, %s, %s, %s)',(
+                filename,
+                project_id,
+                module,
+                row.get(latitude_column_name),
+                row.get(longitude_column_name),
+                json.dumps(json.dumps(row, encoding='latin1'))))
+    connection.commit()
 
 
 @celery.task
 def upload_file(filename, project_id, module):
-    StandartRoute([]).save_points_to_database(filename, project_id, module)
+    latitude_column_name = None
+    longitude_column_name = None
+
+    cursor = connection.cursor()
+    cursor.execute('''
+                CREATE TABLE IF NOT EXISTS uploaded_files (
+                    id SERIAL,
+                    filename TEXT,
+                    project_id INT,
+                    module INT,
+                    latitude NUMERIC,
+                    longitude NUMERIC,
+                    row JSON)''')
+    connection.commit()
+
+    if '.csv' or '.txt' in filename:
+        file_reader = read_table(filename, chunksize=100)
+        for chunk in file_reader:
+            if not latitude_column_name:
+                for column in chunk.columns:
+                    if 'latitude' in column.lower():
+                        latitude_column_name = column
+                    elif 'longitude' in column.lower():
+                        longitude_column_name = column
+            write_file_chunks.delay(filename, project_id, module, latitude_column_name, longitude_column_name, chunk)
+
 
 @celery.task
 def write_points(id_route, distance, rows):
