@@ -39,7 +39,7 @@ def upload_file(filename, project_id, module):
     connection.commit()
 
     if '.csv' or '.txt' in filename:
-        file_reader = read_table(filename, chunksize=100)
+        file_reader = read_table(filename, chunksize=1000)
         for chunk in file_reader:
             if not latitude_column_name:
                 for column in chunk.columns:
