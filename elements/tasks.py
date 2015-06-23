@@ -3,6 +3,7 @@ from djcelery import celery
 from django.db import connection
 from geopy.distance import vincenty
 from pandas import read_table
+from routes.route import StandartRoute
 
 
 @celery.task
@@ -51,13 +52,22 @@ def upload_file(filename, project_id, module):
 
 
 @celery.task
+def create_route(id_route, route_files, distance):
+    points = StandartRoute(route_files).get_points(distance)
+    idx = 0
+    while idx < len(points):
+        write_points.delay(sr.id, distance, points[idx: idx+1000])
+        idx += 1000
+
+
+@celery.task
 def write_points(id_route, distance, rows):
     result = [rows.pop(0), ]
     for row in rows:
         status = True
         for r in result:
             if vincenty(r, row).meters < distance:
-                status =False
+                status = False
         if status:
             result.append(row)
     cursor = connection.cursor()
