@@ -8,7 +8,6 @@ from routes.route import StandartRoute
 
 @celery.task
 def write_file_chunks(filename, project_id, module, latitude_column_name, longitude_column_name, chunk):
-    return
     cursor = connection.cursor()
     for row in chunk.to_dict(orient='records'):
         cursor.execute(
@@ -75,7 +74,3 @@ def write_points(id_route, distance, rows):
         cursor.execute('INSERT INTO StandartRoutes (route_id, latitude, longitude) VALUES (%s, %s, %s)', (id_route, point[0], point[1]))
 
     connection.commit()
-
-
-
-
