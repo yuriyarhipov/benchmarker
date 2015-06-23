@@ -55,7 +55,7 @@ def create_route(id_route, route_files, distance):
     points = StandartRoute(route_files).get_points(distance)
     idx = 0
     while idx < len(points):
-        write_points.delay(sr.id, distance, points[idx: idx+1000])
+        write_points.delay(id_route, distance, points[idx: idx + 1000])
         idx += 1000
 
 
