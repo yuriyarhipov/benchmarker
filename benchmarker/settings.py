@@ -16,6 +16,7 @@ djcelery.setup_loader()
 BROKER_URL = "amqp://guest:guest@localhost:5672//"
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+CELERY_DISABLE_RATE_LIMITS = True
 
 
 # Quick-start development settings - unsuitable for production
