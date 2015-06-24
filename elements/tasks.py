@@ -17,12 +17,8 @@ def filter_row(row):
 def create_route(id_route, route_files, distance):
     for f in route_files:
         rf = RouteFile(f)
-        i = 0
         for rows in rf.get_points():
-            i += 1
             write_points.delay(id_route, distance, rows)
-            if i > 20:
-                break
 
 
 @celery.task
