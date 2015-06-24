@@ -17,7 +17,7 @@ def filter_row(row):
 def create_route(id_route, route_files, distance):
     for f in route_files:
         rf = RouteFile(f)
-        for rows in rf.get_points():
+        for rows in rf.get_points(10000):
             write_points.delay(id_route, distance, rows)
 
 
