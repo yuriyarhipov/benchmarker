@@ -3,7 +3,6 @@ from djcelery import celery
 from django.db import connection
 from geopy.distance import vincenty
 from lib.files import RouteFile
-from celery.task.control import revoke
 
 
 def filter_row(row):
@@ -14,16 +13,15 @@ def filter_row(row):
     return result
 
 
-@celery.task
+@celery.task(ignore_result=True)
 def create_route(id_route, route_files, distance):
     for f in route_files:
         rf = RouteFile(f)
         for rows in rf.get_points():
             write_points.delay(id_route, distance, rows)
-    revoke(create_route.request.id, terminate=True)
 
 
-@celery.task
+@celery.task(ignore_result=True)
 def write_points(id_route, distance, rows):
     result = [rows.pop(0), ]
     for row in rows:
@@ -40,4 +38,4 @@ def write_points(id_route, distance, rows):
             'INSERT INTO StandartRoutes (route_id, latitude, longitude, row) VALUES (%s, %s, %s, %s)',
             (id_route, point[0], point[1], json.dumps(filter_row(point[2]), encoding='latin1')))
     connection.commit()
-    revoke(write_points.request.id, terminate=True)
+
