@@ -20,7 +20,7 @@ def create_route(id_route, route_files, distance):
         rf = RouteFile(f)
         for rows in rf.get_points():
             write_points.delay(id_route, distance, rows)
-    revoke(worker.request.id, terminate=True)
+    revoke(create_route.request.id, terminate=True)
 
 
 @celery.task
@@ -40,4 +40,4 @@ def write_points(id_route, distance, rows):
             'INSERT INTO StandartRoutes (route_id, latitude, longitude, row) VALUES (%s, %s, %s, %s)',
             (id_route, point[0], point[1], json.dumps(filter_row(point[2]), encoding='latin1')))
     connection.commit()
-    revoke(worker.request.id, terminate=True)
+    revoke(write_points.request.id, terminate=True)
