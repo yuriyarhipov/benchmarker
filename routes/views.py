@@ -19,6 +19,7 @@ def routes(request, project_id):
         distance = request.POST.get('distance')
         color = request.POST.get('color')
         start_time = clock()
+        StandartRoute.objects.filter(project=project, route_name=route_name).delete()
         sr = StandartRoute.objects.create(
             project=project,
             route_name=route_name,
@@ -27,7 +28,7 @@ def routes(request, project_id):
             color=color,
             route_files=route_files)
         cursor = connection.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS StandartRoutes (route_id INT, longitude TEXT, latitude TEXT)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS StandartRoutes (route_id INT, longitude TEXT, latitude TEXT, row JSON)')
         sr = StandartRoute.objects.get(id=sr.id)
         route_files = sr.route_files.split(',')
         distance = sr.distance
