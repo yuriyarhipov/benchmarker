@@ -1,5 +1,7 @@
 from django.conf import settings
+from django.db import connection
 from pandas import read_table
+import json
 
 
 def handle_uploaded_file(uploaded_files):
@@ -26,6 +28,16 @@ class RouteFile(object):
                 self.latitude_column_name = column
             elif 'longitude' in column.lower():
                 self.longitude_column_name = column
+        cursor = connection.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS
+                uploaded_files
+            (
+                id SERIAL,
+                filename TEXT,
+                latitude NUMERIC,
+                longitude NUMERIC,
+                row JSON)''')
 
     def get_row(self):
         for raw_row in self.file_reader:
@@ -61,14 +73,35 @@ class RouteFile(object):
                     try:
                         latitude = float(latitude)
                         longitude = float(longitude)
-                        points.append([latitude, longitude, row])
+                        point = [latitude, longitude, [self.clean_row(row), ]]
+                        points.append(point)
                     except:
                         pass
             yield points
 
+    def clean_row(self, row):
+        result = dict()
+        for key, value in row.iteritems():
+            if str(value).lower() not in ['nan', '', 'null', 'none']:
+                result[key] = value
+        return result
 
+    def save_file(self):
+        cursor = connection.cursor()
+        i = 0
+        for points in self.get_points():
+            i += 1
+            print i
+            for point in points:
+                cursor.execute('''
+                    INSERT INTO uploaded_files
+                        (filename, latitude, longitude, row)
+                    VALUES
+                        (%s, %s, %s, %s)
+                    ''', (self.filename,
+                          point[0],
+                          point[1],
+                          json.dumps(point[2], encoding='latin1'))
 
-
-
-
-
+                )
+        connection.commit()

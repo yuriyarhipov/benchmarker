@@ -9,6 +9,8 @@ from django.db import connection
 
 from routes.models import RouteFile
 from lib.excel import Excel
+from lib.files import RouteFile
+from elements.tasks import write_points
 
 
 class StandartRoute(object):
@@ -166,5 +168,4 @@ class StandartRoute(object):
         for row in cursor:
             points.append(dict(lon=float(row[0]), lat=float(row[1]), color=color))
         return points
-
 
