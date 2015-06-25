@@ -50,5 +50,25 @@ def write_points(id_route, distance, rows):
 @celery.task(ignore_result=True)
 def save_file(filename):
     rf = RouteFile(filename)
-    rf.save_file()
+    for points in rf.get_points(1000):
+        write_file_row.delay(filename, points)
     revoke(save_file.request.id, terminate=True)
+
+
+@celery.task(ignore_result=True)
+def write_file_row(filename, points):
+    cursor = connection.cursor()
+    sql_points = []
+    for point in points:
+        sql_points.append(cursor.mogrify('(%s, %s, %s, %s)', (
+            filename,
+            point[0],
+            point[1],
+            json.dumps(point[2], encoding='latin1'))))
+
+    cursor.execute('''
+        INSERT INTO uploaded_files
+            (filename, latitude, longitude, row)
+        VALUES %s''' % ','.join(sql_points))
+    cursor.close()
+    revoke(write_file_row.request.id, terminate=True)
