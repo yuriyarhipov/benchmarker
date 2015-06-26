@@ -85,25 +85,3 @@ class RouteFile(object):
             if str(value).lower() not in ['nan', '', 'null', 'none']:
                 result[key] = value
         return result
-
-    def save_file(self):
-        cursor = connection.cursor()
-        i = 0
-        for points in self.get_points(1000):
-            i += 1
-            print i
-            sql_points = []
-            for point in points:
-                sql_points.append(cursor.mogrify('(%s, %s, %s, %s)', (
-                    self.filename,
-                    point[0],
-                    point[1],
-                    json.dumps(point[2], encoding='latin1'))))
-
-            cursor.execute('''
-                    INSERT INTO uploaded_files
-                        (filename, latitude, longitude, row)
-                    VALUES %s''' % ','.join(sql_points))
-            del sql_points
-
-        connection.commit()
