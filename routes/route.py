@@ -25,10 +25,29 @@ class StandartRoute(object):
             ''' % (sql_files))
 
         points = cursor.fetchall()
+
         points = self.fast_distance(points, distance)
         points = self.sort_points(points)
         points = self.fast_distance(points, distance)
+
         return points
+
+    def slow_distance(self, sort_points, distance):
+        i = 0
+        while i < len(sort_points):
+            points = sort_points[i:i + 100]
+            i += 100
+            result = [points[0], ]
+            points = points[1:]
+            for p in points:
+                status = True
+                for rp in result:
+                    if vincenty(p, rp).meters < distance:
+                        status = False
+                        break
+                if status:
+                    result.append(p)
+        return result
 
     def fast_distance(self, points, distance):
         result = [points[0], ]
@@ -56,6 +75,7 @@ class StandartRoute(object):
         points = self.fast_distance(points, distance)
         points = self.sort_points(points)
         points = self.fast_distance(points, distance)
+        points = self.slow_distance(points, distance)
         return points
 
     def get_route(self, route_id, color):

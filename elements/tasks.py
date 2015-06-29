@@ -1,16 +1,18 @@
 import json
 from djcelery import celery
 from django.db import connection
-from geopy.distance import vincenty
 from lib.files import RouteFile
 from celery.task.control import revoke
 from routes.route import StandartRoute
+from routes.models import StandartRoute as SR
+from geopy.distance import vincenty
+from graphs.workspace import Workspace
 
 
 @celery.task(ignore_result=True)
 def create_route(id_route, route_files, distance):
     sr = StandartRoute(route_files)
-    points = sr.route(100)
+    points = sr.route(distance)
     i = 0
     while i < len(points):
         write_points.delay(id_route, distance, points[i:i + 1000])
@@ -20,29 +22,33 @@ def create_route(id_route, route_files, distance):
 
 @celery.task(ignore_result=True)
 def write_points(id_route, distance, rows):
-    result = [rows.pop(0), ]
-    for row in rows:
+    result = [rows[0], ]
+    points = rows[1:]
+    for p in points:
         status = True
-        for r in result:
-            if vincenty(r, row).meters < distance:
+        for rp in result:
+            if vincenty(p, rp).meters < distance:
                 status = False
                 break
         if status:
-            result.append(row)
-
+            result.append(p)
+    rows = result
     cursor = connection.cursor()
-    for point in result:
-        cursor.execute('''
-            INSERT INTO
-                StandartRoutes (
-                    route_id,
-                    latitude,
-                    longitude)
-            VALUES (%s, %s, %s)''', (
+    sql_points = []
+    for point in rows:
+        sql_points.append(cursor.mogrify('(%s, %s, %s)', (
             id_route,
             point[0],
-            point[1]))
-    connection.commit()
+            point[1])))
+
+    cursor.execute('''
+        INSERT INTO
+            StandartRoutes (
+                route_id,
+                latitude,
+                longitude)
+        VALUES %s''' % ','.join(sql_points))
+    cursor.close()
     revoke(write_points.request.id, terminate=True)
 
 
@@ -71,3 +77,47 @@ def write_file_row(filename, points):
         VALUES %s''' % ','.join(sql_points))
     cursor.close()
     revoke(write_file_row.request.id, terminate=True)
+
+
+@celery.task(ignore_result=True)
+def create_workspace(workspace_name):
+    ws = Workspace(workspace_name)
+    sr = SR.objects.filter(id=ws.route.id).first()
+
+    cursor = connection.cursor()
+    cursor.execute('''
+        SELECT
+            latitude,
+            longitude
+        FROM
+            StandartRoutes
+        WHERE
+            route_id=%s ''', (ws.route.id, ))
+
+    for row in cursor:
+        workspace_point.delay(
+            ws.ws.id,
+            sr.route_files,
+            ws.column,
+            row[0],
+            row[1])
+
+
+@celery.task(ignore_result=True)
+def workspace_point(workspace_id, route_files, column, latitude, longitude):
+    cursor = connection.cursor()
+    cursor.execute('''
+        SELECT
+            row
+        FROM
+            uploaded_files
+        WHERE
+            (latitude = %s) AND
+            (longitude = %s) AND
+            (filename in (%s))
+        ''', (latitude, longitude, route_files))
+    if cursor.rowcount > 0:
+        row = cursor.fetchone()[0][0]
+        print column
+        print row
+        print row.get(column)

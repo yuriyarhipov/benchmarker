@@ -6,6 +6,7 @@ from routes.models import StandartRoute
 from workspace import Workspace
 from lib.files import handle_uploaded_file
 from lib.excel import Excel
+from elements.tasks import create_workspace
 
 @api_view(['GET', ])
 def graphs(request):
@@ -35,8 +36,9 @@ def legends(request, project_id):
                 range_symbol=range_symbol[i]
             )
             i += 1
-    legends = [{'legend_name':legend.legend_name, 'id': legend.id} for legend in Legend.objects.all()]
+    legends = [{'legend_name': legend.legend_name, 'id': legend.id} for legend in Legend.objects.all()]
     return Response(legends)
+
 
 @api_view(['DELETE', 'GET'])
 def legend(request, project_id, legend_id):
@@ -45,14 +47,13 @@ def legend(request, project_id, legend_id):
             legend = Legend.objects.get(id=legend_id)
             LegendRange.objects.filter(legend=legend).delete()
             Legend.objects.filter(id=legend_id).delete()
-        legends = [{'legend_name':legend.legend_name, 'id': legend.id} for legend in Legend.objects.all()]
+        legends = [{'legend_name': legend.legend_name, 'id': legend.id} for legend in Legend.objects.all()]
         return Response(legends)
     elif request.method == 'GET':
         if Legend.objects.filter(id=legend_id).exists():
             legend = Legend.objects.get(id=legend_id)
             ranges = []
             for lr in LegendRange.objects.filter(legend=legend):
-                print lr.range_from
                 ranges.append({
                     'from': lr.range_from,
                     'to': lr.range_to,
@@ -60,7 +61,9 @@ def legend(request, project_id, legend_id):
                     'color': lr.range_color
                 })
 
-            return Response({'legend_name':legend.legend_name, 'ranges':ranges})
+            return Response({
+                'legend_name': legend.legend_name,
+                'ranges': ranges})
 
 
 
@@ -94,7 +97,7 @@ def calculations(request, project_id, calculation_id=None):
     data = []
     for calc in Calculation.objects.all():
         data.append({
-            'id':calc.id,
+            'id': calc.id,
             'calculation_name': calc.calculation_name,
             'equipment': calc.equipment,
             'technology': calc.technology,
@@ -111,14 +114,14 @@ def workspaces(request, project_id):
     if request.method == 'POST':
         Workspaces.objects.filter(workspace_name=request.POST.get('workspace')).delete()
         ws = Workspaces.objects.create(
-            workspace_name = request.POST.get('workspace'),
-            route = StandartRoute.objects.get(id=request.POST.get('route')),
-            competitor = request.POST.get('competitor'),
-            network = request.POST.get('network'),
-            test = request.POST.get('test'),
-            calculation = Calculation.objects.get(calculation_name=request.POST.get('calculation'))
+            workspace_name=request.POST.get('workspace'),
+            route=StandartRoute.objects.get(id=request.POST.get('route')),
+            competitor=request.POST.get('competitor'),
+            network=request.POST.get('network'),
+            test=request.POST.get('test'),
+            calculation=Calculation.objects.get(calculation_name=request.POST.get('calculation'))
         )
-        ws = Workspace(ws.workspace_name)
+        create_workspace.delay(ws.workspace_name)
 
     data = []
     for workspace in Workspaces.objects.all():
