@@ -119,7 +119,7 @@ def workspaces(request, project_id):
             competitor=request.POST.get('competitor'),
             network=request.POST.get('network'),
             test=request.POST.get('test'),
-            calculation=Calculation.objects.get(calculation_name=request.POST.get('calculation'))
+            calculation=Calculation.objects.filter(calculation_name=request.POST.get('calculation')).first()
         )
         create_workspace.delay(ws.workspace_name)
 
@@ -175,7 +175,9 @@ def upload_calculation(request, project_id):
     filename = handle_uploaded_file(request.FILES.getlist('file'))[0]
     data = Excel(filename).get_data()[1:]
     for calc in data:
+        print calc[0]
         if Legend.objects.filter(legend_name__iexact=calc[3]).exists():
+            print calc[0]
             Calculation.objects.create(
                 calculation_name = calc[0],
                 equipment = calc[1],

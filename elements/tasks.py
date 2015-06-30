@@ -6,7 +6,7 @@ from celery.task.control import revoke
 from routes.route import StandartRoute
 from routes.models import StandartRoute as SR
 from geopy.distance import vincenty
-from graphs.workspace import Workspace
+from graphs.workspace import Workspace, Value
 
 
 @celery.task(ignore_result=True)
@@ -81,43 +81,4 @@ def write_file_row(filename, points):
 
 @celery.task(ignore_result=True)
 def create_workspace(workspace_name):
-    ws = Workspace(workspace_name)
-    sr = SR.objects.filter(id=ws.route.id).first()
-
-    cursor = connection.cursor()
-    cursor.execute('''
-        SELECT
-            latitude,
-            longitude
-        FROM
-            StandartRoutes
-        WHERE
-            route_id=%s ''', (ws.route.id, ))
-
-    for row in cursor:
-        workspace_point.delay(
-            ws.ws.id,
-            sr.route_files,
-            ws.column,
-            row[0],
-            row[1])
-
-
-@celery.task(ignore_result=True)
-def workspace_point(workspace_id, route_files, column, latitude, longitude):
-    cursor = connection.cursor()
-    cursor.execute('''
-        SELECT
-            row
-        FROM
-            uploaded_files
-        WHERE
-            (latitude = %s) AND
-            (longitude = %s) AND
-            (filename in (%s))
-        ''', (latitude, longitude, route_files))
-    if cursor.rowcount > 0:
-        row = cursor.fetchone()[0][0]
-        print column
-        print row
-        print row.get(column)
+    Workspace(workspace_name)
