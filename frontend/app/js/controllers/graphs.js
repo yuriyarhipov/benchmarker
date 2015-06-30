@@ -55,6 +55,11 @@ graphsControllers.controller('legendsCtrl', ['$scope', '$http', '$routeParams', 
         var uploader = $scope.uploader = new FileUploader();
         $scope.uploader.url = '/data/' + $scope.project_id + '/graphs/upload_legend/';
         $scope.uploader.autoUpload = true;
+        $scope.uploader.onCompleteAll = function(){
+            $scope.legends = $http.get('/data/' + project_id + '/graphs/legends/').success(function(data){
+                $scope.legends = data;
+            });
+        }
 
 }]);
 graphsControllers.controller('workspaceCtrl', ['$scope', '$http','$routeParams', 'activeProjectService', 'ngProgress',

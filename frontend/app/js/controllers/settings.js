@@ -96,9 +96,16 @@ settingsControllers.controller('calculationsCtrl', ['$scope', '$http','$routePar
                 $scope.legend = {'selected': data.legend};
             });
         };
+
         var uploader = $scope.uploader = new FileUploader();
         $scope.uploader.url = '/data/' + $scope.project_id + '/graphs/upload_calculation/';
         $scope.uploader.autoUpload = true;
+        $scope.uploader.onCompleteAll = function(){
+            $http.get('/data/' + project_id + '/graphs/calculations/').success(function(data){
+                $scope.calculations = data;
+            });
+        }
+
 }]);
 
 settingsControllers.controller('favoritesCtrl', ['$scope', '$http',
@@ -132,11 +139,16 @@ settingsControllers.controller('reportsCtrl', ['$scope', '$http', '$routeParams'
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
         $http.get('/data/' + project_id + '/graphs/reports/').success(function(data){
-            console.log(data);
             $scope.reports = data;
         });
         var uploader = $scope.uploader = new FileUploader();
         $scope.uploader.url = '/data/' + $scope.project_id + '/graphs/upload_report/';
         $scope.uploader.autoUpload = true;
+
+        $scope.uploader.onCompleteAll = function(){
+            $http.get('/data/' + project_id + '/graphs/reports/').success(function(data){
+                $scope.reports = data;
+            });
+        }
 
 }]);
