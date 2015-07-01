@@ -4,16 +4,21 @@ from routes.route import StandartRoute
 from django.db import connection
 
 
-class Value(object):
+class Point(object):
 
-    def check_point(self, value, ranges):
+    def check_value(self, value, ranges):
         for legend_range in ranges:
-            range_name = '%s %s %s' % (legend_range.range_from, legend_range.range_symbol, legend_range.range_to)
-            if range_name not in self.graphs:
-                self.graphs[range_name] = 0
-            if self.check_legend_value(value, float(legend_range.range_from), float(legend_range.range_to), legend_range.range_symbol):
-                self.graphs[range_name] += 1
-        return legend_range.range_color
+            try:
+                range_from = float(legend_range.range_from)
+                range_to = float(legend_range.range_to)
+                if self.check_legend_value(
+                        value,
+                        range_from,
+                        range_to,
+                        legend_range.range_symbol):
+                    return legend_range.range_color
+            except:
+                return
 
     def check_legend_value(self, value, from_value, to_value, symbol):
         if symbol == '<':
@@ -39,17 +44,35 @@ class Workspace(object):
         self.column = self.ws.calculation.column
         self.graphs = dict()
         self.map = []
-        for point in StandartRoute([]).get_route(self.ws.route.id, self.ws.route.color):
+        for point in StandartRoute([]).get_route(
+                self.ws.route.id,
+                self.ws.route.color):
             row_point = self.get_point_info(point)
-            row_point
             if row_point:
                 point['row'] = row_point
                 self.points.append(point)
-                color = self.check_point(self.column, row_point, self.ranges)
+                value = row_point.get(self.column)
+                try:
+                    value = float(value)
+                except:
+                    value = 0
+                color = Point().check_value(
+                    value,
+                    self.ranges)
                 if not color:
                     color = point.get('color')
-                self.map.append(dict(lon=point.get('lon'), lat=point.get('lat'), color=color))
+                self.map.append(dict(
+                    lon=point.get('lon'),
+                    lat=point.get('lat'),
+                    color=color))
 
+        for point in self.map:
+            color = point.get('color')
+            if color not in self.graphs:
+                self.graphs[color] = 0
+            self.graphs[color] += 1
+
+        print self.graphs
         cursor = connection.cursor()
         cursor.execute('CREATE TABLE IF NOT EXISTS Graphs (id SERIAL, workspace INT, graph JSON, map JSON)')
         connection.commit()
@@ -79,30 +102,5 @@ class Workspace(object):
         ))
         if cursor.rowcount == 0:
             return
-        data = cursor.fetchall()
+        data = cursor.fetchone()
         return data[0][0]
-
-    def check_point(self, column, row, ranges):
-        if column in row:
-            value = row.get(column)
-            try:
-                value = float(value)
-            except:
-                value = 0
-            for legend_range in ranges:
-                range_name = '%s %s %s' % (legend_range.range_from, legend_range.range_symbol, legend_range.range_to)
-                if range_name not in self.graphs:
-                    self.graphs[range_name] = 0
-                if self.check_legend_value(value, float(legend_range.range_from), float(legend_range.range_to), legend_range.range_symbol):
-                    self.graphs[range_name] += 1
-                    return legend_range.range_color
-
-    def check_legend_value(self, value, from_value, to_value, symbol):
-        if symbol == '<':
-            return (from_value < value) and (value < to_value)
-        elif symbol == '>':
-            return (from_value > value) and (value > to_value)
-        elif symbol == '<=':
-            return (from_value <= value) and (value <= to_value)
-        elif symbol == '>=':
-            return (from_value >= value) and (value >= to_value)

@@ -4,9 +4,8 @@ from django.db import connection
 from lib.files import RouteFile
 from celery.task.control import revoke
 from routes.route import StandartRoute
-from routes.models import StandartRoute as SR
 from geopy.distance import vincenty
-from graphs.workspace import Workspace, Value
+from graphs.workspace import Workspace
 
 
 @celery.task(ignore_result=True)
