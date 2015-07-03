@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import connection
 from pandas import read_table
 import json
+from geopy.distance import vincenty
 
 
 def handle_uploaded_file(uploaded_files):
@@ -84,4 +85,22 @@ class RouteFile(object):
         for key, value in row.iteritems():
             if str(value).lower() not in ['nan', '', 'null', 'none']:
                 result[key] = value
+        return result
+
+    @staticmethod
+    def slow_distance(sort_points, distance):
+        i = 0
+        while i < len(sort_points):
+            points = sort_points[i:i + 100]
+            i += 100
+            result = [points[0], ]
+            points = points[1:]
+            for p in points:
+                status = True
+                for rp in result:
+                    if vincenty(p[:-1], rp[:-1]).meters < distance:
+                        status = False
+                        break
+                if status:
+                    result.append(p)
         return result

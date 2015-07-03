@@ -54,13 +54,15 @@ def write_points(id_route, distance, rows):
 @celery.task(ignore_result=True)
 def save_file(filename):
     rf = RouteFile(filename)
-    for points in rf.get_points(1000):
+    for points in rf.get_points(5000):
         write_file_row.delay(filename, points)
     revoke(save_file.request.id, terminate=True)
 
 
 @celery.task(ignore_result=True)
 def write_file_row(filename, points):
+    points = RouteFile.slow_distance(points, 1)
+    print len(points)
     cursor = connection.cursor()
     sql_points = []
     for point in points:
