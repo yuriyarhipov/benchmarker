@@ -6,6 +6,7 @@ from celery.task.control import revoke
 from routes.route import StandartRoute
 from geopy.distance import vincenty
 from graphs.workspace import Workspace
+from pandas import read_table
 
 
 @celery.task(ignore_result=True)
@@ -53,16 +54,50 @@ def write_points(id_route, distance, rows):
 
 @celery.task(ignore_result=True)
 def save_file(filename):
-    rf = RouteFile(filename)
-    for points in rf.get_points(5000):
-        write_file_row.delay(filename, points)
+    cursor = connection.cursor()
+    cursor.execute('''
+            CREATE TABLE IF NOT EXISTS
+                uploaded_files
+            (
+                id SERIAL,
+                filename TEXT,
+                latitude NUMERIC,
+                longitude NUMERIC,
+                row JSON)''')
+    cursor.close()
+    latitude_column_name = None
+    longitude_column_name = None
+    file_reader = read_table(filename, chunksize=1)
+    columns = file_reader.get_chunk(1).columns
+    for column in columns:
+        if 'latitude' in column.lower():
+            latitude_column_name = column
+        elif 'longitude' in column.lower():
+            longitude_column_name = column
+
+    file_reader = read_table(filename, chunksize=1000)
+    for chunk in file_reader:
+        write_file_row.delay(filename, chunk, latitude_column_name, longitude_column_name)
     revoke(save_file.request.id, terminate=True)
 
 
 @celery.task(ignore_result=True)
-def write_file_row(filename, points):
+def write_file_row(filename, chunk, latitude_column_name, longitude_column_name):
+    points = []
+    for row in chunk.to_dict(orient='records'):
+        latitude = row.get(latitude_column_name)
+        longitude = row.get(longitude_column_name)
+        if ((str(latitude) not in ['nan', 'NULL', '']) and
+           (str(longitude) not in ['nan', 'NULL', ''])):
+            try:
+                latitude = float(latitude)
+                longitude = float(longitude)
+                point = [latitude, longitude, [RouteFile.clean_row(row), ]]
+                points.append(point)
+            except:
+                pass
+
     points = RouteFile.slow_distance(points, 1)
-    print len(points)
     cursor = connection.cursor()
     sql_points = []
     for point in points:

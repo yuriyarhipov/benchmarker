@@ -80,7 +80,8 @@ class RouteFile(object):
                         pass
             yield points
 
-    def clean_row(self, row):
+    @staticmethod
+    def clean_row(row):
         result = dict()
         for key, value in row.iteritems():
             if str(value).lower() not in ['nan', '', 'null', 'none']:
