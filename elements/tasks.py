@@ -17,11 +17,12 @@ def create_route(id_route, route_files, distance):
     while i < len(points):
         write_points.delay(id_route, distance, points[i:i + 1000])
         i += 1000
+        break
     revoke(create_route.request.id, terminate=True)
 
 
-@celery.task(ignore_result=True)
-def write_points(id_route, distance, rows):
+@celery.task(bind=True)
+def write_points(self, id_route, distance, rows):
     result = [rows[0], ]
     points = rows[1:]
     for p in points:
@@ -49,6 +50,7 @@ def write_points(id_route, distance, rows):
                 longitude)
         VALUES %s''' % ','.join(sql_points))
     cursor.close()
+    print self.request
     revoke(write_points.request.id, terminate=True)
 
 
@@ -75,14 +77,14 @@ def save_file(filename):
         elif 'longitude' in column.lower():
             longitude_column_name = column
 
-    file_reader = read_table(filename, chunksize=1000)
+    file_reader = read_table(filename, chunksize=10000)
     for chunk in file_reader:
         write_file_row.delay(filename, chunk, latitude_column_name, longitude_column_name)
     revoke(save_file.request.id, terminate=True)
 
 
-@celery.task(ignore_result=True)
-def write_file_row(filename, chunk, latitude_column_name, longitude_column_name):
+@celery.task(bind=True)
+def write_file_row(self, filename, chunk, latitude_column_name, longitude_column_name):
     points = []
     for row in chunk.to_dict(orient='records'):
         latitude = row.get(latitude_column_name)
@@ -97,7 +99,6 @@ def write_file_row(filename, chunk, latitude_column_name, longitude_column_name)
             except:
                 pass
 
-    points = RouteFile.slow_distance(points, 1)
     cursor = connection.cursor()
     sql_points = []
     for point in points:
