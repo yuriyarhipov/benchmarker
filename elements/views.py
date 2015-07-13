@@ -72,15 +72,15 @@ def save_file(request, project_id):
 @api_view(['GET', ])
 def get_files(request, project_id):
     project = Project.objects.get(id=project_id)
-    files= []
+    files = []
     for f in RouteFile.objects.filter(project=project).order_by('module', 'filename'):
         files.append({
             'filename': basename(f.filename),
+            'status': f.status,
             'module': f.module,
             'latitude': f.latitude,
             'longitude': f.longitude,
-            })
-
+        })
     return Response(files)
 
 

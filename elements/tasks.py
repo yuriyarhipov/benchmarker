@@ -77,14 +77,21 @@ def save_file(filename):
         elif 'longitude' in column.lower():
             longitude_column_name = column
 
-    file_reader = read_table(filename, chunksize=10000)
+    file_reader = read_table(filename, chunksize=100)
+    ids = []
     for chunk in file_reader:
-        write_file_row.delay(filename, chunk, latitude_column_name, longitude_column_name)
+        task_worker = write_file_row.delay(filename, chunk, latitude_column_name, longitude_column_name)
+        ids.append(task_worker.id)
+        if len(ids) > 10:
+            break
+
+    print len(ids)
     revoke(save_file.request.id, terminate=True)
 
 
 @celery.task(bind=True)
 def write_file_row(self, filename, chunk, latitude_column_name, longitude_column_name):
+    return
     points = []
     for row in chunk.to_dict(orient='records'):
         latitude = row.get(latitude_column_name)
