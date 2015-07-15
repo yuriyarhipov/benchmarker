@@ -12,10 +12,12 @@ filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 
         var uploader = $scope.uploader = new FileUploader();
         $scope.uploader.url = '/data/' + project_id + '/save_file/';
         $scope.uploader.queueLimit = 1;
-        $scope.uploader.onCompleteAll = function(){
-            console.log('onComplete');
+
+        $scope.uploader.onCompleteAll = function(data){
             ngProgress.set(0);
-            $location.path(project_id + '/fileshub/');
+            console.log('oe');
+            $location.path(project_id + '/dashboard/');
+
         };
 
         $scope.uploader.onBeforeUploadItem = function(item){
@@ -39,4 +41,18 @@ filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 
         $http.get('/data/' + project_id + '/get_files/').success(function(data){
             $scope.files = data;
         });
+ }]);
+
+filesControllers.controller('dashboardCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', '$location', '$timeout',
+    function ($scope, $http, $routeParams, activeProjectService, $location, $timeout) {
+        function get_tasks(){
+            $http.get('/data/' + project_id + '/tasks/').success(function(data){
+                $scope.tasks = data;
+                $timeout(get_tasks, 1000);
+            });
+        };
+        var project_id = $routeParams.project;
+        $scope.project = project_id;
+        activeProjectService.setProject(project_id);
+        get_tasks();
  }]);

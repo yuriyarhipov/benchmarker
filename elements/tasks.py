@@ -1,4 +1,8 @@
 import json
+import time
+
+from os.path import basename
+
 from djcelery import celery
 from django.db import connection
 from lib.files import RouteFile
@@ -7,6 +11,8 @@ from routes.route import StandartRoute
 from geopy.distance import vincenty
 from graphs.workspace import Workspace
 from pandas import read_table
+from celery.result import AsyncResult
+from elements.models import Tasks
 
 
 @celery.task(ignore_result=True)
@@ -50,12 +56,12 @@ def write_points(self, id_route, distance, rows):
                 longitude)
         VALUES %s''' % ','.join(sql_points))
     cursor.close()
-    print self.request
     revoke(write_points.request.id, terminate=True)
 
 
-@celery.task(ignore_result=True)
-def save_file(filename):
+@celery.task(bind=True)
+def save_file(self, filename):
+    task = Tasks.objects.create(task_name=basename(filename), current=0)
     cursor = connection.cursor()
     cursor.execute('''
             CREATE TABLE IF NOT EXISTS
@@ -77,21 +83,30 @@ def save_file(filename):
         elif 'longitude' in column.lower():
             longitude_column_name = column
 
-    file_reader = read_table(filename, chunksize=100)
+    file_reader = read_table(filename, chunksize=1000)
     ids = []
     for chunk in file_reader:
-        task_worker = write_file_row.delay(filename, chunk, latitude_column_name, longitude_column_name)
+        task_worker = write_file_row.delay(
+            filename,
+            chunk,
+            latitude_column_name,
+            longitude_column_name)
         ids.append(task_worker.id)
-        if len(ids) > 10:
-            break
 
-    print len(ids)
-    revoke(save_file.request.id, terminate=True)
+    total = len(ids)
+    while len(ids) > 5:
+        for task_id in ids:
+            if AsyncResult(task_id).ready():
+                ids.remove(task_id)
+        time.sleep(5)
+        current = total - len(ids)
+        value = float(current) / float(total) * 100
+        Tasks.objects.filter(id=task.id).update(current=int(value))
+    task.delete()
 
 
 @celery.task(bind=True)
 def write_file_row(self, filename, chunk, latitude_column_name, longitude_column_name):
-    return
     points = []
     for row in chunk.to_dict(orient='records'):
         latitude = row.get(latitude_column_name)

@@ -123,6 +123,10 @@ BenchApp.config(['$routeProvider',
                 templateUrl: 'templates/reports.html',
                 controller: 'reportsCtrl'
             }).
+            when('/:project/dashboard', {
+                templateUrl: 'templates/dashboard.html',
+                controller: 'dashboardCtrl'
+            }).
             otherwise({
                 redirectTo: '/'
             });

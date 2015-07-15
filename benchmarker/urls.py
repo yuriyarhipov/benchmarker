@@ -24,4 +24,5 @@ urlpatterns = patterns('',
     url(r'^data/(\S+)/get_files/', elements_views.get_files),
     url(r'^data/(\S+)/modules/', elements_views.modules),
     url(r'^data/(\S+)/module_files/(\S+)', elements_views.module_files),
+    url(r'^data/(\S+)/tasks', elements_views.task_status),
 )

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
 
-from elements.models import Project
+from elements.models import Project, Tasks
 from routes.models import RouteFile, StandartRoute
 
 from lib.archive import Archive
@@ -52,6 +52,8 @@ def save_file(request, project_id):
     module = request.POST.get('module')
     equipment = request.POST.get('equipment')
     project = Project.objects.get(id=project_id)
+    filename = request.FILES.getlist('file')
+    print filename
     uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('file'))[0]).get_files()
     for f in uploaded_files:
         RouteFile.objects.filter(project=project,
@@ -63,7 +65,7 @@ def save_file(request, project_id):
                                  module=module,
                                  latitude='All-Latitude Decimal Degree',
                                  longitude='All-Longitude Decimal Degree',
-                                 status='file')
+                                 status='uploading')
         task_save_file.delay(f)
 
     return Response(dict(message='OK'))
@@ -102,6 +104,7 @@ def routes(request, project_id):
         routes.append(dict(id=route.id, route_name=route.route_name))
     return Response(routes)
 
+
 @api_view(['GET', ])
 def modules(request, project_id):
     project = Project.objects.get(id=project_id)
@@ -116,6 +119,15 @@ def module_files(request, project_id, module_name):
     return Response(data)
 
 
+@api_view(['GET', ])
+def task_status(request, project_id):
+    data = []
+    for task in Tasks.objects.all():
+        data.append({
+            'task_name': task.task_name,
+            'current': task.current,
+        })
+    return Response(data)
 
 
 

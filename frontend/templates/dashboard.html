@@ -1,0 +1,22 @@
+<table class="table">
+    <thead>
+        <tr>
+            <td>Task Name</td>
+            <td>Status</td>
+            <td>Time</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat='task in tasks'>
+            <td >{{ task.task_name}}</td>
+            <td>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="{{ task.current}}" aria-valuemin="0" aria-valuemax="100" style="width: {{ task.current }}%;">
+                        {{ task.current}}% Complete
+                    </div>
+                </div>
+            </td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
