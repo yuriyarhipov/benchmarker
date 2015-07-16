@@ -83,7 +83,7 @@ def save_file(self, filename):
         elif 'longitude' in column.lower():
             longitude_column_name = column
 
-    file_reader = read_table(filename, chunksize=1000)
+    file_reader = read_table(filename, chunksize=50000)
     ids = []
     for chunk in file_reader:
         task_worker = write_file_row.delay(
