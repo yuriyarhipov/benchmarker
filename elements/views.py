@@ -108,7 +108,7 @@ def routes(request, project_id):
 @api_view(['GET', ])
 def modules(request, project_id):
     project = Project.objects.get(id=project_id)
-    modules = [ m.module for m in RouteFile.objects.filter(project=project).distinct('module').order_by('module')]
+    modules = [m.module for m in RouteFile.objects.filter(project=project).distinct('module').order_by('module')]
     return Response(modules)
 
 
@@ -122,7 +122,7 @@ def module_files(request, project_id, module_name):
 @api_view(['GET', ])
 def task_status(request, project_id):
     data = []
-    for task in Tasks.objects.all():
+    for task in Tasks.objects.filter().order_by('task_name', 'id'):
         data.append({
             'task_name': task.task_name,
             'current': task.current,

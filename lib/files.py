@@ -19,7 +19,7 @@ def handle_uploaded_file(uploaded_files):
     return result
 
 
-def mapcount(filename):
+def map_count(filename):
     f = open(filename, "r+")
     buf = mmap.mmap(f.fileno(), 0)
     lines = 0
@@ -28,6 +28,12 @@ def mapcount(filename):
         lines += 1
     return lines
 
+
+def get_dict_row(filename):
+    with open(filename) as csvfile:
+        reader = csv.DictReader(csvfile, delimiter='\t')
+        for row in reader:
+            yield row
 
 class RouteFile(object):
 

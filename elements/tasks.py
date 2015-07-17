@@ -1,11 +1,11 @@
 import json
 import time
-
+import csv
 from os.path import basename
 
 from djcelery import celery
 from django.db import connection
-from lib.files import RouteFile, mapcount
+from lib.files import RouteFile, map_count, get_dict_row
 from celery.task.control import revoke
 from routes.route import StandartRoute
 from geopy.distance import vincenty
@@ -60,8 +60,12 @@ def write_points(self, id_route, distance, rows):
 
 @celery.task(bind=True)
 def save_file(self, filename):
-    import csv
-    task = Tasks.objects.create(task_name=basename(filename), current=0, message='Uploading..')
+    Tasks.objects.filter(task_name=basename(filename)).delete()
+    task = Tasks.objects.create(
+        task_name=basename(filename),
+        current=0,
+        message='Uploading..')
+
     cursor = connection.cursor()
     cursor.execute('''
             CREATE TABLE IF NOT EXISTS
@@ -69,16 +73,24 @@ def save_file(self, filename):
             (
                 id SERIAL,
                 filename TEXT,
+                ms TEXT,
                 latitude NUMERIC,
                 longitude NUMERIC,
                 row JSON)''')
+
+    cursor.execute('''
+            DELETE FROM
+                uploaded_files
+            WHERE
+                filename=%s''', (filename, ))
+
     cursor.close()
     chunk = []
     ids = []
-    row_count = mapcount(filename)
+    row_count = map_count(filename)
     with open(filename, "rb") as csvfile:
-        datareader = csv.reader(csvfile)
-        columns = datareader.next()[0].split('\t')
+        datareader = csv.DictReader(csvfile, delimiter='\t')
+        columns = datareader.fieldnames
         latitude_column_name = None
         longitude_column_name = None
         for column in columns:
@@ -86,16 +98,17 @@ def save_file(self, filename):
                 latitude_column_name = column
             elif 'longitude' in column.lower():
                 longitude_column_name = column
-        i = 1
+        i = 0
         for row in datareader:
             i += 1
-            chunk.append(row[0].split('\t'))
-            if len(chunk) == 100000:
+            chunk.append(row)
+            if len(chunk) == 10000:
                 value = float(i) / float(row_count) * 100
-                Tasks.objects.filter(id=task.id).update(current=int(value), message='File processing..')
+                Tasks.objects.filter(id=task.id).update(
+                    current=int(value),
+                    message='File processing..')
                 task_worker = write_file_row.delay(
                     filename,
-                    columns,
                     chunk,
                     latitude_column_name,
                     longitude_column_name)
@@ -110,16 +123,21 @@ def save_file(self, filename):
         time.sleep(5)
         current = total - len(ids)
         value = float(current) / float(total) * 100
-        Tasks.objects.filter(id=task.id).update(current=int(value), message='Writing to database..')
+        Tasks.objects.filter(id=task.id).update(
+            current=int(value),
+            message='Writing to database..')
     task.delete()
     revoke(save_file.request.id, terminate=True)
 
 
 @celery.task(bind=True)
-def write_file_row(self, filename, columns, chunk, latitude_column_name, longitude_column_name):
+def write_file_row(self,
+                   filename,
+                   chunk,
+                   latitude_column_name,
+                   longitude_column_name):
     points = []
     for row in chunk:
-        row = dict(zip(columns, row))
         latitude = row.get(latitude_column_name)
         longitude = row.get(longitude_column_name)
         if ((str(latitude) not in ['nan', 'NULL', '']) and
@@ -127,7 +145,7 @@ def write_file_row(self, filename, columns, chunk, latitude_column_name, longitu
             try:
                 latitude = float(latitude)
                 longitude = float(longitude)
-                point = [latitude, longitude, [RouteFile.clean_row(row), ]]
+                point = [latitude, longitude, RouteFile.clean_row(row)]
                 points.append(point)
             except:
                 pass
@@ -135,15 +153,16 @@ def write_file_row(self, filename, columns, chunk, latitude_column_name, longitu
     cursor = connection.cursor()
     sql_points = []
     for point in points:
-        sql_points.append(cursor.mogrify('(%s, %s, %s, %s)', (
+        sql_points.append(cursor.mogrify('(%s, %s, %s, %s, %s)', (
             filename,
+            point[2].get('MS'),
             point[0],
             point[1],
-            json.dumps(point[2], encoding='latin1'))))
+            json.dumps([point[2], ], encoding='latin1'))))
 
     cursor.execute('''
         INSERT INTO uploaded_files
-            (filename, latitude, longitude, row)
+            (filename, ms, latitude, longitude, row)
         VALUES %s''' % ','.join(sql_points))
     cursor.close()
     revoke(write_file_row.request.id, terminate=True)
