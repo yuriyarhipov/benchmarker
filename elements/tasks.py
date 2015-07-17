@@ -5,12 +5,11 @@ from os.path import basename
 
 from djcelery import celery
 from django.db import connection
-from lib.files import RouteFile
+from lib.files import RouteFile, mapcount
 from celery.task.control import revoke
 from routes.route import StandartRoute
 from geopy.distance import vincenty
 from graphs.workspace import Workspace
-from pandas import read_table
 from celery.result import AsyncResult
 from elements.models import Tasks
 
@@ -76,10 +75,10 @@ def save_file(self, filename):
     cursor.close()
     chunk = []
     ids = []
+    row_count = mapcount(filename)
     with open(filename, "rb") as csvfile:
         datareader = csv.reader(csvfile)
         columns = datareader.next()[0].split('\t')
-        print columns
         latitude_column_name = None
         longitude_column_name = None
         for column in columns:
@@ -87,11 +86,13 @@ def save_file(self, filename):
                 latitude_column_name = column
             elif 'longitude' in column.lower():
                 longitude_column_name = column
-
-
+        i = 1
         for row in datareader:
+            i += 1
             chunk.append(row[0].split('\t'))
             if len(chunk) == 50000:
+                value = float(i) / float(row_count) * 100
+                Tasks.objects.filter(id=task.id).update(current=int(value))
                 task_worker = write_file_row.delay(
                     filename,
                     columns,
