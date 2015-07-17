@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import connection
 from pandas import read_table
 import json
+import mmap
 from geopy.distance import vincenty
 
 
@@ -18,37 +19,36 @@ def handle_uploaded_file(uploaded_files):
     return result
 
 
+def mapcount(filename):
+    f = open(filename, "r+")
+    buf = mmap.mmap(f.fileno(), 0)
+    lines = 0
+    readline = buf.readline
+    while readline():
+        lines += 1
+    return lines
+
 class RouteFile(object):
 
     def __init__(self, filename):
         self.filename = filename
-        self.file_reader = read_table(filename, chunksize=1)
-        self.columns = self.file_reader.get_chunk(1).columns
+        self.filename = filename
+        self.file_reader = self.get_row()
+        self.columns = self.file_reader.next()
         for column in self.columns:
             if 'latitude' in column.lower():
                 self.latitude_column_name = column
             elif 'longitude' in column.lower():
                 self.longitude_column_name = column
-        cursor = connection.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS
-                uploaded_files
-            (
-                id SERIAL,
-                filename TEXT,
-                latitude NUMERIC,
-                longitude NUMERIC,
-                row JSON)''')
 
     def get_row(self):
-        for raw_row in self.file_reader:
-            row = dict()
-            for key, value in raw_row.to_dict(orient='records')[0].iteritems():
-                if str(value) not in ['nan', 'NULL', '']:
-                    row[key] = value
-            if ((self.longitude_column_name in row) and
-               (self.latitude_column_name in row)):
-                yield row
+        with open(self.filename, "rb") as csvfile:
+            datareader = csv.reader(csvfile)
+            for row in datareader:
+                yield row[0].split('\t')
+
+
+
 
     def get_rows(self, limit=1000):
         file_reader = read_table(self.filename, chunksize=limit)
