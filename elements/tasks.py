@@ -88,11 +88,10 @@ def save_file(self, filename):
             elif 'longitude' in column.lower():
                 longitude_column_name = column
 
-        i = 0
+
         for row in datareader:
             chunk.append(row[0].split('\t'))
-            if len(chunk) == 1000:
-                i += 1
+            if len(chunk) == 50000:
                 task_worker = write_file_row.delay(
                     filename,
                     columns,
@@ -101,8 +100,6 @@ def save_file(self, filename):
                     longitude_column_name)
                 ids.append(task_worker.id)
                 chunk = []
-            if i > 10:
-                break
 
     total = len(ids)
     while len(ids) > 5:
