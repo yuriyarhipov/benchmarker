@@ -61,6 +61,7 @@ def write_points(self, id_route, distance, rows):
 
 @celery.task(bind=True)
 def save_file(self, filename):
+    import csv
     task = Tasks.objects.create(task_name=basename(filename), current=0)
     cursor = connection.cursor()
     cursor.execute('''
@@ -73,25 +74,35 @@ def save_file(self, filename):
                 longitude NUMERIC,
                 row JSON)''')
     cursor.close()
-    latitude_column_name = None
-    longitude_column_name = None
-    file_reader = read_table(filename, chunksize=1)
-    columns = file_reader.get_chunk(1).columns
-    for column in columns:
-        if 'latitude' in column.lower():
-            latitude_column_name = column
-        elif 'longitude' in column.lower():
-            longitude_column_name = column
-
-    file_reader = read_table(filename, chunksize=50000)
+    chunk = []
     ids = []
-    for chunk in file_reader:
-        task_worker = write_file_row.delay(
-            filename,
-            chunk,
-            latitude_column_name,
-            longitude_column_name)
-        ids.append(task_worker.id)
+    with open(filename, "rb") as csvfile:
+        datareader = csv.reader(csvfile)
+        columns = datareader.next()[0].split('\t')
+        print columns
+        latitude_column_name = None
+        longitude_column_name = None
+        for column in columns:
+            if 'latitude' in column.lower():
+                latitude_column_name = column
+            elif 'longitude' in column.lower():
+                longitude_column_name = column
+
+        i = 0
+        for row in datareader:
+            chunk.append(row[0].split('\t'))
+            if len(chunk) == 1000:
+                i += 1
+                task_worker = write_file_row.delay(
+                    filename,
+                    columns,
+                    chunk,
+                    latitude_column_name,
+                    longitude_column_name)
+                ids.append(task_worker.id)
+                chunk = []
+            if i > 10:
+                break
 
     total = len(ids)
     while len(ids) > 5:
@@ -103,12 +114,14 @@ def save_file(self, filename):
         value = float(current) / float(total) * 100
         Tasks.objects.filter(id=task.id).update(current=int(value))
     task.delete()
+    revoke(save_file.request.id, terminate=True)
 
 
 @celery.task(bind=True)
-def write_file_row(self, filename, chunk, latitude_column_name, longitude_column_name):
+def write_file_row(self, filename, columns, chunk, latitude_column_name, longitude_column_name):
     points = []
-    for row in chunk.to_dict(orient='records'):
+    for row in chunk:
+        row = dict(zip(columns, row))
         latitude = row.get(latitude_column_name)
         longitude = row.get(longitude_column_name)
         if ((str(latitude) not in ['nan', 'NULL', '']) and
@@ -136,6 +149,7 @@ def write_file_row(self, filename, chunk, latitude_column_name, longitude_column
         VALUES %s''' % ','.join(sql_points))
     cursor.close()
     revoke(write_file_row.request.id, terminate=True)
+
 
 
 @celery.task(ignore_result=True)
