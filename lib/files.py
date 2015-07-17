@@ -28,6 +28,7 @@ def mapcount(filename):
         lines += 1
     return lines
 
+
 class RouteFile(object):
 
     def __init__(self, filename):

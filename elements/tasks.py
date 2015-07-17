@@ -61,7 +61,7 @@ def write_points(self, id_route, distance, rows):
 @celery.task(bind=True)
 def save_file(self, filename):
     import csv
-    task = Tasks.objects.create(task_name=basename(filename), current=0)
+    task = Tasks.objects.create(task_name=basename(filename), current=0, message='Uploading..')
     cursor = connection.cursor()
     cursor.execute('''
             CREATE TABLE IF NOT EXISTS
@@ -90,9 +90,9 @@ def save_file(self, filename):
         for row in datareader:
             i += 1
             chunk.append(row[0].split('\t'))
-            if len(chunk) == 50000:
+            if len(chunk) == 100000:
                 value = float(i) / float(row_count) * 100
-                Tasks.objects.filter(id=task.id).update(current=int(value))
+                Tasks.objects.filter(id=task.id).update(current=int(value), message='File processing..')
                 task_worker = write_file_row.delay(
                     filename,
                     columns,
@@ -110,7 +110,7 @@ def save_file(self, filename):
         time.sleep(5)
         current = total - len(ids)
         value = float(current) / float(total) * 100
-        Tasks.objects.filter(id=task.id).update(current=int(value))
+        Tasks.objects.filter(id=task.id).update(current=int(value), message='Writing to database..')
     task.delete()
     revoke(save_file.request.id, terminate=True)
 
@@ -147,7 +147,6 @@ def write_file_row(self, filename, columns, chunk, latitude_column_name, longitu
         VALUES %s''' % ','.join(sql_points))
     cursor.close()
     revoke(write_file_row.request.id, terminate=True)
-
 
 
 @celery.task(ignore_result=True)

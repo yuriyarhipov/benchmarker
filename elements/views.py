@@ -126,6 +126,7 @@ def task_status(request, project_id):
         data.append({
             'task_name': task.task_name,
             'current': task.current,
+            'message': task.message
         })
     return Response(data)
 
