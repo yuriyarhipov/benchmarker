@@ -8,4 +8,5 @@ class Project(models.Model):
 class Tasks(models.Model):
     task_name = models.TextField()
     current = models.IntegerField()
+    tasks = models.TextField()
     message = models.TextField()

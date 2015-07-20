@@ -85,6 +85,7 @@ def save_file(self, filename):
     task = Tasks.objects.create(
         task_name=basename(filename),
         current=0,
+        tasks='',
         message='Uploading..')
 
     cursor = connection.cursor()
@@ -136,18 +137,10 @@ def save_file(self, filename):
                 ids.append(task_worker.id)
                 chunk = []
 
-    total = len(ids)
-    while len(ids) > 5:
-        for task_id in ids:
-            if AsyncResult(task_id).ready():
-                ids.remove(task_id)
-        time.sleep(5)
-        current = total - len(ids)
-        value = float(current) / float(total) * 100
-        Tasks.objects.filter(id=task.id).update(
-            current=int(value),
-            message='Writing to database..')
-    task.delete()
+    Tasks.objects.filter(id=task.id).update(
+        current=int(0),
+        tasks=','.join(ids),
+        message='Writing..')
     revoke(save_file.request.id, terminate=True)
 
 
