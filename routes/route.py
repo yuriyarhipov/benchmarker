@@ -14,7 +14,7 @@ class StandartRoute(object):
         sql_files = ','.join(["'%s'" % f for f in self.files])
 
         cursor.execute('''
-            SELECT
+            SELECT DISTINCT
                 latitude,
                 longitude
             FROM
@@ -29,8 +29,27 @@ class StandartRoute(object):
         points = self.fast_distance(points, distance)
         points = self.sort_points(points)
         points = self.fast_distance(points, distance)
-
+        print len(points)
+        points = self.points_sort(points, distance, 10)
+        print len(points)
         return points
+
+    def points_sort(self, data, distance, index_range):
+        data.sort()
+        status = True
+        idx = 1
+        while status:
+            status = False
+            for i in range(len(data)):
+                if i + idx < len(data):
+                    while (i + idx < len(data)) and (vincenty(data[i], data[i + idx]).meters <= distance):
+                        data.pop(i + idx)
+                else:
+                    break
+            if idx < index_range:
+                status = True
+                idx += 1
+        return data
 
     def slow_distance(self, sort_points, distance):
         i = 0

@@ -18,11 +18,11 @@ from elements.models import Tasks
 def create_route(id_route, route_files, distance):
     sr = StandartRoute(route_files)
     points = sr.route(distance)
+
     i = 0
     while i < len(points):
         write_points.delay(id_route, distance, points[i:i + 1000])
         i += 1000
-        break
     revoke(create_route.request.id, terminate=True)
 
 
