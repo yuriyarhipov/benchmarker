@@ -8,6 +8,7 @@ from django.db import connection
 from lib.files import RouteFile, map_count, get_dict_row
 from celery.task.control import revoke
 from routes.route import StandartRoute
+from routes.models import StandartRoute as SR
 from geopy.distance import vincenty
 from graphs.workspace import Workspace
 from celery.result import AsyncResult
@@ -16,13 +17,33 @@ from elements.models import Tasks
 
 @celery.task(ignore_result=True)
 def create_route(id_route, route_files, distance):
+    route_name = SR.objects.get(id=id_route).route_name
+    Tasks.objects.filter(task_name=route_name).delete()
+    task = Tasks.objects.create(
+        task_name=route_name,
+        current=1,
+        message='creating...')
     sr = StandartRoute(route_files)
     points = sr.route(distance)
-
+    Tasks.objects.filter(id=task.id).update(current=5)
     i = 0
+    ids = []
     while i < len(points):
-        write_points.delay(id_route, distance, points[i:i + 1000])
+        task_worker = write_points.delay(id_route, distance, points[i:i + 1000])
+        ids.append(task_worker.id)
         i += 1000
+
+    total = len(ids)
+    while len(ids) > 5:
+        for task_id in ids:
+            if AsyncResult(task_id).ready():
+                ids.remove(task_id)
+        time.sleep(5)
+        current = total - len(ids)
+        value = float(current) / float(total) * 100
+        Tasks.objects.filter(id=task.id).update(
+            current=int(value))
+    task.delete()
     revoke(create_route.request.id, terminate=True)
 
 

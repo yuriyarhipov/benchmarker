@@ -57,7 +57,7 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
                 usSpinnerService.stop('spinner-1');
                 message = 'Route "' + $scope.route_name + '" is ready'
                 Flash.create('success', message, 'custom-class');
-                $location.path('/' + project_id +   '/routes/');
+                $location.path('/' + project_id +   '/dashboard/');
             })
         };
 }]);
