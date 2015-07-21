@@ -29,9 +29,7 @@ class StandartRoute(object):
         points = self.fast_distance(points, distance)
         points = self.sort_points(points)
         points = self.fast_distance(points, distance)
-        print len(points)
         points = self.points_sort(points, distance, 10)
-        print len(points)
         return points
 
     def points_sort(self, data, distance, index_range):

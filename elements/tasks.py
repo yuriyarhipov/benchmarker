@@ -22,7 +22,8 @@ def create_route(id_route, route_files, distance):
     task = Tasks.objects.create(
         task_name=route_name,
         current=1,
-        message='creating...')
+        max_value=100,
+        message='Route')
     sr = StandartRoute(route_files)
     points = sr.route(distance)
     Tasks.objects.filter(id=task.id).update(current=5)
@@ -33,17 +34,10 @@ def create_route(id_route, route_files, distance):
         ids.append(task_worker.id)
         i += 1000
 
-    total = len(ids)
-    while len(ids) > 5:
-        for task_id in ids:
-            if AsyncResult(task_id).ready():
-                ids.remove(task_id)
-        time.sleep(5)
-        current = total - len(ids)
-        value = float(current) / float(total) * 100
-        Tasks.objects.filter(id=task.id).update(
-            current=int(value))
-    task.delete()
+    Tasks.objects.filter(id=task.id).update(
+        current=int(0),
+        tasks=','.join(ids),
+        max_value=len(ids))
     revoke(create_route.request.id, terminate=True)
 
 
@@ -86,6 +80,7 @@ def save_file(self, filename):
         task_name=basename(filename),
         current=0,
         tasks='',
+        max_value=0,
         message='Uploading..')
 
     cursor = connection.cursor()
@@ -140,6 +135,7 @@ def save_file(self, filename):
     Tasks.objects.filter(id=task.id).update(
         current=int(0),
         tasks=','.join(ids),
+        max_value=len(ids),
         message='Writing..')
     revoke(save_file.request.id, terminate=True)
 

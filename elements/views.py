@@ -3,6 +3,7 @@ from os.path import basename
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.conf import settings
+from celery.result import AsyncResult
 
 from elements.models import Project, Tasks
 from routes.models import RouteFile, StandartRoute
@@ -123,15 +124,28 @@ def module_files(request, project_id, module_name):
 def task_status(request, project_id):
     data = []
     for task in Tasks.objects.filter().order_by('task_name', 'id'):
-        data.append({
-            'task_name': task.task_name,
-            'current': task.current,
-            'message': task.message
-        })
+        if task.tasks == '':
+            data.append({
+                'task_name': task.task_name,
+                'current': task.current,
+                'message': task.message
+            })
+        else:
+            tasks = task.tasks.split(',')
+            active_tasks = []
+            for task_id in tasks:
+                if not AsyncResult(task_id).ready():
+                    active_tasks.append(task_id)
+            current = task.max_value - len(active_tasks)
+            value = float(current) / float(task.max_value) * 100
+            data.append({
+                'task_name': task.task_name,
+                'current': int(value),
+                'message': task.message
+            })
+            Tasks.objects.filter(id=task.id).update(tasks=','.join(active_tasks))
+            if len(active_tasks) == 0:
+                Tasks.objects.filter(id=task.id).delete()
+
+
     return Response(data)
-
-
-
-
-
-

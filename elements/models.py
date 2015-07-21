@@ -9,4 +9,5 @@ class Tasks(models.Model):
     task_name = models.TextField()
     current = models.IntegerField()
     tasks = models.TextField()
+    max_value = models.IntegerField()
     message = models.TextField()
