@@ -121,6 +121,7 @@ def save_file(self, filename):
             chunk.append(row)
             if len(chunk) == 1000:
                 value = float(i) / float(row_count) * 100
+                print value
                 Tasks.objects.filter(id=task.id).update(
                     current=int(value),
                     message='File processing..')

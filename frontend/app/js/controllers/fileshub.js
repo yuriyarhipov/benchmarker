@@ -6,7 +6,7 @@ filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 
         var project_id = $routeParams.project;
         $scope.project = project_id;
         activeProjectService.setProject(project_id);
-        $scope.equipments = ['TEMS', 'NETIMIZER']
+        $scope.equipments = ['TEMS', 'NETIMIZER', 'Mark-Azq']
         $scope.equipment= {'selected': 'TEMS'}
 
         var uploader = $scope.uploader = new FileUploader();

@@ -62,8 +62,8 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
         };
 }]);
 
-routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', 'olData',
-    function ($scope, $http, $routeParams, activeProjectService, olData) {
+routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
+    function ($scope, $http, $routeParams, activeProjectService) {
         var project_id = $routeParams.project
         var route_id = $routeParams.route;
         var custom_point = new ol.style.Circle({
