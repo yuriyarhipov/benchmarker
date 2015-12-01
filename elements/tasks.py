@@ -172,7 +172,6 @@ def write_file_row(self,
             point[0],
             point[1],
             json.dumps([point[2], ], encoding='latin1'))))
-        break
     cursor.execute('''
         INSERT INTO uploaded_files
             (filename, ms, latitude, longitude, row)
