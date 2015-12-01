@@ -122,7 +122,7 @@ def save_file(self, filename, equipment):
         for row in datareader:
             i += 1
             chunk.append(row)
-            if len(chunk) == 1000:
+            if len(chunk) == 5000:
                 value = float(i) / float(row_count) * 100
                 Tasks.objects.filter(id=task.id).update(
                     current=int(value),
