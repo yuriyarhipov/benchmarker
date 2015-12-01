@@ -26,11 +26,6 @@ class StandartRoute(object):
 
         points = cursor.fetchall()
         points = self.fast_distance(points, distance)
-        print 'fast1: %s' % len(points)
-        points = self.sort_points(points)
-        points = self.fast_distance(points, distance)
-        print 'fast2: %s' % len(points)
-        points = self.points_sort(points, distance, 10)
         print len(points)
         init_point = points.pop(0)
         data = [[init_point[0], init_point[1], 0], ]
