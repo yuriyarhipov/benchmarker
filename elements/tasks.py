@@ -74,7 +74,7 @@ def write_points(self, id_route, distance, rows):
 
 
 @celery.task(bind=True)
-def save_file(self, filename):
+def save_file(self, filename, equipment):
     Tasks.objects.filter(task_name=basename(filename)).delete()
     task = Tasks.objects.create(
         task_name=basename(filename),
@@ -106,7 +106,10 @@ def save_file(self, filename):
     ids = []
     row_count = map_count(filename)
     with open(filename, "rb") as csvfile:
-        datareader = csv.DictReader(csvfile, delimiter='\t')
+        if equipment == 'Mark-Azq':
+            datareader = csv.DictReader(csvfile, delimiter=',')
+        else:
+            datareader = csv.DictReader(csvfile, delimiter='\t')
         columns = datareader.fieldnames
         latitude_column_name = None
         longitude_column_name = None
@@ -119,9 +122,8 @@ def save_file(self, filename):
         for row in datareader:
             i += 1
             chunk.append(row)
-            if len(chunk) == 5000:
+            if len(chunk) == 1000:
                 value = float(i) / float(row_count) * 100
-                print value
                 Tasks.objects.filter(id=task.id).update(
                     current=int(value),
                     message='File processing..')
@@ -170,7 +172,7 @@ def write_file_row(self,
             point[0],
             point[1],
             json.dumps([point[2], ], encoding='latin1'))))
-
+        break
     cursor.execute('''
         INSERT INTO uploaded_files
             (filename, ms, latitude, longitude, row)

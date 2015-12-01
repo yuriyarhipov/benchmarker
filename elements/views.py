@@ -44,7 +44,7 @@ def projects(request):
 
 @api_view(['GET', ])
 def get_modules(request):
-    modules = ['%s' % i for i in range(1,51)]
+    modules = ['%s' % i for i in range(1, 51)]
     return Response(modules)
 
 
@@ -54,7 +54,6 @@ def save_file(request, project_id):
     equipment = request.POST.get('equipment')
     project = Project.objects.get(id=project_id)
     filename = request.FILES.getlist('file')
-    print filename
     uploaded_files = Archive(handle_uploaded_file(request.FILES.getlist('file'))[0]).get_files()
     for f in uploaded_files:
         RouteFile.objects.filter(project=project,
@@ -67,7 +66,7 @@ def save_file(request, project_id):
                                  latitude='All-Latitude Decimal Degree',
                                  longitude='All-Longitude Decimal Degree',
                                  status='uploading')
-        task_save_file.delay(f)
+        task_save_file.delay(f, equipment)
 
     return Response(dict(message='OK'))
 
