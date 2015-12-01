@@ -25,12 +25,35 @@ class StandartRoute(object):
             ''' % (sql_files))
 
         points = cursor.fetchall()
-
         points = self.fast_distance(points, distance)
+        print 'fast1: %s' % len(points)
         points = self.sort_points(points)
         points = self.fast_distance(points, distance)
+        print 'fast2: %s' % len(points)
         points = self.points_sort(points, distance, 10)
-        return points
+        print len(points)
+        init_point = points.pop(0)
+        data = [[init_point[0], init_point[1], 0], ]
+        for row in points:
+            data.append([row[0], row[1], vincenty(row, init_point).meters])
+        data = sorted(data, key=itemgetter(2))
+        i = 1
+        while i < len(data):
+            y = 0
+            while (i + y < len(data)) and (data[i + y][2] - data[i - 1][2]) < distance:
+                if vincenty(data[i + y][:2], data[i - 1][:2]).meters < distance:
+                    data.pop(i + y)
+                else:
+                    y += 1
+            i += 1
+
+        result = []
+        for row in data:
+            result.append([row[0], row[1],])
+
+        print len(result)
+
+        return result
 
     def points_sort(self, data, distance, index_range):
         data.sort()
@@ -93,6 +116,9 @@ class StandartRoute(object):
         points = self.sort_points(points)
         points = self.fast_distance(points, distance)
         points = self.slow_distance(points, distance)
+
+
+
         return points
 
     def get_route(self, route_id, color):

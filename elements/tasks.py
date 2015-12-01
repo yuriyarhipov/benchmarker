@@ -26,18 +26,18 @@ def create_route(id_route, route_files, distance):
         message='Route')
     sr = StandartRoute(route_files)
     points = sr.route(distance)
-    Tasks.objects.filter(id=task.id).update(current=5)
-    i = 0
-    ids = []
-    while i < len(points):
-        task_worker = write_points.delay(id_route, distance, points[i:i + 1000])
-        ids.append(task_worker.id)
-        i += 1000
+    #Tasks.objects.filter(id=task.id).update(current=5)
+    #i = 0
+    #ids = []
+    #while i < len(points):
+    #    task_worker = write_points.delay(id_route, distance, points[i:i + 1000])
+    #    ids.append(task_worker.id)
+    #    i += 1000
 
-    Tasks.objects.filter(id=task.id).update(
-        current=int(0),
-        tasks=','.join(ids),
-        max_value=len(ids))
+    #Tasks.objects.filter(id=task.id).update(
+    #    current=int(0),
+    #    tasks=','.join(ids),
+    #    max_value=len(ids))
     revoke(create_route.request.id, terminate=True)
 
 
