@@ -62,72 +62,34 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
         };
 }]);
 
-routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService',
-    function ($scope, $http, $routeParams, activeProjectService) {
+routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', 'leafletData',
+    function ($scope, $http, $routeParams, activeProjectService, leafletData) {
         var project_id = $routeParams.project
         var route_id = $routeParams.route;
-        var custom_point = new ol.style.Circle({
-            radius: 5,
-            fill: new ol.style.Fill({
-                color: '#ff9900',
-                opacity: 0.6
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#ffcc00',
-                opacity: 0.4
-            })
-        });
-        var custom_style = {
-                image: custom_point,
-            };
-
-        var colored_points = {
-            '#000000':{
-                image: new ol.style.Circle({
-                radius: 5,
-                fill: new ol.style.Fill({
-                    color: '#000000',
-                    opacity: 0.6
-                }),
-                stroke: new ol.style.Stroke({
-                    color: '#000000',
-                    opacity: 0.4
-                })
-            }),
-            },
-        }
         activeProjectService.setProject(project_id);
         $http.get('/data/' + project_id + '/routes/' + route_id).success(function(data){
-            $scope.markers = data.route;
-            $scope.distance = data.distance;
-            latitude = parseFloat($scope.markers[0].lat);
-            longitude = parseFloat($scope.markers[0].lon);
-            $scope.zoom = 15;
+            latitude = parseFloat(data.route[0].lat);
+            longitude = parseFloat(data.route[0].lon);
             $scope.center = {
                     lat: latitude,
                     lon: longitude,
                     zoom: $scope.zoom,
-                };
-
-            $scope.point_style = function(point_color){
-                if (!(point_color  in colored_points)){
-                    colored_points[point_color] = {
-                        image: new ol.style.Circle({
-                            radius: 5,
-                            fill: new ol.style.Fill({
-                                color: point_color,
-                                opacity: 0.6
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: point_color,
-                                opacity: 0.4
-                            })
-                            }),
-                    };
-
-                }
-                return colored_points[point_color];
             };
+            leafletData.getMap().then(function(map) {
+                map.setView([latitude, longitude], 13);
+                var markers = L.markerClusterGroup();
+                for (id in data.route){
+                    var circle = L.circle([data.route[id].lat, data.route[id].lon], 1, {
+                        color: data.route[id].color,
+                        fillColor: data.route[id].color,
+                        fillOpacity: 1,
+                        opacity:1,
+                    });
+                    markers.addLayer(circle);
+                }
+                map.addLayer(markers);
+            });
+
         });
 
 }]);

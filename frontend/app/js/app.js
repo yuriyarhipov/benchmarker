@@ -17,11 +17,11 @@ var BenchApp = angular.module(
         'ngColorPicker',
         'checklist-model',
         'ngProgress',
-        'openlayers-directive',
         'settingsControllers',
         'angularSpinner',
         'flash',
         'graphsControllers',
+        'leaflet-directive',
     ]);
 
 BenchApp.config(['$routeProvider',

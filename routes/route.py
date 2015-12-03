@@ -26,7 +26,6 @@ class StandartRoute(object):
 
         points = cursor.fetchall()
         points = self.fast_distance(points, distance)
-        print len(points)
         init_point = points.pop(0)
         data = [[init_point[0], init_point[1], 0], ]
         for row in points:
@@ -45,9 +44,6 @@ class StandartRoute(object):
         result = []
         for row in data:
             result.append([row[0], row[1],])
-
-        print len(result)
-
         return result
 
     def points_sort(self, data, distance, index_range):
