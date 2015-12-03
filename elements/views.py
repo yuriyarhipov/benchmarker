@@ -119,12 +119,16 @@ def module_files(request, project_id, module_name):
     return Response(data)
 
 
-@api_view(['GET', ])
+@api_view(['GET', 'POST'])
 def task_status(request, project_id):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        Tasks.objects.filter(id=id).delete()
     data = []
     for task in Tasks.objects.filter().order_by('task_name', 'id'):
         if task.tasks == '':
             data.append({
+                'id': task.id,
                 'task_name': task.task_name,
                 'current': task.current,
                 'message': task.message
@@ -138,6 +142,7 @@ def task_status(request, project_id):
             current = task.max_value - len(active_tasks)
             value = float(current) / float(task.max_value) * 100
             data.append({
+                'id': task.id,
                 'task_name': task.task_name,
                 'current': int(value),
                 'message': task.message
@@ -145,6 +150,4 @@ def task_status(request, project_id):
             Tasks.objects.filter(id=task.id).update(tasks=','.join(active_tasks))
             if len(active_tasks) == 0:
                 Tasks.objects.filter(id=task.id).delete()
-
-
     return Response(data)

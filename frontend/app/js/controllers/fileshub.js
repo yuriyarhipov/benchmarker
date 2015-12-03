@@ -55,4 +55,11 @@ filesControllers.controller('dashboardCtrl', ['$scope', '$http', '$routeParams',
         $scope.project = project_id;
         activeProjectService.setProject(project_id);
         get_tasks();
+
+        $scope.onDeleteTask = function(task_id){
+            $http.post('/data/' + project_id + '/tasks/', $.param({'id': task_id})).success(function(data){
+                $scope.tasks = data;
+                $timeout(get_tasks, 1000);
+            });
+        };
  }]);

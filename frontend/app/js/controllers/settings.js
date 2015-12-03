@@ -39,7 +39,7 @@ settingsControllers.controller('calculationsCtrl', ['$scope', '$http','$routePar
         var project_id = $routeParams.project
         activeProjectService.setProject(project_id);
         $scope.project = project_id;
-        $scope.equipments = ['TEMS', 'NETIMIZER'];
+        $scope.equipments = ['TEMS', 'NETIMIZER', 'Mark-Azq'];
         $scope.networks = ['GSM', 'LTE', 'WCDMA'];
         $scope.operations = ['Average', 'Sum', 'Max', 'Min', 'Mode'];
         $scope.equipment = {};
