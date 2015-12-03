@@ -80,7 +80,7 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
                 var markers = L.markerClusterGroup({
                     spiderfyOnMaxZoom: false,
                     showCoverageOnHover: false,
-                    disableClusteringAtZoom: 14
+                    disableClusteringAtZoom: 10
                 });
                 for (id in data.route){
                     var circle = L.circle([data.route[id].lat, data.route[id].lon], 1, {
