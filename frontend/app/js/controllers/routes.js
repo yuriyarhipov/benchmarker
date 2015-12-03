@@ -77,7 +77,11 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
             };
             leafletData.getMap().then(function(map) {
                 map.setView([latitude, longitude], 13);
-                var markers = L.markerClusterGroup();
+                var markers = L.markerClusterGroup({
+                    spiderfyOnMaxZoom: false,
+                    showCoverageOnHover: false,
+                    disableClusteringAtZoom: 17
+                });
                 for (id in data.route){
                     var circle = L.circle([data.route[id].lat, data.route[id].lon], 1, {
                         color: data.route[id].color,
