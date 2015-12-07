@@ -103,29 +103,45 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
                 map._routes[route_name].route_layer.addTo(map);
 
                 map.on('zoomend', function(e){
-                    map_bounds = map.getBounds();
-                    for (route_name in map._routes){
-                        map._routes[route_name].route_layer.clearLayers();
-                        markers = get_current_markers(map._routes[route_name].route, map_bounds);
-                        for (id in markers){
-                            map._routes[route_name].route_layer.addLayer(markers[id]);
-                        }
-                    }
+                    filter_markers(map);
                 });
                 map.on('moveend', function(e){
-                    map_bounds = map.getBounds();
-                    for (route_name in map._routes){
-                        map._routes[route_name].route_layer.clearLayers();
-                        markers = get_current_markers(map._routes[route_name].route, map_bounds);
-                        for (id in markers){
-                            map._routes[route_name].route_layer.addLayer(markers[id]);
-                        }
-                    }
+                    filter_markers(map);
                 });
 
             });
 
         });
+
+        var filter_markers = function(map){
+            map_bounds = map.getBounds();
+            for (route_name in map._routes){
+                map._routes[route_name].route_layer.clearLayers();
+                markers = get_current_markers(map._routes[route_name].route, map_bounds);
+                var layer_markers = [];
+                for (id in markers){
+                    layer_markers.push(markers[id])
+                }
+                if (layer_markers.length > 1000){
+                    var k = layer_markers.length/1000;
+                    f_markers = []
+                    var i = 0;
+                    for (id in layer_markers){
+                        if (i < k){
+                            i += 1
+                        } else {
+                            f_markers.push(layer_markers[id])
+                            i = 0;
+                        }
+                    }
+                    layer_markers = f_markers;
+                }
+                for (id in layer_markers){
+                    map._routes[route_name].route_layer.addLayer(layer_markers[id]);
+                }
+
+            }
+        }
 
         var get_current_markers = function(markers, map_bounds){
             var result = [];
