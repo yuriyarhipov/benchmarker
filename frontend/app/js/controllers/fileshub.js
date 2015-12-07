@@ -15,7 +15,6 @@ filesControllers.controller('fileshubCtrl', ['$scope', '$http', '$routeParams', 
 
         $scope.uploader.onCompleteAll = function(data){
             ngProgress.set(0);
-            console.log('oe');
             $location.path(project_id + '/dashboard/');
 
         };

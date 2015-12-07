@@ -38,9 +38,7 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
 
         $scope.onSelectAllClick = function(){
             $scope.selected_files = $scope.files.map(function(item) { return item.filename; });
-
         };
-
 
         $scope.saveRoute = function(){
             ngProgress.start();
@@ -67,30 +65,102 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
         var project_id = $routeParams.project
         var route_id = $routeParams.route;
         activeProjectService.setProject(project_id);
+        $http.get('/data/' + project_id + '/routes/').success(function(data){
+            $scope.routes = data;
+        });
         $http.get('/data/' + project_id + '/routes/' + route_id).success(function(data){
-            latitude = parseFloat(data.route[0].lat);
-            longitude = parseFloat(data.route[0].lon);
+            var latitude = parseFloat(data.route[0].lat);
+            var longitude = parseFloat(data.route[0].lon);
+            var route_name = data.name;
             $scope.center = {
                     lat: latitude,
                     lon: longitude,
                     zoom: $scope.zoom,
             };
             leafletData.getMap().then(function(map) {
-                map.setView([latitude, longitude], 13);
-                var markers = [];
+                map.setView([latitude, longitude], 15);
+                map._routes = {};
+
+                map._routes[route_name] = {route: [], route_layer: L.layerGroup()}
+
+                map._layers_control = L.control.layers({},{},{collapsed:false}).addTo(map);
+                map._layers_control.addOverlay(map._routes[route_name].route_layer, route_name);
+
+                map_bounds = map.getBounds();
+
                 for (id in data.route){
-                    var circle = L.circle([data.route[id].lat, data.route[id].lon], 1, {
+                    var circle = L.circle([data.route[id].lat, data.route[id].lon], 2, {
                         color: data.route[id].color,
                         fillColor: data.route[id].color,
                         fillOpacity: 1,
                         opacity:1,
                     });
-                    markers.push(circle);
+                    map._routes[route_name].route.push(circle);
+                    if (map_bounds.contains([data.route[id].lat, data.route[id].lon])){
+                        map._routes[route_name].route_layer.addLayer(circle);
+                    }
                 }
-                var conditionalLayer = L.conditionalMarkers(markers, {maxMarkers: 1000}).addTo(map);
+                map._routes[route_name].route_layer.addTo(map);
+
+                map.on('zoomend', function(e){
+                    map_bounds = map.getBounds();
+                    for (route_name in map._routes){
+                        map._routes[route_name].route_layer.clearLayers();
+                        markers = get_current_markers(map._routes[route_name].route, map_bounds);
+                        for (id in markers){
+                            map._routes[route_name].route_layer.addLayer(markers[id]);
+                        }
+                    }
+                });
+                map.on('moveend', function(e){
+                    map_bounds = map.getBounds();
+                    for (route_name in map._routes){
+                        map._routes[route_name].route_layer.clearLayers();
+                        markers = get_current_markers(map._routes[route_name].route, map_bounds);
+                        for (id in markers){
+                            map._routes[route_name].route_layer.addLayer(markers[id]);
+                        }
+                    }
+                });
+
             });
 
         });
+
+        var get_current_markers = function(markers, map_bounds){
+            var result = [];
+            for (id in markers){
+                if (map_bounds.contains(markers[id].getLatLng())){
+                        result.push(markers[id]);
+                    }
+            }
+            return result;
+        }
+
+        $scope.onAddRoute =function(route){
+            $http.get('/data/' + project_id + '/routes/' + route.id).success(function(data){
+                var route_name = data.name;
+                leafletData.getMap().then(function(map) {
+                    map._routes[route_name] = {route: [], route_layer: L.layerGroup()};
+                    map._layers_control.addOverlay(map._routes[route_name].route_layer, route_name);
+                    map_bounds = map.getBounds();
+
+                    for (id in data.route){
+                        var circle = L.circle([data.route[id].lat, data.route[id].lon], 2, {
+                            color: data.route[id].color,
+                            fillColor: data.route[id].color,
+                            fillOpacity: 1,
+                            opacity:1,
+                        });
+                        map._routes[route_name].route.push(circle);
+                        if (map_bounds.contains([data.route[id].lat, data.route[id].lon])){
+                            map._routes[route_name].route_layer.addLayer(circle);
+                        }
+                    }
+                    map._routes[route_name].route_layer.addTo(map);
+                });
+            });
+        };
 
 }]);
 

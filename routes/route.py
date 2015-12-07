@@ -107,9 +107,6 @@ class StandartRoute(object):
         points = self.sort_points(points)
         points = self.fast_distance(points, distance)
         points = self.slow_distance(points, distance)
-
-
-
         return points
 
     def get_route(self, route_id, color):

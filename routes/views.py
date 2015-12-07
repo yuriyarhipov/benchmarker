@@ -49,6 +49,7 @@ def routes(request, project_id):
 
     return Response(data)
 
+
 @api_view(['GET', 'DELETE'])
 def route(request, project_id, route_id):
     project = Project.objects.get(id=project_id)
@@ -56,7 +57,10 @@ def route(request, project_id, route_id):
         sr = StandartRoute.objects.get(id=route_id, project_id=project_id)
         route_id = sr.id
         route = SR(None).get_route(route_id, sr.color)
-        return Response({'route': route, 'distance': sr.route_distance})
+        return Response({
+            'route': route,
+            'distance': sr.route_distance,
+            'name': sr.route_name})
 
     elif request.method == 'DELETE':
         data = []
