@@ -8,6 +8,9 @@ from models import StandartRoute, RouteFile
 from routes.route import StandartRoute as SR
 from elements.tasks import write_points, create_route
 
+from shapely.geometry import box, Point
+
+
 @api_view(['POST', 'GET'])
 def routes(request, project_id):
     project = Project.objects.get(id=project_id)
@@ -58,7 +61,7 @@ def route(request, project_id, route_id):
         route_id = sr.id
         route = SR(None).get_route(route_id, sr.color)
         return Response({
-            'route': route,
+            'route': route[:1],
             'distance': sr.route_distance,
             'name': sr.route_name})
 
@@ -74,3 +77,21 @@ def route(request, project_id, route_id):
                 'route_time': standart_route.route_time})
         return Response(data)
 
+
+@api_view(['POST', ])
+def route_frame(request, project_id, route_id):
+    map_bounds = request.POST.get('bounds').split(',')
+    map_box = box(
+        float(map_bounds[1]),
+        float(map_bounds[0]),
+        float(map_bounds[3]),
+        float(map_bounds[2]))
+    sr = StandartRoute.objects.get(id=route_id, project_id=project_id)
+    route_id = sr.id
+    route = SR(None).get_route(route_id, sr.color)
+    result = []
+    for point in route:
+        map_p = Point(point.get('lat'), point.get('lon'))
+        if map_p.within(map_box):
+            result.append(point)
+    return Response(result)

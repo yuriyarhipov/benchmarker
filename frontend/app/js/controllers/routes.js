@@ -79,32 +79,28 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
             };
             leafletData.getMap().then(function(map) {
                 map.setView([latitude, longitude], 15);
-                map._routes = {};
-
-                map._routes[route_name] = {route: [], route_layer: L.layerGroup()}
-
-                map._layers_control = L.control.layers({},{},{collapsed:false}).addTo(map);
-                map._layers_control.addOverlay(map._routes[route_name].route_layer, route_name);
-
                 map_bounds = map.getBounds();
+                var params = {
+                    'bounds': map_bounds.toBBoxString(),
+                };
+                map._routes = {};
+                map._routes[route_name] =  L.layerGroup();
+                map._layers_control = L.control.layers({},{},{collapsed:false}).addTo(map);
+                map._layers_control.addOverlay(map._routes[route_name], route_name);
 
-                for (id in data.route){
-                    var circle = L.circle([data.route[id].lat, data.route[id].lon], 2, {
-                        color: data.route[id].color,
-                        fillColor: data.route[id].color,
-                        fillOpacity: 1,
-                        opacity:1,
-                    });
-                    map._routes[route_name].route.push(circle);
-                    if (map_bounds.contains([data.route[id].lat, data.route[id].lon])){
-                        map._routes[route_name].route_layer.addLayer(circle);
+                $http.post('/data/' + project_id + '/routes/' + route_id + '/frame/', $.param(params)).success(function(route_data){
+                    for (id in route_data){
+                        var circle = L.circle([route_data[id].lat, route_data[id].lon], 2, {
+                            color: route_data[id].color,
+                            fillColor: route_data[id].color,
+                            fillOpacity: 1,
+                            opacity:1,
+                        });
+                        map._routes[route_name].addLayer(circle);
                     }
-                }
-                map._routes[route_name].route_layer.addTo(map);
-
-                map.on('zoomend', function(e){
-                    filter_markers(map);
                 });
+                map._routes[route_name].addTo(map);
+
                 map.on('moveend', function(e){
                     filter_markers(map);
                 });
@@ -115,43 +111,25 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
 
         var filter_markers = function(map){
             map_bounds = map.getBounds();
+            var params = {
+                    'bounds': map_bounds.toBBoxString(),
+            };
             for (route_name in map._routes){
-                map._routes[route_name].route_layer.clearLayers();
-                markers = get_current_markers(map._routes[route_name].route, map_bounds);
-                var layer_markers = [];
-                for (id in markers){
-                    layer_markers.push(markers[id])
-                }
-                if (layer_markers.length > 1000){
-                    var k = layer_markers.length/1000;
-                    f_markers = []
-                    var i = 0;
-                    for (id in layer_markers){
-                        if (i < k){
-                            i += 1
-                        } else {
-                            f_markers.push(layer_markers[id])
-                            i = 0;
-                        }
+                map._routes[route_name].clearLayers();
+                $http.post('/data/' + project_id + '/routes/' + route_id + '/frame/', $.param(params)).success(function(route_data){
+                    for (id in route_data){
+                        var circle = L.circle([route_data[id].lat, route_data[id].lon], 2, {
+                            color: route_data[id].color,
+                            fillColor: route_data[id].color,
+                            fillOpacity: 1,
+                            opacity:1,
+                        });
+                        map._routes[route_name].addLayer(circle);
                     }
-                    layer_markers = f_markers;
-                }
-                for (id in layer_markers){
-                    map._routes[route_name].route_layer.addLayer(layer_markers[id]);
-                }
-
+                });
             }
         }
 
-        var get_current_markers = function(markers, map_bounds){
-            var result = [];
-            for (id in markers){
-                if (map_bounds.contains(markers[id].getLatLng())){
-                        result.push(markers[id]);
-                    }
-            }
-            return result;
-        }
 
         $scope.onAddRoute =function(route){
             $http.get('/data/' + project_id + '/routes/' + route.id).success(function(data){

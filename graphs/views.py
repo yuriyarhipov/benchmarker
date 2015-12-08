@@ -121,7 +121,7 @@ def workspaces(request, project_id):
             test=request.POST.get('test'),
             calculation=Calculation.objects.filter(calculation_name=request.POST.get('calculation')).first()
         )
-        create_workspace.delay(ws.workspace_name)
+        #create_workspace.delay(ws.workspace_name)
 
     data = []
     for workspace in Workspaces.objects.all():

@@ -72,8 +72,8 @@ class Workspace(object):
                 self.graphs[color] = 0
             self.graphs[color] += 1
 
-        print self.graphs
         cursor = connection.cursor()
+        print 'OK'
         cursor.execute('CREATE TABLE IF NOT EXISTS Graphs (id SERIAL, workspace INT, graph JSON, map JSON)')
         connection.commit()
         cursor.execute('INSERT INTO graphs (workspace, graph, map) VALUES (%s, %s, %s)', (self.ws.id, json.dumps(self.graphs), json.dumps(self.map)))

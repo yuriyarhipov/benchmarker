@@ -31,5 +31,5 @@ def competitor(request, project_id, competitor_name):
 @api_view(['GET', ])
 def competitor_names(request, project_id):
     columns, data = Competitor().get_competitors(project_id)
-    return Response([row[columns.index('Competitor')] for row in data])
+    return Response(set(row[columns.index('Competitor')] for row in data))
 

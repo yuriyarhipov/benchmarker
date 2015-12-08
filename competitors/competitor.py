@@ -31,13 +31,14 @@ class Competitor(object):
         for row in cursor:
             columns = columns.union(row[0].keys())
             data.append(row[0])
+
         columns = list(columns)
         columns.sort()
         result = []
         for competitor in data:
             row = []
             for col in columns:
-                row.append(competitor[col])
+                row.append(competitor.get(col))
             result.append(row)
         return columns, result
 
