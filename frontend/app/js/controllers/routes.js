@@ -60,8 +60,9 @@ routeControllers.controller('createStandartRouteCtrl', ['$scope', '$http', '$rou
         };
 }]);
 
-routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', 'leafletData',
-    function ($scope, $http, $routeParams, activeProjectService, leafletData) {
+routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'activeProjectService', 'leafletData', 'usSpinnerService',
+    function ($scope, $http, $routeParams, activeProjectService, leafletData, usSpinnerService) {
+        usSpinnerService.spin('spinner_route');
         var project_id = $routeParams.project
         var route_id = $routeParams.route;
         activeProjectService.setProject(project_id);
@@ -98,6 +99,7 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
                         });
                         map._routes[route_name].addLayer(circle);
                     }
+                    usSpinnerService.stop('spinner_route');
                 });
                 map._routes[route_name].addTo(map);
 
@@ -116,6 +118,7 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
             };
             for (route_name in map._routes){
                 map._routes[route_name].clearLayers();
+                usSpinnerService.spin('spinner_route');
                 $http.post('/data/' + project_id + '/routes/' + route_id + '/frame/', $.param(params)).success(function(route_data){
                     for (id in route_data){
                         var circle = L.circle([route_data[id].lat, route_data[id].lon], 2, {
@@ -126,6 +129,7 @@ routeControllers.controller('routeCtrl', ['$scope', '$http', '$routeParams', 'ac
                         });
                         map._routes[route_name].addLayer(circle);
                     }
+                    usSpinnerService.stop('spinner_route');
                 });
             }
         }
